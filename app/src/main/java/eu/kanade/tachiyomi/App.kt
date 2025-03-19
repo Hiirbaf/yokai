@@ -294,12 +294,11 @@ fun buildLogWritersToAdd(logPath: UniFile?): List<LogWriter> {
 }
 
 fun buildLogWritersToAdd(
-    logPath: UniFile?,
+    logFile: UniFile?,
     isVerbose: Boolean,
 ) = buildList {
     if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-    if (logPath != null && !BuildConfig.DEBUG) add(RollingUniFileLogWriter(logPath = logPath, isVerbose = isVerbose))
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"
