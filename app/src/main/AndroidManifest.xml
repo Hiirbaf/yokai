@@ -52,7 +52,8 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/Theme.Tachiyomi.SplashScreen"
+            android:launchMode="singleTask"
+            android:theme="@style/SplashScreenBackground"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
