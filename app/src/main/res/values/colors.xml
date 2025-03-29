@@ -88,6 +88,8 @@
 
     <color name="md_red_400">#EF5350</color>
     <color name="md_red_500">#F44336</color>
+    
+    <color name="colorSplash">#455A64</color>
 
     <color name="md_green_700">#388E3C</color>
     <color name="md_green_800">#2E7D32</color>
