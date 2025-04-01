@@ -15,8 +15,6 @@ class RepoJsonMigration : Migration {
     override suspend fun invoke(migrationContext: MigrationContext): Boolean = withIOContext {
         val extensionRepoRepository: ExtensionRepoRepository = migrationContext.get() ?: return@withIOContext false
         val preferenceStore: PreferenceStore = migrationContext.get() ?: return@withIOContext false
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-        val extensionRepoRepository: ExtensionRepoRepository by injectLazy()
         val extensionRepos: Preference<Set<String>> = preferenceStore.getStringSet("extension_repos", emptySet())
 
         for ((index, source) in extensionRepos.get().withIndex()) {
