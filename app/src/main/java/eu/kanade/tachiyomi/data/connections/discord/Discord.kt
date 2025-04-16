@@ -3,7 +3,7 @@ package eu.kanade.tachiyomi.data.connections.discord
 import android.graphics.Color
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import tachiyomi.i18n.commonMain.moko-resources.base
+import yokai.i18n.commonMain.base
 
 class Discord(id: Long) : ConnectionsService(id) {
 
