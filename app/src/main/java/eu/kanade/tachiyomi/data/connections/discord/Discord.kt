@@ -3,11 +3,10 @@ package eu.kanade.tachiyomi.data.connections.discord
 import android.graphics.Color
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import yokai.i18n.commonMain.base
 
 class Discord(id: Long) : ConnectionsService(id) {
 
-    override fun nameRes() = base.strings.connections_discord
+    override fun nameRes() = R.strings.connections_discord
 
     override fun getLogo() = R.drawable.ic_discord_24dp
 
