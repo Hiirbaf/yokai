@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import eu.kanade.presentation.category.visualName
-import yokai.domain.category.models.Category
+import yokai.domain.category.models.CategoryUpdate
 import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 
@@ -14,7 +14,7 @@ import tachiyomi.presentation.core.i18n.stringResource
 @ReadOnlyComposable
 @Composable
 fun getCategoriesLabel(
-    allCategories: List<Category>,
+    allCategories: List<CategoryUpdate>,
     included: Set<String>,
     excluded: Set<String>,
 ): String {
