@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import yokai.presentation.core.i18n.stringResource
-import tachiyomi.presentation.core.util.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
