@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import eu.kanade.presentation.category.visualName
 import yokai.domain.category.models.CategoryUpdate
 import yokai.i18n.MR
-import tachiyomi.presentation.core.i18n.stringResource
+import yokai.presentation.core.i18n.stringResource
 
 /**
  * Returns a string of categories name for settings subtitle
@@ -49,7 +49,7 @@ fun getCategoriesLabel(
 @ReadOnlyComposable
 @Composable
 fun getCategoriesLabel(
-    allCategories: List<Category>,
+    allCategories: List<CategoryUpdate>,
     included: Set<String>,
 ): String {
     val context = LocalContext.current
