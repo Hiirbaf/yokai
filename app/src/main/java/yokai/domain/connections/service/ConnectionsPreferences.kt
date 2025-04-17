@@ -4,7 +4,7 @@ import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 
 class ConnectionsPreferences(
-    private val preferenceStore: PreferenceStore,
+    private val preferenceStore: AndroidPreferenceStore,
 ) {
     fun connectionsUsername(sync: ConnectionsService) = preferenceStore.getString(
         connectionsUsername(sync.id),
