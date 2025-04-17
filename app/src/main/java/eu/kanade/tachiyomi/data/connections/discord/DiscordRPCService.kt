@@ -168,7 +168,7 @@ class DiscordRPCService : Service() {
                     connectionsPreferences.useChapterTitles().get() -> it
                     else -> readerData.chapterNumber.let {
                         context.resources.getString(
-                            R.string.display_mode_chapter,
+                            R.string.chapter_,
                             formatChapterNumber(it.first.toDouble()),
                         ) + "/${it.second}"
                     }
