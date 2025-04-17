@@ -2,7 +2,7 @@ package yokai.core.migration.migrations
 
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import mihon.core.migration.Migration
