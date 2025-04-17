@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
+import eu.kanade.tachiyomi.data.connections.discord.RICH_PRESENCE_TAG
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import eu.kanade.tachiyomi.R
@@ -84,12 +85,19 @@ object Notifications {
     const val CHANNEL_CRASH_LOGS = "crash_logs_channel"
     const val ID_CRASH_LOGS = -601
 
+    
     /**
      * Notification channel used for Incognito Mode
      */
     const val CHANNEL_INCOGNITO_MODE = "incognito_mode_channel"
     const val ID_INCOGNITO_MODE = -701
 
+    /**
+     * Notification channel used for Discord RPC
+     */
+    const val CHANNEL_DISCORD_RPC = "${RICH_PRESENCE_TAG}_channel"
+    const val ID_DISCORD_RPC = -1701
+    
     private val deprecatedChannels = listOf(
         "backup_restore_channel",
         "library_channel",
