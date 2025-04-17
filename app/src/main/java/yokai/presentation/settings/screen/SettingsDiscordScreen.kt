@@ -25,7 +25,8 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
 import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
-import yokai.presentation.core.i18n.stringResource
+//import yokai.presentation.core.i18n.stringResource
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
