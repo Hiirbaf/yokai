@@ -19,8 +19,8 @@ import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
-import tachiyomi.core.common.util.lang.launchIO
-import tachiyomi.core.common.util.lang.withIOContext
+import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.category.model.Category.Companion.UNCATEGORIZED_ID
 import uy.kohesive.injekt.Injekt
