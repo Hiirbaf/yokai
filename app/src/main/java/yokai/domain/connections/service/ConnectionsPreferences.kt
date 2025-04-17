@@ -1,7 +1,7 @@
 package yokai.domain.connections.service
 
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore.kt
+import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 
 class ConnectionsPreferences(
     private val preferenceStore: PreferenceStore,
