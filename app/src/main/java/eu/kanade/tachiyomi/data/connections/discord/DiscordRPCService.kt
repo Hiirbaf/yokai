@@ -11,7 +11,7 @@ import android.os.Looper
 import androidx.compose.ui.util.fastAny
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.util.formatChapterNumber
-import yokai.R
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
