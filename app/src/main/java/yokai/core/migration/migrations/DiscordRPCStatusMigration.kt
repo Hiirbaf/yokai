@@ -5,8 +5,8 @@ import androidx.preference.PreferenceManager
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import mihon.core.migration.Migration
-import mihon.core.migration.MigrationContext
+import yokai.core.migration.Migration
+import yokai.core.migration.MigrationContext
 import tachiyomi.core.common.util.lang.withIOContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
