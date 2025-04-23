@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import tachiyomi.presentation.core.i18n.stringResource
+import dev.icerock.moko.resources.compose.stringResource
 import tachiyomi.presentation.core.util.clickableNoIndication
 
 @Composable
