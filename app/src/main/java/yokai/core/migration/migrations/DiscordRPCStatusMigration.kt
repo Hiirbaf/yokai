@@ -7,7 +7,7 @@ import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
-import tachiyomi.core.common.util.lang.withIOContext
+import eu.kanade.tachiyomi.util.system.withIOContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
