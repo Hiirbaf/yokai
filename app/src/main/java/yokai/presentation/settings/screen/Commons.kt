@@ -14,7 +14,7 @@ import tachiyomi.presentation.core.i18n.stringResource
 @ReadOnlyComposable
 @Composable
 fun getCategoriesLabel(
-    allCategories: List<CategoryUpdate>,
+    allCategories: List<Category>,
     included: Set<String>,
     excluded: Set<String>,
 ): String {
@@ -49,7 +49,7 @@ fun getCategoriesLabel(
 @ReadOnlyComposable
 @Composable
 fun getCategoriesLabel(
-    allCategories: List<CategoryUpdate>,
+    allCategories: List<Category>,
     included: Set<String>,
 ): String {
     val context = LocalContext.current
