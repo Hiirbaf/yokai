@@ -1099,6 +1099,9 @@
     <string name="action_webview_forward">Forward</string>
     <string name="action_webview_refresh">Refresh</string>
 
+    <string name="action_cancel">Cancel</string>
+    <string name="action_close">Close</string>
+
     <!-- App widget -->
     <string name="appwidget_updates_description">See your recently updated library entries</string>
     <string name="appwidget_unavailable_locked">Widget not available when app lock is enabled</string>
