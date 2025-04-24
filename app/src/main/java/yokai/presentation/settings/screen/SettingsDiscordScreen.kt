@@ -107,54 +107,64 @@ object SettingsDiscordScreen : ComposableSettings {
     }
 
     @Composable
-    private fun getRPCIncognitoGroup(
-        connectionsPreferences: ConnectionsPreferences,
-        enabled: Boolean,
-    ): Preference.PreferenceGroup {
-        val getCategories = remember { Injekt.get<GetCategories>() }
-        val allCategories by getCategories.subscribe().collectAsState(initial = runBlocking { getCategories.await() })
+private fun getRPCIncognitoGroup(
+    connectionsPreferences: ConnectionsPreferences,
+    enabled: Boolean,
+): Preference.PreferenceGroup {
+    val getCategories = remember { Injekt.get<GetCategories>() }
+    val allDbCategories by getCategories.subscribe().collectAsState(initial = runBlocking { getCategories.await() })
+    val allCategories = allDbCategories.map { it.toDomainModel() }
 
-        val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
-        val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
+    val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
+    val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
 
-        val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
-        var showDialog by rememberSaveable { mutableStateOf(false) }
-        if (showDialog) {
-            TriStateListDialog(
-                title = stringResource(MR.strings.general_categories),
-                message = stringResource(MR.strings.pref_discord_incognito_categories_details),
-                items = allCategories,
-                initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
-                initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
-                itemLabel = { it.visualName },
-                onDismissRequest = { showDialog = false },
-                onValueChanged = { newIncluded, _ ->
-                    discordRPCIncognitoCategoriesPref.set(
-                        newIncluded.map { it.id.toString() }.toSet(),
-                    )
-                    showDialog = false
-                }
-            )
-        }
+    val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
+    var showDialog by rememberSaveable { mutableStateOf(false) }
 
-        return Preference.PreferenceGroup(
-            title = stringResource(MR.strings.general_categories),
-            preferenceItems = persistentListOf(
-                Preference.PreferenceItem.SwitchPreference(
-                    pref = discordRPCIncognitoPref,
-                    title = stringResource(MR.strings.pref_discord_incognito),
-                    subtitle = stringResource(MR.strings.pref_discord_incognito_summary),
-                ),
-                Preference.PreferenceItem.TextPreference(
-                    title = stringResource(MR.strings.general_categories),
-                    subtitle = getCategoriesLabel(allCategories, includedManga),
-                    onClick = { showDialog = true },
-                ),
-                Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.pref_discord_incognito_categories_details)),
-            ),
-            enabled = enabled,
+    val dialogTitle = stringResource(MR.strings.general_categories)
+    val dialogMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
+    val infoMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
+    val categoryTitle = stringResource(MR.strings.pref_discord_incognito)
+    val categorySubtitle = stringResource(MR.strings.pref_discord_incognito_summary)
+    val categoryPickerTitle = stringResource(MR.strings.general_categories)
+    val categoryPickerSubtitle = getCategoriesLabel(allCategories, includedManga)
+
+    if (showDialog) {
+        TriStateListDialog(
+            title = dialogTitle,
+            message = dialogMessage,
+            items = allCategories,
+            initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
+            initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
+            itemLabel = { Text(it.visualName) },
+            onDismissRequest = { showDialog = false },
+            onValueChanged = { newIncluded, _ ->
+                discordRPCIncognitoCategoriesPref.set(
+                    newIncluded.map { it.id.toString() }.toSet(),
+                )
+                showDialog = false
+            }
         )
     }
+
+    return Preference.PreferenceGroup(
+        title = dialogTitle,
+        preferenceItems = persistentListOf(
+            Preference.PreferenceItem.SwitchPreference(
+                pref = discordRPCIncognitoPref,
+                title = categoryTitle,
+                subtitle = categorySubtitle,
+            ),
+            Preference.PreferenceItem.TextPreference(
+                title = categoryPickerTitle,
+                subtitle = categoryPickerSubtitle,
+                onClick = { showDialog = true },
+            ),
+            Preference.PreferenceItem.InfoPreference(infoMessage),
+        ),
+        enabled = enabled,
+    )
+}
 
     private fun getCategoriesLabel(
         allCategories: List<Category>,
