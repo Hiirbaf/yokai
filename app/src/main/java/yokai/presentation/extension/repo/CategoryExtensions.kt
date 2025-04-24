@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
-import dev.icerock.moko.resources.getString
+import dev.icerock.moko.resources.PluralsResource
 
 val Category.visualName: String
     @Composable
