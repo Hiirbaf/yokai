@@ -142,7 +142,8 @@
     <string name="label_settings">Settings</string>
     <string name="action_web_view" translatable="false">WebView</string>
     
-    <string name="track_activity_name">Tracker login</string>  
+    <string name="track_activity_name">Tracker login</string>
+    <string name="tracking_guide">Tracking guide</string>
 
     <!-- Connections section -->
     <string name="special_services">Special Services</string>
