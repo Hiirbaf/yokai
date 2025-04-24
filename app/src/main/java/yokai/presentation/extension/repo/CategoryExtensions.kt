@@ -11,7 +11,7 @@ import yokai.i18n.MR
 
 // Extensión para traducir un recurso a String en contexto Android
 fun Context.localizedString(resource: StringResource, vararg args: Any): String {
-    return dev.icerock.moko.resources.desc.StringDesc.Resource(resource, args.toList()).toString(this)
+    return resource.desc(*args).toString(this)
 }
 
 // Propiedad Compose para usar en UI
