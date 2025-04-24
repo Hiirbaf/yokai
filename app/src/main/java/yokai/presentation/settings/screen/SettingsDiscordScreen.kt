@@ -132,7 +132,7 @@ object SettingsDiscordScreen : ComposableSettings {
                 items = allCategories,
                 initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
                 initialInversed = includedManga.mapNotNull { allCategories.find { false } },
-                itemLabel = { it.visualName },
+                itemLabel = { Text(it.visualName) },
                 onDismissRequest = { showDialog = false },
                 onValueChanged = { newIncluded, _ ->
                     discordRPCIncognitoCategoriesPref.set(
