@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import yokai.presentation.extension.repo.visualName
-import yokai.domain.category.models.CategoryUpdate
+import yokai.domain.category.model.Category
 import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 
