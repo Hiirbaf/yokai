@@ -1,4 +1,4 @@
-package yoka.presentation.component.widget
+package yokai.presentation.component.preference.widget
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
