@@ -5,6 +5,13 @@ import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.desc.StringDesc
+import dev.icerock.moko.resources.desc.desc
+
+fun Context.localizedString(resource: StringResource, vararg args: Any): String {
+    return StringDesc.Resource(resource, args.toList()).toString(this)
+}
 
 val Category.visualName: String
     @Composable
