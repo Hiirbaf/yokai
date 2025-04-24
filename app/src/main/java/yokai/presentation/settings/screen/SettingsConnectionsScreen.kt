@@ -53,7 +53,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
-object SettingsConnectionsScreen : SearchableSettings {
+object SettingsConnectionsScreen : ComposableSettings {
 
     @ReadOnlyComposable
     @Composable
