@@ -16,7 +16,7 @@ import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
@@ -42,12 +42,14 @@ object SettingsDiscordScreen : ComposableSettings {
             )
         }
     }
-fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.domain.category.model.Category {
-    return yokai.domain.category.model.Category(
-        id = this.id,
-        name = this.name ?: ""
-    )
-}
+
+    fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.domain.category.model.Category {
+        return yokai.domain.category.model.Category(
+            id = this.id.toLong(),  // Se asegura que es un Long
+            name = this.name ?: ""
+        )
+    }
+
     @Composable
     override fun getPreferences(): List<Preference> {
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
@@ -92,9 +94,9 @@ fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.dom
                         pref = discordRPCStatus,
                         title = stringResource(MR.strings.pref_discord_status),
                         entries = persistentMapOf(
-                            -1 to stringResource(MR.strings.pref_discord_dnd),
-                            0 to stringResource(MR.strings.pref_discord_idle),
-                            1 to stringResource(MR.strings.pref_discord_online),
+                            -1L to stringResource(MR.strings.pref_discord_dnd),  // Convertimos a Long
+                            0L to stringResource(MR.strings.pref_discord_idle),
+                            1L to stringResource(MR.strings.pref_discord_online),
                         ),
                         enabled = enableDRPC,
                     ),
@@ -112,69 +114,72 @@ fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.dom
     }
 
     @Composable
-private fun getRPCIncognitoGroup(
-    connectionsPreferences: ConnectionsPreferences,
-    enabled: Boolean,
-): Preference.PreferenceGroup {
-    val getCategories = remember { Injekt.get<GetCategories>() }
-    val allCategories by remember { mutableStateOf<List<Category>>(emptyList()) }
+    private fun getRPCIncognitoGroup(
+        connectionsPreferences: ConnectionsPreferences,
+        enabled: Boolean,
+    ): Preference.PreferenceGroup {
+        val getCategories = remember { Injekt.get<GetCategories>() }
+        var allCategories by rememberSaveable { mutableStateOf<List<Category>>(emptyList()) }
 
-    // Usamos LaunchedEffect para cargar los datos asincrónicamente en lugar de runBlocking
-    LaunchedEffect(Unit) {
-        allCategories = getCategories.subscribe().collect() // Aquí estamos recolectando categorías
-    }
-
-    val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
-    val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
-
-    val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-
-    // Estas son las cadenas que se usan en varios lugares
-    val dialogTitle = stringResource(MR.strings.general_categories)
-    val dialogMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
-    val infoMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
-    val categoryTitle = stringResource(MR.strings.pref_discord_incognito)
-    val categorySubtitle = stringResource(MR.strings.pref_discord_incognito_summary)
-    val categoryPickerTitle = stringResource(MR.strings.general_categories)
-    val categoryPickerSubtitle = getCategoriesLabel(allCategories, includedManga)
-
-    if (showDialog) {
-        TriStateListDialog(
-            title = dialogTitle,
-            message = dialogMessage,
-            items = allCategories,
-            initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
-            initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
-            itemLabel = { Text(it.visualName) },
-            onDismissRequest = { showDialog = false },
-            onValueChanged = { newIncluded, _ ->
-                discordRPCIncognitoCategoriesPref.set(
-                    newIncluded.map { it.id.toString() }.toSet(),
-                )
-                showDialog = false
+        // Usamos LaunchedEffect para cargar los datos asincrónicamente
+        LaunchedEffect(Unit) {
+            launch {
+                allCategories = getCategories.subscribe().collect()  // Se recolectan las categorías de manera asincrónica
             }
+        }
+
+        val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
+        val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
+
+        val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
+        var showDialog by rememberSaveable { mutableStateOf(false) }
+
+        // Estas son las cadenas que se usan en varios lugares
+        val dialogTitle = stringResource(MR.strings.general_categories)
+        val dialogMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
+        val infoMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
+        val categoryTitle = stringResource(MR.strings.pref_discord_incognito)
+        val categorySubtitle = stringResource(MR.strings.pref_discord_incognito_summary)
+        val categoryPickerTitle = stringResource(MR.strings.general_categories)
+        val categoryPickerSubtitle = getCategoriesLabel(allCategories, includedManga)
+
+        if (showDialog) {
+            TriStateListDialog(
+                title = dialogTitle,
+                message = dialogMessage,
+                items = allCategories,
+                initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
+                initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
+                itemLabel = { Text(it.visualName) },
+                onDismissRequest = { showDialog = false },
+                onValueChanged = { newIncluded, _ ->
+                    discordRPCIncognitoCategoriesPref.set(
+                        newIncluded.map { it.id.toString() }.toSet(),
+                    )
+                    showDialog = false
+                }
+            )
+        }
+
+        return Preference.PreferenceGroup(
+            title = dialogTitle,
+            preferenceItems = persistentListOf(
+                Preference.PreferenceItem.SwitchPreference(
+                    pref = discordRPCIncognitoPref,
+                    title = categoryTitle,
+                    subtitle = categorySubtitle,
+                ),
+                Preference.PreferenceItem.TextPreference(
+                    title = categoryPickerTitle,
+                    subtitle = categoryPickerSubtitle,
+                    onClick = { showDialog = true },
+                ),
+                Preference.PreferenceItem.InfoPreference(infoMessage),
+            ),
+            enabled = enabled,
         )
     }
 
-    return Preference.PreferenceGroup(
-        title = dialogTitle,
-        preferenceItems = persistentListOf(
-            Preference.PreferenceItem.SwitchPreference(
-                pref = discordRPCIncognitoPref,
-                title = categoryTitle,
-                subtitle = categorySubtitle,
-            ),
-            Preference.PreferenceItem.TextPreference(
-                title = categoryPickerTitle,
-                subtitle = categoryPickerSubtitle,
-                onClick = { showDialog = true },
-            ),
-            Preference.PreferenceItem.InfoPreference(infoMessage),
-        ),
-        enabled = enabled,
-    )
-}
     private fun getCategoriesLabel(
         allCategories: List<Category>,
         included: Set<String>,
