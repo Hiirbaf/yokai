@@ -7,6 +7,10 @@ import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.getString
 import androidx.compose.runtime.Composable
 
+fun Context.localizedString(resource: StringResource, vararg args: Any): String {
+    return StringDesc.ResourceFormatted(resource, *args).toString(this)
+}
+
 // Versión para Context
 fun Context.localizedString(resource: StringResource, vararg args: Any): String {
     return resource.getString(this, *args)
