@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,8 +23,10 @@ fun ConnectionsLogoIcon(
     service: ConnectionsService,
     onClick: (() -> Unit)? = null,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    
     val modifier = if (onClick != null) {
-        Modifier.clickableNoIndication(onClick = onClick)
+        Modifier.clickableNoIndication(interactionSource = interactionSource, onClick = onClick)
     } else {
         Modifier
     }
