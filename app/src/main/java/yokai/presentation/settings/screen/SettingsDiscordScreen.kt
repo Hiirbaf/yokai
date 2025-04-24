@@ -117,8 +117,12 @@ private fun getRPCIncognitoGroup(
     enabled: Boolean,
 ): Preference.PreferenceGroup {
     val getCategories = remember { Injekt.get<GetCategories>() }
-    val allDbCategories by getCategories.subscribe().collectAsState(initial = runBlocking { getCategories.await() })
-    val allCategories = allDbCategories.map { it.toDomainModel() }
+    val allCategories by remember { mutableStateOf<List<Category>>(emptyList()) }
+
+    // Usamos LaunchedEffect para cargar los datos asincrónicamente en lugar de runBlocking
+    LaunchedEffect(Unit) {
+        allCategories = getCategories.subscribe().collect() // Aquí estamos recolectando categorías
+    }
 
     val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
     val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
@@ -126,6 +130,7 @@ private fun getRPCIncognitoGroup(
     val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
+    // Estas son las cadenas que se usan en varios lugares
     val dialogTitle = stringResource(MR.strings.general_categories)
     val dialogMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
     val infoMessage = stringResource(MR.strings.pref_discord_incognito_categories_details)
@@ -170,7 +175,6 @@ private fun getRPCIncognitoGroup(
         enabled = enabled,
     )
 }
-
     private fun getCategoriesLabel(
         allCategories: List<Category>,
         included: Set<String>,
