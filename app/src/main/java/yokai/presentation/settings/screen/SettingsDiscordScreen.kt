@@ -45,7 +45,7 @@ object SettingsDiscordScreen : ComposableSettings {
 
     fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.domain.category.model.Category {
         return yokai.domain.category.model.Category(
-            id = this.id.toLong(),  // Se asegura que es un Long
+            id = this.id?.toLong() ?: 0L,  // Usar un valor por defecto en caso de que 'id' sea null
             name = this.name ?: ""
         )
     }
@@ -94,11 +94,13 @@ object SettingsDiscordScreen : ComposableSettings {
                         pref = discordRPCStatus,
                         title = stringResource(MR.strings.pref_discord_status),
                         entries = persistentMapOf(
-                            -1L to stringResource(MR.strings.pref_discord_dnd),  // Convertimos a Long
+                            -1L to stringResource(MR.strings.pref_discord_dnd),  // Aseguramos que sean Long
                             0L to stringResource(MR.strings.pref_discord_idle),
                             1L to stringResource(MR.strings.pref_discord_online),
                         ),
                         enabled = enableDRPC,
+                        order = 0,  // Se debe pasar el parámetro 'order'
+                        flags = 0  // Se debe pasar el parámetro 'flags'
                     ),
                 ),
             ),
@@ -124,7 +126,7 @@ object SettingsDiscordScreen : ComposableSettings {
         // Usamos LaunchedEffect para cargar los datos asincrónicamente
         LaunchedEffect(Unit) {
             launch {
-                allCategories = getCategories.subscribe().collect()  // Se recolectan las categorías de manera asincrónica
+                allCategories = getCategories.subscribe().collect()  // Recopilamos las categorías correctamente
             }
         }
 
