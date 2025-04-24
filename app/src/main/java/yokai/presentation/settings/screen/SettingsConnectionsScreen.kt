@@ -48,6 +48,7 @@ import kotlinx.collections.immutable.persistentListOf
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withUIContext
 import yokai.i18n.MR
+import yokai.presentation.settings.ComposableSettings
 import tachiyomi.presentation.core.i18n.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
