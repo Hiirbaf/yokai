@@ -1,22 +1,30 @@
 package yokai.presentation.extension.repo
 
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.compose.stringResource
+import dev.icerock.moko.resources.getString
 import android.content.Context
 import androidx.compose.runtime.Composable
-import dev.icerock.moko.resources.compose.stringResource
-import yokai.domain.category.model.Category
-import yokai.i18n.MR
-import java.lang.String.format
-import kotlin.text.format
 
+// Versión para Context
+fun Context.localizedString(resource: StringResource, vararg args: Any): String {
+    return resource.getString(this, *args)
+}
+
+// Versión Composable
+@Composable
+fun localizedString(resource: StringResource, vararg args: Any): String {
+    return stringResource(resource, *args)
+}
 val Category.visualName: String
     @Composable
     get() = when {
-        isSystemCategory -> stringResource(MR.strings.label_default)
+        isSystemCategory -> localizedString(MR.strings.label_default, name)
         else -> name
     }
 
 fun Category.visualName(context: Context): String =
     when {
-        isSystemCategory -> MR.strings.label_default.format(context, name)
+        isSystemCategory -> context.localizedString(MR.strings.label_default, name)
         else -> name
     }
