@@ -145,6 +145,15 @@
     <string name="track_activity_name">Tracker login</string>
     <string name="tracking_guide">Tracking guide</string>
 
+    <string name="default_category">Default category</string>
+    <string name="default_category_summary">Always ask</string>
+    <string name="categorized_display_settings">Per-category settings for sort</string>
+    <string name="pref_library_update_categories_details">Entries in excluded categories will not be updated even if they are also in included categories.</string>
+    <string name="all">All</string>
+    <string name="none">None</string>
+    <string name="include">Include: %s</string>
+    <string name="exclude">Exclude: %s</string>
+
     <!-- Connections section -->
     <string name="special_services">Special Services</string>
     <string name="general_categories">Categories</string>
