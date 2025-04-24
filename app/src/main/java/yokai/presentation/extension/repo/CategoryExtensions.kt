@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.desc.StringDesc
 import dev.icerock.moko.resources.desc.desc
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
