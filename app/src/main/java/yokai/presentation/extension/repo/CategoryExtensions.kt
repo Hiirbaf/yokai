@@ -5,13 +5,12 @@ import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.desc
-import dev.icerock.moko.resources.desc.toLocalizedString
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
 
 // Extensión para traducir un recurso a String en contexto Android
 fun Context.localizedString(resource: StringResource, vararg args: Any): String {
-    return resource.desc(*args).toLocalizedString(this)
+    return dev.icerock.moko.resources.desc.StringDesc.Resource(resource, args.toList()).toString(this)
 }
 
 // Propiedad Compose para usar en UI
