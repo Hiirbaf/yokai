@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalUriHandler
 import yokai.domain.connections.service.ConnectionsPreferences
@@ -125,7 +126,7 @@ object SettingsDiscordScreen : ComposableSettings {
                 items = allCategories,
                 initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
                 initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
-                itemLabel = { Text(it.visualName) },
+                itemLabel = { it.visualName },
                 onDismissRequest = { showDialog = false },
                 onValueChanged = { newIncluded, _ ->
                     discordRPCIncognitoCategoriesPref.set(
