@@ -165,6 +165,18 @@
     <string name="pref_discord_incognito_summary">Overridden when Incognito Mode is enabled</string>
     <string name="pref_discord_incognito_categories_details">Entries in included categories will not be displayed in Discord</string>
 
+    <!-- Login dialog -->
+    <string name="login_title">Log in to %1$s</string>
+    <string name="username">Username</string>
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="login_success">Logged in</string>
+    <string name="logout_title">Log out from %1$s?</string>
+    <string name="logout">Log out</string>
+    <string name="logout_success">You are now logged out</string>
+    <string name="unknown_error">Unknown error</string>
+
     <!-- Discord section -->
     <string name="browsing">Browsing</string>
     <string name="scrolling">Scrolling through</string>
