@@ -15,6 +15,6 @@ val Category.visualName: String
 
 fun Category.visualName(context: Context): String =
     when {
-        isSystemCategory -> context.localizedString(MR.strings.label_default, name)
+        isSystemCategory -> context.localizedString(MR.strings.label_default)
         else -> name
     }
