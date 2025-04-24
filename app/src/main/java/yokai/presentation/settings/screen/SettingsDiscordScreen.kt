@@ -42,7 +42,12 @@ object SettingsDiscordScreen : ComposableSettings {
             )
         }
     }
-
+fun eu.kanade.tachiyomi.data.database.models.Category.toDomainModel(): yokai.domain.category.model.Category {
+    return yokai.domain.category.model.Category(
+        id = this.id,
+        name = this.name ?: ""
+    )
+}
     @Composable
     override fun getPreferences(): List<Preference> {
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
