@@ -4,15 +4,17 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
-import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.desc.localized
+import dev.icerock.moko.resources.desc.desc
+import dev.icerock.moko.resources.desc.toLocalizedString
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
 
+// Extensión para traducir un recurso a String en contexto Android
 fun Context.localizedString(resource: StringResource, vararg args: Any): String {
-    return StringDesc.Resource(resource, args.toList()).toLocalizedString(this)
+    return resource.desc(*args).toLocalizedString(this)
 }
 
+// Propiedad Compose para usar en UI
 val Category.visualName: String
     @Composable
     get() = when {
@@ -20,6 +22,7 @@ val Category.visualName: String
         else -> name
     }
 
+// Función no-Compose para usar fuera de Compose
 fun Category.visualName(context: Context): String =
     when {
         isSystemCategory -> context.localizedString(MR.strings.label_default)
