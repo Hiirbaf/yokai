@@ -6,16 +6,8 @@ import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.util.fastMap
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.extension.repo.visualName
 import yokai.presentation.component.preference.Preference
@@ -25,13 +17,13 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.model.Category
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
 import tachiyomi.presentation.core.i18n.stringResource
-import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 
 object SettingsDiscordScreen : ComposableSettings {
 
@@ -132,17 +124,15 @@ object SettingsDiscordScreen : ComposableSettings {
                 message = stringResource(MR.strings.pref_discord_incognito_categories_details),
                 items = allCategories,
                 initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
-                initialInversed = includedManga.mapNotNull { allCategories.find { false } },
+                initialInversed = allCategories.filterNot { it.id.toString() in includedManga },
                 itemLabel = { Text(it.visualName) },
                 onDismissRequest = { showDialog = false },
                 onValueChanged = { newIncluded, _ ->
                     discordRPCIncognitoCategoriesPref.set(
-                        newIncluded.fastMap { it.id.toString() }
-                            .toSet(),
+                        newIncluded.map { it.id.toString() }.toSet(),
                     )
                     showDialog = false
-                },
-                onlyChecked = true,
+                }
             )
         }
 
@@ -156,15 +146,21 @@ object SettingsDiscordScreen : ComposableSettings {
                 ),
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(MR.strings.general_categories),
-                    subtitle = getCategoriesLabel(
-                        allCategories = allCategories,
-                        included = includedManga,
-                    ),
+                    subtitle = getCategoriesLabel(allCategories, includedManga),
                     onClick = { showDialog = true },
                 ),
                 Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.pref_discord_incognito_categories_details)),
             ),
             enabled = enabled,
         )
+    }
+
+    private fun getCategoriesLabel(
+        allCategories: List<Category>,
+        included: Set<String>,
+    ): String {
+        return allCategories
+            .filter { it.id.toString() in included }
+            .joinToString(", ") { it.visualName }
     }
 }
