@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.desc.toLocalizedString
+import dev.icerock.moko.resources.desc.localized
 import yokai.domain.category.model.Category
 import yokai.i18n.MR
 
