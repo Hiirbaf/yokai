@@ -3,9 +3,9 @@ package yokai.presentation.extension.repo
 import android.content.Context
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
-import tachiyomi.domain.category.model.Category
+import yokai.domain.category.model.Category
 import yokai.i18n.MR
-import tachiyomi.presentation.core.i18n.stringResource
+//import tachiyomi.presentation.core.i18n.stringResource
 
 val Category.visualName: String
     @Composable
