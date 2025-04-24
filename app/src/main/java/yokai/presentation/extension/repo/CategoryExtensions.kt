@@ -1,9 +1,10 @@
 package yokai.presentation.extension.repo
 
+import android.content.Context
 import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.desc.StringDesc
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.getString
-import android.content.Context
 import androidx.compose.runtime.Composable
 
 // Versión para Context
