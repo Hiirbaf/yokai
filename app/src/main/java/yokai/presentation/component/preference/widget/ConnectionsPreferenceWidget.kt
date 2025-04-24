@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import yokai.presentation.component.ConnectionLogoIcon
 import yokai.presentation.component.preference.LocalPreferenceHighlighted
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import tachiyomi.i18n.MR
-import tachiyomi.presentation.core.i18n.stringResource
+import yokai.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun ConnectionsPreferenceWidget(
