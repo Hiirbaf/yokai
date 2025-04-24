@@ -5,6 +5,8 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import dev.icerock.moko.resources.PluralsResource
 import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.pluralStringResource
+import dev.icerock.moko.resources.stringResource
 
 @Composable
 @ReadOnlyComposable
