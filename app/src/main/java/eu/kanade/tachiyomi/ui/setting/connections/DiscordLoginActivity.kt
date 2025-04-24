@@ -5,31 +5,29 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.databinding.DiscordLoginActivityBinding
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
-import yokai.i18n.MR
-
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.connections.service.ConnectionsPreferences
+import yokai.i18n.MR
 import java.io.File
 
-
-class DiscordLoginActivity : BaseActivity() {
+class DiscordLoginActivity : BaseActivity<DiscordLoginActivityBinding>() {
 
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
-
-
-
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.discord_login_activity)
-        val webView = findViewById<WebView>(R.id.webview)
+
+        binding = DiscordLoginActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val webView = binding.webview
 
         webView.apply {
             settings.javaScriptEnabled = true
@@ -42,16 +40,15 @@ class DiscordLoginActivity : BaseActivity() {
                 if (url != null && url.endsWith("/app")) {
                     webView.stopLoading()
                     webView.evaluateJavascript(
-                        """
-                        (function() {
+                        """(function() {
                             const wreq = (webpackChunkdiscord_app.push([[''], {}, e => { m = []; for (let c in e.c) m.push(e.c[c])}]), m)
                             webpackChunkdiscord_app.pop()
                             const token = wreq.find(m => m?.exports?.default?.getToken !== void 0).exports.default.getToken();
                             return token;
-                        })()
-                        """.trimIndent(),
+                        })()"""
                     ) {
-                        login(it.trim('"'))
+                        val cleanToken = it.trim('"')
+                        login(cleanToken)
                     }
                 }
             }
@@ -64,8 +61,8 @@ class DiscordLoginActivity : BaseActivity() {
         connectionsPreferences.connectionsToken(connectionsManager.discord).set(token)
         connectionsPreferences.setConnectionsCredentials(connectionsManager.discord, "Discord", "Logged In")
         toast(MR.strings.login_success)
-        Log.d("discord_login_tachiyomisy", "Logged in with token: $token")
-        applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
+        Log.d("discord_login_tachiyomisy", "Inicio de sesión exitoso")
+        File("${applicationInfo.dataDir}/app_webview/").deleteRecursively()
         finish()
     }
 }
