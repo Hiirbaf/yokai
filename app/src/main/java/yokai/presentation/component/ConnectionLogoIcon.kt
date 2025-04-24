@@ -1,4 +1,4 @@
-package yokai.presentation.components
+package yokai.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
