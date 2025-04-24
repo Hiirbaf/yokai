@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import yokai.presentation.extension.repo.visualName
 import yokai.domain.category.models.CategoryUpdate
 import yokai.i18n.MR
-import dev.icerock.moko.resources.stringResource
+import tachiyomi.presentation.core.i18n.stringResource
 
 /**
  * Returns a string of categories name for settings subtitle
