@@ -3,7 +3,7 @@ package yokai.presentation.extension.repo
 import android.content.Context
 import androidx.compose.runtime.Composable
 import tachiyomi.core.common.i18n.stringResource
-import yokai.domain.category.model.Category
+import eu.kanade.tachiyomi.data.database.models.Category
 import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 
