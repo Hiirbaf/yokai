@@ -17,7 +17,7 @@ import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import yokai.presentation.component.preference.widget.ConnectionsPreferenceWidget
 import kotlinx.coroutines.launch
-import tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.presentation.component.preference.widget.EditTextPreferenceWidget
