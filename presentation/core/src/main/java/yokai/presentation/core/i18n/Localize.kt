@@ -3,10 +3,10 @@ package yokai.presentation.core.i18n
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
-import dev.icerock.moko.resources.PluralsResource
-import dev.icerock.moko.resources.StringResource
-import dev.icerock.moko.resources.pluralStringResource
-import dev.icerock.moko.resources.stringResource
+import dev.icerock.moko.resources.compose.PluralsResource
+import dev.icerock.moko.resources.compose.StringResource
+import dev.icerock.moko.resources.compose.pluralStringResource
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 @ReadOnlyComposable
