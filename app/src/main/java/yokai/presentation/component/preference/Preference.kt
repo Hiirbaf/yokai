@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
