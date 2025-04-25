@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.data.track.TrackPreferences
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.presentation.component.preference.widget.ConnectionsPreferenceWidget
 import yokai.presentation.component.preference.widget.EditTextPreferenceWidget
 import yokai.presentation.component.preference.widget.InfoWidget
 import yokai.presentation.component.preference.widget.ListPreferenceWidget
