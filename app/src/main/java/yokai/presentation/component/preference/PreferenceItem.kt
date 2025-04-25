@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.unit.dp
+import eu.kanade.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import kotlinx.coroutines.launch
@@ -163,6 +164,18 @@ internal fun PreferenceItem(
                         tracker = this,
                         checked = uName.isNotEmpty(),
                         onClick = { if (isLogged) item.logout() else item.login() },
+                    )
+                }
+            }
+            is Preference.PreferenceItem.ConnectionsPreference -> {
+                val uName by Injekt.get<PreferenceStore>()
+                    .getString(ConnectionsPreferences.connectionsUsername(item.service.id))
+                    .collectAsState()
+                item.service.run {
+                    ConnectionsPreferenceWidget(
+                        service = this,
+                        checked = uName.isNotEmpty(),
+                        onClick = { if (isLogged) item.openSettings() else item.login() },
                     )
                 }
             }
