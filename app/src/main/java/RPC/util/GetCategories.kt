@@ -2,7 +2,7 @@ package tachiyomi.domain.category.interactor
 
 import kotlinx.coroutines.flow.Flow
 import tachiyomi.domain.category.model.Category
-import tachiyomi.domain.category.repository.CategoryRepository
+import yokai.domain.category.CategoryRepository
 
 class GetCategories(
     private val categoryRepository: CategoryRepository,
