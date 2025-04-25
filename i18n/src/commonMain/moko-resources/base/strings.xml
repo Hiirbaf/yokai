@@ -175,6 +175,11 @@
     <string name="pref_discord_incognito_summary">Overridden when Incognito Mode is enabled</string>
     <string name="pref_discord_incognito_categories_details">Entries in included categories will not be displayed in Discord</string>
 
+    <!-- Manga chapters -->
+    <string name="display_mode_chapter">Chapter %1$s</string>
+    <string name="manga_display_interval_title">Estimate every</string>
+    <string name="manga_display_modified_interval_title">Set to update every</string>
+
     <!-- Login dialog -->
     <string name="login_title">Log in to %1$s</string>
     <string name="username">Username</string>
