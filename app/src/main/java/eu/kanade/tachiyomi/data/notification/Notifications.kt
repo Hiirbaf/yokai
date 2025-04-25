@@ -209,8 +209,10 @@ object Notifications {
             NotificationChannel(
                 CHANNEL_DISCORD_RPC,
                 context.getString(MR.strings.pref_discord_rpc),
-                NotificationManager.IMPORTANCE_LOW,)
-                },
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                lockscreenVisibility = Notification.VISIBILITY_SECRET
+            },
             NotificationChannel(
                 CHANNEL_EXT_PROGRESS,
                 context.getString(MR.strings.updating_extensions),
