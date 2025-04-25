@@ -218,12 +218,10 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     }
 
     override fun onStart(owner: LifecycleOwner) {
-    SecureActivityDelegate.onApplicationStart()
     DiscordRPCService.start(applicationContext)
 }
 
 override fun onStop(owner: LifecycleOwner) {
-    SecureActivityDelegate.onApplicationStopped()
     DiscordRPCService.stop(applicationContext)
 }
 
