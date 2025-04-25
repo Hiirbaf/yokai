@@ -2,7 +2,7 @@ package tachiyomi.domain.category.repository
 
 import kotlinx.coroutines.flow.Flow
 import tachiyomi.domain.category.model.Category
-import tachiyomi.domain.category.model.CategoryUpdate
+import yokai.domain.category.models.CategoryUpdate
 
 interface CategoryRepository {
 
