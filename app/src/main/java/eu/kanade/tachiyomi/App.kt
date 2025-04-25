@@ -220,12 +220,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     override fun onStart(owner: LifecycleOwner) {
     SecureActivityDelegate.onApplicationStart()
     DiscordRPCService.start(applicationContext)
-
-    val syncPreferences: SyncPreferences = Injekt.get()
-    val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
-    if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppResume) {
-        SyncDataJob.startNow(this@App)
-    }
 }
 
 override fun onStop(owner: LifecycleOwner) {
