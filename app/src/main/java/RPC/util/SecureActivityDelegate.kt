@@ -52,7 +52,7 @@ interface SecureActivityDelegate {
             }
         }
 
-        /*// SY -->
+        // SY -->
         private fun canLockNow(preferences: SecurityPreferences): Boolean {
             val today: Calendar = Calendar.getInstance()
             val timeRanges = preferences.authenticatorTimeRanges().get()
@@ -79,7 +79,7 @@ interface SecureActivityDelegate {
 
             return canLockNow && canLockToday
         }
-        // SY <--*/
+        // SY <--
 
         /**
          * Checks if unlock is needed when app comes foreground.
