@@ -1,6 +1,7 @@
 package yokai.core.di
 
 import org.koin.dsl.module
+import eu.kanade.domain.connections.service.ConnectionsPreferences
 import yokai.data.category.CategoryRepositoryImpl
 import yokai.data.chapter.ChapterRepositoryImpl
 import yokai.data.extension.repo.ExtensionRepoRepositoryImpl
