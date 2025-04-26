@@ -6,11 +6,11 @@ import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import eu.kanade.domain.connections.service.ConnectionsPreferences
-import eu.kanade.tachiyomi.R
+import yokai.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
-import tachiyomi.i18n.MR
+import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 
