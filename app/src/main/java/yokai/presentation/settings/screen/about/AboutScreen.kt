@@ -108,6 +108,10 @@ class AboutScreen : Screen() {
 
         val dateFormat by lazy { preferences.dateFormatRaw().get().asDateFormat() }
 
+        // SY -->
+        var showWhatsNewDialog by remember { mutableStateOf(false) }
+        // SY <--
+
         SettingsScaffold(
             title = stringResource(MR.strings.about),
             snackbarHost = {
@@ -123,14 +127,16 @@ class AboutScreen : Screen() {
                     contentPadding = contentPadding,
                     state = listState,
                 ) {
+                    if (!BuildConfig.DEBUG) {
                     item {
                         TextPreferenceWidget(
-                            title = stringResource(MR.strings.whats_new_this_release),
-                            onPreferenceClick = {
-                                uriHandler.openUri(if (BuildConfig.DEBUG) SOURCE_URL else RELEASE_URL)
-                            },
+                            title = stringResource(MR.strings.whats_new),
+                            // SY -->
+                            onPreferenceClick = { showWhatsNewDialog = true },
+                            // SY <--
                         )
                     }
+                }
 
                     if (BuildConfig.INCLUDE_UPDATER) {
                         item {
@@ -228,6 +234,12 @@ class AboutScreen : Screen() {
                     }
                 }
             },
+
+            // SY -->
+        if (showWhatsNewDialog) {
+            WhatsNewDialog(onDismissRequest = { showWhatsNewDialog = false })
+        }
+        // SY <--
         )
     }
 
