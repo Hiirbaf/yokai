@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.base.delegate
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.os.Build
 import android.view.Window
@@ -11,6 +12,7 @@ import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.SearchActivity
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
+import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.injectLazy
 import java.util.*
 
