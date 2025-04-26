@@ -22,7 +22,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
-import tachiyomi.presentation.core.components.material.SECONDARY_ALPHA
+//import tachiyomi.presentation.core.components.material.SECONDARY_ALPHA
 
 @Composable
 fun Modifier.selectedBackground(isSelected: Boolean): Modifier {
@@ -32,7 +32,7 @@ fun Modifier.selectedBackground(isSelected: Boolean): Modifier {
     return this.drawBehind { drawRect(color) }
 }
 
-fun Modifier.secondaryItemAlpha(): Modifier = this.alpha(SECONDARY_ALPHA)
+//fun Modifier.secondaryItemAlpha(): Modifier = this.alpha(SECONDARY_ALPHA)
 
 fun Modifier.clickableNoIndication(
     onLongClick: (() -> Unit)? = null,
