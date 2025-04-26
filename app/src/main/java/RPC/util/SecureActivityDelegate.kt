@@ -18,7 +18,7 @@ interface SecureActivityDelegate {
     fun registerSecureActivity(activity: AppCompatActivity)
 
     companion object {
-        // SY -->
+        /*// SY -->
         const val LOCK_SUNDAY = 0x40
         const val LOCK_MONDAY = 0x20
         const val LOCK_TUESDAY = 0x10
@@ -27,7 +27,7 @@ interface SecureActivityDelegate {
         const val LOCK_FRIDAY = 0x2
         const val LOCK_SATURDAY = 0x1
         const val LOCK_ALL_DAYS = 0x7F
-        // SY <--
+        // SY <--*/
 
         /**
          * Set to true if we need the first activity to authenticate.
@@ -50,7 +50,7 @@ interface SecureActivityDelegate {
             }
         }
 
-        // SY -->
+        /*// SY -->
         private fun canLockNow(preferences: SecurityPreferences): Boolean {
             val today: Calendar = Calendar.getInstance()
             val timeRanges = preferences.authenticatorTimeRanges().get()
@@ -77,7 +77,7 @@ interface SecureActivityDelegate {
 
             return canLockNow && canLockToday
         }
-        // SY <--
+        // SY <--*/
 
         /**
          * Checks if unlock is needed when app comes foreground.
