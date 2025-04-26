@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import eu.kanade.presentation.components.ConnectionsLogoIcon
-import eu.kanade.presentation.more.settings.LocalPreferenceHighlighted
+import yokai.presentation.component.preference.LocalPreferenceHighlighted
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
