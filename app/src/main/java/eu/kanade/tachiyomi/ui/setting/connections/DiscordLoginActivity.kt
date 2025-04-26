@@ -8,7 +8,7 @@ import android.webkit.WebViewClient
 import eu.kanade.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
+import yokai.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
