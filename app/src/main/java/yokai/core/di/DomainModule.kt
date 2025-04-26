@@ -107,4 +107,6 @@ fun domainModule() = module {
     factory { GetSavedSearch(get()) }
     factory { InsertSavedSearch(get()) }
     factory { FilterSerializer() }
+
+    single { ConnectionsPreferences(get()) }
 }
