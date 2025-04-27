@@ -68,6 +68,7 @@ import yokai.presentation.core.icons.CustomIcons
 import yokai.presentation.core.icons.Discord
 import yokai.presentation.core.icons.GitHub
 import yokai.presentation.settings.SettingsScaffold
+import yokai.presentation.settings.screen.about.WhatsNewDialog
 import yokai.util.Screen
 import yokai.util.lang.getString
 
