@@ -1,6 +1,6 @@
 @file:Suppress("PropertyName")
 
-package eu.kanade.presentation.more.settings.screen.about
+package yokai
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -8,8 +8,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import eu.kanade.tachiyomi.BuildConfig
-import tachiyomi.i18n.MR
-import tachiyomi.presentation.core.i18n.stringResource
+import yokai.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun WhatsNewDialog(
