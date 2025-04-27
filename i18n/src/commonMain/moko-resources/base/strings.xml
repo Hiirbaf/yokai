@@ -901,6 +901,9 @@
     <string name="action_replace_repo_title">Signing Key Fingerprint Already Exists</string>
     <string name="action_replace_repo_message">Repository %1$s has the same Signing Key Fingerprint as %2$s.\nIf this is expected, %2$s will be replaced, otherwise contact your repo maintainer.</string>
 
+    <!-- About -->
+    <string name="changelog_version">Version %1$s</string>
+
     <!-- About section -->
     <string name="version">Version</string>
     <string name="build_time">Build time</string>
