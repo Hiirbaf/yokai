@@ -57,7 +57,7 @@ fun WhatsNewDialog(onDismissRequest: () -> Unit) {
                         XML.decodeFromReader<Changelog>(
                             AndroidXmlReader(
                                 context.resources.openRawResource(
-                                    if (isPreviewBuildType) R.raw.changelog_debug else R.raw.changelog_release,
+                                    if (BuildConfig.DEBUG) SOURCE_URL else RELEASE_URL,
                                 ).bufferedReader(),
                             ),
                         ).toDisplayChangelog()
