@@ -22,7 +22,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.domain.category.interactor.GetCategories
-import eu.kanade.tachiyomi.data.database.models.Companion.UNCATEGORIZED_ID
+import eu.kanade.tachiyomi.data.database.models.Category.Companion.UNCATEGORIZED_ID
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
