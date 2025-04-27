@@ -37,7 +37,7 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.i18n.MR
-import tachiyomi.presentation.core.components.material.padding
+import androidx.compose.foundation.layout.padding
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
