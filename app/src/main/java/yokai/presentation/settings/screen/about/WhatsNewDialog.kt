@@ -46,7 +46,7 @@ fun WhatsNewDialog(onDismissRequest: () -> Unit) {
         onDismissRequest = onDismissRequest,
         confirmButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = stringResource(MR.strings.action_cancel))
+                Text(text = stringResource(MR.strings.close))
             }
         },
         title = {
