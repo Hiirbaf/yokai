@@ -32,7 +32,7 @@ import nl.adaptivity.xmlutil.core.AndroidXmlReader
 import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
-import tachiyomi.core.common.util.lang.withIOContext
+import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.i18n.MR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.components.material.padding
