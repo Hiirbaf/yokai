@@ -25,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.util.system.isPreviewBuildType
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.core.AndroidXmlReader
