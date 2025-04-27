@@ -1,6 +1,6 @@
 @file:Suppress("PropertyName")
 
-package yokai
+package yokai.presentation.settings.screen.about
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
