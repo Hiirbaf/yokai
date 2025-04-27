@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
+import eu.kanade.tachiyomi.data.connections.discord.RICH_PRESENCE_TAG
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -89,6 +90,12 @@ object Notifications {
      */
     const val CHANNEL_INCOGNITO_MODE = "incognito_mode_channel"
     const val ID_INCOGNITO_MODE = -701
+
+    /**
+     * Notification channel used for Discord RPC
+     */
+    const val CHANNEL_DISCORD_RPC = "${RICH_PRESENCE_TAG}_channel"
+    const val ID_DISCORD_RPC = -1701
 
     private val deprecatedChannels = listOf(
         "backup_restore_channel",
@@ -199,6 +206,15 @@ object Notifications {
             ).apply {
                 lockscreenVisibility = Notification.VISIBILITY_SECRET
             },
+            
+            NotificationChannel(
+                CHANNEL_DISCORD_RPC,
+                context.getString(MR.strings.pref_discord_rpc),
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                lockscreenVisibility = Notification.VISIBILITY_SECRET
+            },
+            
             NotificationChannel(
                 CHANNEL_EXT_PROGRESS,
                 context.getString(MR.strings.updating_extensions),
