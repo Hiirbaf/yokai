@@ -33,6 +33,9 @@ interface Category : Serializable {
 
     var isSystem: Boolean
 
+    val isDefaultSystemCategory: Boolean
+        get() = id == UNCATEGORIZED_ID
+
     fun isAscending(): Boolean {
         return ((mangaSort?.minus('a') ?: 0) % 2) != 1
     }
@@ -67,6 +70,7 @@ interface Category : Serializable {
     }
 
     companion object {
+        const val UNCATEGORIZED_ID = 0
         const val sourceSplitter = "◘•◘"
         const val langSplitter = "⨼⨦⨠"
 
