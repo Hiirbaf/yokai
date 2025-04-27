@@ -34,7 +34,6 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.i18n.MR
-import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.components.material.padding
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -72,7 +71,7 @@ fun WhatsNewDialog(onDismissRequest: () -> Unit) {
                         items(changelog.orEmpty()) { changelog ->
                             Column(Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = stringResource(SYMR.strings.changelog_version, changelog.version),
+                                    text = stringResource(MR.strings.changelog_version, changelog.version),
                                     color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold,
                                     style = MaterialTheme.typography.titleSmall,
