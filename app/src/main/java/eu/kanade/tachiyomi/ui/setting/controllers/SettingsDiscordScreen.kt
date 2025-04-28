@@ -32,8 +32,9 @@ import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
+import cafe.adriel.voyager.core.screen.Screen
 
-object SettingsDiscordScreen : ComposableSettings {
+object SettingsDiscordScreen : Screen, ComposableSettings {
 
     @ReadOnlyComposable
     @Composable
