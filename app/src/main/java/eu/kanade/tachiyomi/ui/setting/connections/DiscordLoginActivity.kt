@@ -8,6 +8,7 @@ import android.webkit.WebViewClient
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.databinding.ActivityDiscordLoginBinding
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
@@ -16,7 +17,9 @@ import java.io.File
 
 class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
 
-    override lateinit var binding: ActivityDiscordLoginBinding
+    override fun initializeViewBinding(): ActivityDiscordLoginBinding {
+    return ActivityDiscordLoginBinding.inflate(layoutInflater)
+    }
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
@@ -24,7 +27,6 @@ class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Usa ViewBinding para configurar la vista
-        binding = ActivityDiscordLoginBinding.inflate(layoutInflater)
 
         val webView: WebView = binding.webview
 
