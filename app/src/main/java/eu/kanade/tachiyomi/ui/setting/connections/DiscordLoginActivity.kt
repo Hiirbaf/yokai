@@ -22,8 +22,13 @@ class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.discord_login_activity)
-        val webView = findViewById<WebView>(R.id.webview)
+        // Usa ViewBinding para configurar la vista
+        binding = ActivityDiscordLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val webView: WebView = binding.webview
+
+        // Configura las opciones del WebView
 
         webView.apply {
             settings.javaScriptEnabled = true
