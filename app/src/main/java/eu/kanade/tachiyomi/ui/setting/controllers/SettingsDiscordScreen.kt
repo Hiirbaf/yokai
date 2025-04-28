@@ -79,7 +79,7 @@ object SettingsDiscordScreen : ComposableSettings {
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.SwitchPreference(
-                        preference = enableDRPCPref,
+                        pref = enableDRPCPref,
                         title = stringResource(MR.strings.pref_enable_discord_rpc),
                     ),
                     Preference.PreferenceItem.SwitchPreference(
