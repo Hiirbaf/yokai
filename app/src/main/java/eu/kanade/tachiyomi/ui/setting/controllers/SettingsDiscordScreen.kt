@@ -25,6 +25,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
 import tachiyomi.domain.category.interactor.GetCategories
 import yokai.i18n.MR
+import yokai.presentation.settings.ComposableSettings
 import tachiyomi.presentation.core.i18n.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
