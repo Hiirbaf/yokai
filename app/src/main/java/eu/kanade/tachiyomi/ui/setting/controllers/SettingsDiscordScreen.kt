@@ -188,4 +188,3 @@ private fun getCategoriesLabel(
     return includedCategories.joinToString { it.visualName }
 }
 }
-}
