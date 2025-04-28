@@ -177,7 +177,7 @@ private fun getCategoriesLabel(
     val includedCategories = allCategories.filter { included.contains(it.id.toString()) }
 
     return if (includedCategories.isEmpty()) {
-        stringResource(MR.strings.none_selected)
+        stringResource(MR.strings.none)
     } else {
         includedCategories.joinToString { it.visualName }
     }
