@@ -5,35 +5,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.util.fastMap
-import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.tachiyomi.data.database.models.Category
+import androidx.compose.ui.res.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import dev.icerock.moko.resources.compose.stringResource as mokoStringResource
 import eu.kanade.presentation.category.visualName
-import yokai.presentation.component.preference.Preference
-import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
-import yokai.domain.category.interactor.GetCategories
-import yokai.i18n.MR
-import dev.icerock.moko.resources.compose.stringResource
-import androidx.compose.ui.res.stringResource
-import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.connections.service.ConnectionsPreferences
+import yokai.i18n.MR
+import yokai.presentation.component.preference.Preference
+import yokai.presentation.component.preference.widget.TriStateListDialog
 import yokai.presentation.settings.ComposableSettings
-import cafe.adriel.voyager.core.screen.Screen
 
 object SettingsDiscordScreen : Screen, ComposableSettings {
 
@@ -47,7 +38,7 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
         IconButton(onClick = { uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/") }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-                contentDescription = stringResource(MR.strings.tracking_guide),
+                contentDescription = mokoStringResource(MR.strings.tracking_guide),
             )
         }
     }
@@ -80,25 +71,25 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
 
         return listOf(
             Preference.PreferenceGroup(
-                title = stringResource(MR.strings.connections_discord),
+                title = mokoStringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.SwitchPreference(
                         pref = enableDRPCPref,
-                        title = stringResource(MR.strings.pref_enable_discord_rpc),
+                        title = mokoStringResource(MR.strings.pref_enable_discord_rpc),
                     ),
                     Preference.PreferenceItem.SwitchPreference(
                         pref = useChapterTitlesPref,
                         enabled = enableDRPC,
-                        title = stringResource(MR.strings.show_chapters_titles_title),
-                        subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
+                        title = mokoStringResource(MR.strings.show_chapters_titles_title),
+                        subtitle = mokoStringResource(MR.strings.show_chapters_titles_subtitle),
                     ),
                     Preference.PreferenceItem.ListPreference(
                         pref = discordRPCStatus,
-                        title = stringResource(MR.strings.pref_discord_status),
+                        title = mokoStringResource(MR.strings.pref_discord_status),
                         entries = persistentMapOf(
-                            -1 to stringResource(MR.strings.pref_discord_dnd),
-                            0 to stringResource(MR.strings.pref_discord_idle),
-                            1 to stringResource(MR.strings.pref_discord_online),
+                            -1 to mokoStringResource(MR.strings.pref_discord_dnd),
+                            0 to mokoStringResource(MR.strings.pref_discord_idle),
+                            1 to mokoStringResource(MR.strings.pref_discord_online),
                         ),
                         enabled = enableDRPC,
                     ),
@@ -109,82 +100,70 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
                 enabled = enableDRPC,
             ),
             Preference.PreferenceItem.TextPreference(
-                title = stringResource(MR.strings.logout),
+                title = mokoStringResource(MR.strings.logout),
                 onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) },
             ),
         )
     }
 
-@Composable
-private fun getRPCIncognitoGroup(
-    connectionsPreferences: ConnectionsPreferences,
-    enabled: Boolean,
-): Preference.PreferenceGroup {
-    val getCategories = remember { Injekt.get<GetCategories>() }
-    val allCategories by getCategories.subscribe().collectAsState(initial = runBlocking { getCategories.await() })
+    @Composable
+    private fun getRPCIncognitoGroup(
+        connectionsPreferences: ConnectionsPreferences,
+        enabled: Boolean,
+    ): Preference.PreferenceGroup {
+        val getCategories = remember { Injekt.get<GetCategories>() }
+        val allCategories by getCategories.subscribe().collectAsState(initial = runBlocking { getCategories.await() })
 
-    val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
-    val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
+        val discordRPCIncognitoPref = connectionsPreferences.discordRPCIncognito()
+        val discordRPCIncognitoCategoriesPref = connectionsPreferences.discordRPCIncognitoCategories()
 
-    val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+        val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
+        var showDialog by rememberSaveable { mutableStateOf(false) }
 
-    if (showDialog) {
-        TriStateListDialog(
-            title = stringResource(MR.strings.general_categories),
-            message = stringResource(MR.strings.pref_discord_incognito_categories_details),
-            items = allCategories,
-            initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
-            initialInversed = allCategories.filter { it.id.toString() !in includedManga },
-            itemLabel = { it.visualName },
-            onDismissRequest = { showDialog = false },
-            onValueChanged = { newIncluded, _ ->
-                discordRPCIncognitoCategoriesPref.set(
-                    newIncluded.fastMap { it.id.toString() }
-                        .toSet(),
-                )
-                showDialog = false
-            },
-            onlyChecked = true,
-        )
-    }
-
-    val categoriesLabel = remember(allCategories, includedManga) {
-        getCategoriesLabel(
-            allCategories = allCategories,
-            included = includedManga,
-        )
-    }
-
-    return Preference.PreferenceGroup(
-        title = stringResource(MR.strings.general_categories),
-        preferenceItems = persistentListOf(
-            Preference.PreferenceItem.SwitchPreference(
-                pref = discordRPCIncognitoPref,
-                title = stringResource(MR.strings.pref_discord_incognito),
-                subtitle = stringResource(MR.strings.pref_discord_incognito_summary),
-            ),
-            Preference.PreferenceItem.TextPreference(
-                title = stringResource(MR.strings.general_categories),
-                subtitle = if (includedManga.isEmpty()) {
-                    stringResource(MR.strings.none)
-                } else {
-                    categoriesLabel
+        if (showDialog) {
+            TriStateListDialog(
+                title = mokoStringResource(MR.strings.general_categories),
+                message = mokoStringResource(MR.strings.pref_discord_incognito_categories_details),
+                items = allCategories,
+                initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
+                initialInversed = includedManga.mapNotNull { allCategories.find { false } },
+                itemLabel = { it.visualName },
+                onDismissRequest = { showDialog = false },
+                onValueChanged = { newIncluded, _ ->
+                    discordRPCIncognitoCategoriesPref.set(
+                        newIncluded.fastMap { it.id.toString() }
+                            .toSet(),
+                    )
+                    showDialog = false
                 },
-                onClick = { showDialog = true },
+                onlyChecked = true,
+            )
+        }
+
+        val categoriesLabel = remember(allCategories, includedManga) {
+            val includedCategories = allCategories.filter { includedManga.contains(it.id.toString()) }
+            includedCategories.takeIf { it.isNotEmpty() }
+                ?.joinToString { it.visualName }
+        }
+
+        return Preference.PreferenceGroup(
+            title = mokoStringResource(MR.strings.general_categories),
+            preferenceItems = persistentListOf(
+                Preference.PreferenceItem.SwitchPreference(
+                    pref = discordRPCIncognitoPref,
+                    title = mokoStringResource(MR.strings.pref_discord_incognito),
+                    subtitle = mokoStringResource(MR.strings.pref_discord_incognito_summary),
+                ),
+                Preference.PreferenceItem.TextPreference(
+                    title = mokoStringResource(MR.strings.general_categories),
+                    subtitle = categoriesLabel ?: mokoStringResource(MR.strings.none),
+                    onClick = { showDialog = true },
+                ),
+                Preference.PreferenceItem.InfoPreference(
+                    mokoStringResource(MR.strings.pref_discord_incognito_categories_details),
+                ),
             ),
-            Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.pref_discord_incognito_categories_details)),
-        ),
-        enabled = enabled,
-    )
-}
-
-private fun getCategoriesLabel(
-    allCategories: List<Category>,
-    included: Set<String>,
-): String {
-    val includedCategories = allCategories.filter { included.contains(it.id.toString()) }
-
-    return includedCategories.joinToString { it.visualName }
-}
+            enabled = enabled,
+        )
+    }
 }
