@@ -128,14 +128,14 @@ private fun getRPCIncognitoGroup(
 
     val includedManga by discordRPCIncognitoCategoriesPref.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
-    
+
     if (showDialog) {
         TriStateListDialog(
             title = stringResource(MR.strings.general_categories),
             message = stringResource(MR.strings.pref_discord_incognito_categories_details),
             items = allCategories,
             initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
-            initialInversed = includedManga.mapNotNull { allCategories.find { false } },
+            initialInversed = allCategories.filter { it.id.toString() !in includedManga },
             itemLabel = { it.visualName },
             onDismissRequest = { showDialog = false },
             onValueChanged = { newIncluded, _ ->
@@ -149,7 +149,6 @@ private fun getRPCIncognitoGroup(
         )
     }
 
-    // Aquí arreglamos el uso de getCategoriesLabel
     val categoriesLabel = remember(allCategories, includedManga) {
         getCategoriesLabel(
             allCategories = allCategories,
@@ -167,7 +166,11 @@ private fun getRPCIncognitoGroup(
             ),
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.general_categories),
-                subtitle = categoriesLabel,
+                subtitle = if (includedManga.isEmpty()) {
+                    stringResource(MR.strings.none)
+                } else {
+                    categoriesLabel
+                },
                 onClick = { showDialog = true },
             ),
             Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.pref_discord_incognito_categories_details)),
@@ -175,16 +178,14 @@ private fun getRPCIncognitoGroup(
         enabled = enabled,
     )
 }
+
 private fun getCategoriesLabel(
     allCategories: List<Category>,
     included: Set<String>,
 ): String {
     val includedCategories = allCategories.filter { included.contains(it.id.toString()) }
 
-    return if (includedCategories.isEmpty()) {
-        stringResource(MR.strings.none)
-    } else {
-        includedCategories.joinToString { it.visualName }
-    }
+    return includedCategories.joinToString { it.visualName }
+}
 }
 }
