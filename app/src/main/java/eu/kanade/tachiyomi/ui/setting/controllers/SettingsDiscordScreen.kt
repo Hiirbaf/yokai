@@ -30,7 +30,7 @@ import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object SettingsDiscordScreen : SearchableSettings {
+object SettingsDiscordScreen : SettingsLegacyController() {
 
     @ReadOnlyComposable
     @Composable
