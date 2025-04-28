@@ -169,7 +169,7 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
             enabled = enabled,
         )
     }
-    @Composable
+@Composable
 private fun getCategoriesLabel(
     allCategories: List<Category>,
     included: Set<String>,
