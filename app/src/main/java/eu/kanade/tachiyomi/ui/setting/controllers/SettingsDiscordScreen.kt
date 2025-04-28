@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.util.fastMap
 import yokai.domain.connections.service.ConnectionsPreferences
+import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
