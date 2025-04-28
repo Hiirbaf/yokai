@@ -9,7 +9,7 @@ import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
-import eu.kanatde.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
 import java.io.File
