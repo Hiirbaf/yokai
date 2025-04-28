@@ -18,19 +18,17 @@ import java.io.File
 class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
 
     override fun initializeViewBinding(): ActivityDiscordLoginBinding {
-    return ActivityDiscordLoginBinding.inflate(layoutInflater)
+        return ActivityDiscordLoginBinding.inflate(layoutInflater)
     }
+
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Usa ViewBinding para configurar la vista
 
         val webView: WebView = binding.webview
-
-        // Configura las opciones del WebView
 
         webView.apply {
             settings.javaScriptEnabled = true
@@ -41,8 +39,8 @@ class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 if (url != null && url.endsWith("/app")) {
-                    webView.stopLoading()
-                    webView.evaluateJavascript(
+                    view?.stopLoading()
+                    view?.evaluateJavascript(
                         """
                         (function() {
                             const wreq = (webpackChunkdiscord_app.push([[''], {}, e => { m = []; for (let c in e.c) m.push(e.c[c])}]), m)
@@ -57,6 +55,7 @@ class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
                 }
             }
         }
+
         webView.loadUrl("https://discord.com/login")
     }
 
