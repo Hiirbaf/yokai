@@ -175,7 +175,6 @@ private fun getRPCIncognitoGroup(
         enabled = enabled,
     )
 }
-@Composable
 private fun getCategoriesLabel(
     allCategories: List<Category>,
     included: Set<String>,
