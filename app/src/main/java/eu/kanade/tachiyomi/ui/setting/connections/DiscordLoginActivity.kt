@@ -14,8 +14,8 @@ import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 
-class DiscordLoginActivity : BaseActivity() {
-
+class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
+    
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
