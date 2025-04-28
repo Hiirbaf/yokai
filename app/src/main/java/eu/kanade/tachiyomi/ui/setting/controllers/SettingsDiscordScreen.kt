@@ -30,8 +30,9 @@ import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.presentation.settings.ComposableSettings
 
-object SettingsDiscordScreen : SettingsLegacyController() {
+object SettingsDiscordScreen : ComposableSettings {
 
     @ReadOnlyComposable
     @Composable
