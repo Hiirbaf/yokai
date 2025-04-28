@@ -18,15 +18,15 @@ import androidx.compose.ui.util.fastMap
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
-import yokai.presentation.component.preference.TriStateListDialog
+import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
-import tachiyomi.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
-import tachiyomi.presentation.core.util.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
