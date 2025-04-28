@@ -17,9 +17,7 @@ import java.io.File
 
 class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
 
-    override fun initializeViewBinding(): ActivityDiscordLoginBinding {
-        return ActivityDiscordLoginBinding.inflate(layoutInflater)
-    }
+    override lateinit var binding: ActivityDiscordLoginBinding
 
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
@@ -27,6 +25,8 @@ class DiscordLoginActivity : BaseActivity<ActivityDiscordLoginBinding>() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDiscordLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val webView: WebView = binding.webview
 
