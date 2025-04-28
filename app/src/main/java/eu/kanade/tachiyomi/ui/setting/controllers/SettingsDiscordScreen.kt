@@ -20,6 +20,7 @@ import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
