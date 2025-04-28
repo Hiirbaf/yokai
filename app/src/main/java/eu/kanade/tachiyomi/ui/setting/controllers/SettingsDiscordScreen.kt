@@ -167,4 +167,17 @@ object SettingsDiscordScreen : ComposableSettings {
             enabled = enabled,
         )
     }
+    @Composable
+private fun getCategoriesLabel(
+    allCategories: List<Category>,
+    included: Set<String>,
+): String {
+    val includedCategories = allCategories.filter { included.contains(it.id.toString()) }
+
+    return if (includedCategories.isEmpty()) {
+        stringResource(MR.strings.none_selected)
+    } else {
+        includedCategories.joinToString { it.visualName }
+    }
+}
 }
