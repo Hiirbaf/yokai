@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import dev.icerock.moko.resources.compose.stringResource
+import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import yokai.util.clickableNoIndication
 
 @Composable
@@ -22,7 +22,7 @@ fun ConnectionsLogoIcon(
     onClick: (() -> Unit)? = null,
 ) {
     val modifier = if (onClick != null) {
-        Modifier.clickableNoIndication(onClick = onClick)
+        Modifier.clickableNoIndication(onClick)
     } else {
         Modifier
     }
