@@ -19,7 +19,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
-import eu.kanade.presentation.more.settings.widget.ConnectionsPreferenceWidget
+import yokai.presentation.component.preference.widget.ConnectionsPreferenceWidget
 import yokai.presentation.component.preference.widget.EditTextPreferenceWidget
 import yokai.presentation.component.preference.widget.InfoWidget
 import yokai.presentation.component.preference.widget.ListPreferenceWidget
