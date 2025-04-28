@@ -25,6 +25,10 @@ import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
 import yokai.presentation.settings.ComposableSettings
+import kotlinx.coroutines.flow.collectAsState
+import androidx.compose.runtime.saveable.rememberSaveable
+import tachiyomi.domain.entries.manga.interactor.fastMap
+
 
 object SettingsDiscordScreen : Screen, ComposableSettings {
 
