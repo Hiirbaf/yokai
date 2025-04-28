@@ -17,6 +17,9 @@ import eu.kanade.tachiyomi.data.track.TrackPreferences
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.connections.service.ConnectionsPreferences
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.presentation.more.settings.widget.ConnectionsPreferenceWidget
 import yokai.presentation.component.preference.widget.EditTextPreferenceWidget
 import yokai.presentation.component.preference.widget.InfoWidget
 import yokai.presentation.component.preference.widget.ListPreferenceWidget
@@ -163,6 +166,18 @@ internal fun PreferenceItem(
                         tracker = this,
                         checked = uName.isNotEmpty(),
                         onClick = { if (isLogged) item.logout() else item.login() },
+                    )
+                }
+            }
+            is Preference.PreferenceItem.ConnectionsPreference -> {
+                val uName by Injekt.get<PreferenceStore>()
+                    .getString(ConnectionsPreferences.connectionsUsername(item.service.id))
+                    .collectAsState()
+                item.service.run {
+                    ConnectionsPreferenceWidget(
+                        service = this,
+                        checked = uName.isNotEmpty(),
+                        onClick = { if (isLogged) item.openSettings() else item.login() },
                     )
                 }
             }
