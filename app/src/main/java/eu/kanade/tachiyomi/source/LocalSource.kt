@@ -111,7 +111,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 }
             }
             
-            DiskUtil.createNoMediaFile(directory, context)
+            DiskUtil.createNoMediaFile(dir, context)
             
             manga.thumbnail_url = cover.uri.toString()
             return cover
