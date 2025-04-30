@@ -227,39 +227,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
-    override suspend fun getMangaDetails(manga: SManga): SManga = withIOContext {
-        // Making sure that we have the latest cover file path, in case user use different file format
-        invalidateCover(manga, context)
-
-        try {
-            val localMangaDir = getBaseDirectories(context).asSequence()
-                .mapNotNull { it?.findFile(manga.url) }
-                .firstOrNull() ?: throw Exception("${manga.url} is not a valid directory")
-            val localMangaFiles = localMangaDir.listFiles().orEmpty().filter { !it.isDirectory }
-            val comicInfoFile = localMangaFiles.firstOrNull { it.name.orEmpty() == COMIC_INFO_FILE }
-            val legacyJsonFile = localMangaFiles.firstOrNull { it.extension.orEmpty().equals("json", true) }
-
-            if (comicInfoFile != null)
-                return@withIOContext manga.copy().apply {
-                    setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this)
-                }
-
-            // TODO: Remove after awhile
-            if (legacyJsonFile != null) {
-                val rt = manga.copy().apply {
-                    setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this)
-                }
-                val comicInfo = rt.toComicInfo()
-                localMangaDir.createFile(COMIC_INFO_FILE)
-                    ?.writeText(xml.encodeToString(ComicInfo.serializer(), comicInfo)) { legacyJsonFile.delete() }
-                return@withIOContext rt
-            }
-        } catch (e: Exception) {
-            Logger.e(e) { "Something went wrong while trying to load manga details" }
-        }
-
-        return@withIOContext manga
-    }
+    
 
     private fun setMangaDetailsFromComicInfoFile(stream: InputStream, manga: SManga) {
         val comicInfo = decodeComicInfo(stream, xml)
