@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.connections
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
