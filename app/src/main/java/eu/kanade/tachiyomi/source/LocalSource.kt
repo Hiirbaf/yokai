@@ -227,7 +227,63 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
-    
+    override suspend fun getMangaDetails(manga: SManga): SManga = withIOContext {
+    coverManager.find(manga.url)?.let {
+        manga.thumbnail_url = it.uri.toString()
+    }
+
+    try {
+        val mangaDir = fileSystem.getMangaDirectory(manga.url) ?: error("${manga.url} is not a valid directory")
+        val mangaDirFiles = mangaDir.listFiles().orEmpty()
+
+        val comicInfoFile = mangaDirFiles.firstOrNull { it.name == COMIC_INFO_FILE }
+        val noXmlFile = mangaDirFiles.firstOrNull { it.name == ".noxml" }
+        val legacyJsonDetailsFile = mangaDirFiles.firstOrNull { it.extension == "json" }
+
+        when {
+            // Usa ComicInfo.xml si existe
+            comicInfoFile != null -> {
+                noXmlFile?.delete()
+                setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), manga)
+            }
+
+            // Si hay un JSON antiguo, lo usa y lo convierte a ComicInfo.xml
+            legacyJsonDetailsFile != null -> {
+                json.decodeFromStream<MangaDetails>(legacyJsonDetailsFile.openInputStream()).run {
+                    title?.let { manga.title = it }
+                    author?.let { manga.author = it }
+                    artist?.let { manga.artist = it }
+                    description?.let { manga.description = it }
+                    genre?.let { manga.genre = it.joinToString() }
+                    status?.let { manga.status = it }
+                }
+
+                val comicInfo = manga.getComicInfo()
+                mangaDir.createFile(COMIC_INFO_FILE)?.openOutputStream()?.use {
+                    val xmlStr = xml.encodeToString(ComicInfo.serializer(), comicInfo)
+                    it.write(xmlStr.toByteArray())
+                    legacyJsonDetailsFile.delete()
+                }
+            }
+
+            // Copia ComicInfo.xml desde capítulos si existe, y lo guarda
+            noXmlFile == null -> {
+                val chapterArchives = mangaDirFiles.filter(Archive::isSupported)
+
+                val copiedFile = copyComicInfoFileFromArchive(chapterArchives, mangaDir)
+                if (copiedFile != null) {
+                    setMangaDetailsFromComicInfoFile(copiedFile.openInputStream(), manga)
+                } else {
+                    mangaDir.createFile(".noxml") // Evita futuros reescaneos
+                }
+            }
+        }
+    } catch (e: Throwable) {
+        logcat(LogPriority.ERROR, e) { "Error setting manga details from local metadata for ${manga.title}" }
+    }
+
+    return@withIOContext manga
+    }
 
     private fun setMangaDetailsFromComicInfoFile(stream: InputStream, manga: SManga) {
         val comicInfo = decodeComicInfo(stream, xml)
