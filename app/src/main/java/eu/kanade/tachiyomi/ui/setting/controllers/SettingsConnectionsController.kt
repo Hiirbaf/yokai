@@ -15,11 +15,11 @@ import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import kotlinx.coroutines.launch
-import tachiyomi.i18n.MR
+import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.toast
 import androidx.compose.ui.platform.LocalContext
 
 class SettingsConnectionsController : BaseComposeController() {
