@@ -14,7 +14,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import eu.kanade.tachiyomi.util.system.toast
 import androidx.compose.ui.platform.LocalContext
-import tachiyomi.ui.setting.Preference
+import yokai.presentation.component.preference.Preference
 import tachiyomi.ui.setting.PreferenceScreen
 import tachiyomi.ui.setting.SettingsDiscordController
 
