@@ -25,101 +25,53 @@ import androidx.compose.ui.platform.LocalContext
 class SettingsConnectionsController : BaseComposeController() {
 
     @ReadOnlyComposable
-    @Composable
-    override fun getTitleRes() = MR.strings.pref_category_connections
+@Composable
+override fun getTitleRes() = MR.strings.pref_category_connections
 
-    @Composable
-    override fun getPreferences(): List<Preference> {
-        val context = LocalContext.current
-        val navigator = LocalNavigator.currentOrThrow
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+@Composable
+override fun getPreferences(): List<Preference> {
+    val context = LocalContext.current
+    val navigator = LocalNavigator.currentOrThrow
+    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
-        var dialog by remember { mutableStateOf<Any?>(null) }
-        dialog?.run {
-            when (this) {
-                is LoginConnectionsDialog -> {
-                    ConnectionsLoginDialog(
-                        service = service,
-                        uNameStringRes = uNameStringRes,
-                        onDismissRequest = { dialog = null },
-                    )
-                }
+    var dialog by remember { mutableStateOf<Any?>(null) }
+
+    dialog?.run {
+        when (this) {
+            is LoginConnectionsDialog -> {
+                ConnectionsLoginDialog(
+                    service = service,
+                    uNameStringRes = uNameStringRes,
+                    onDismissRequest = { dialog = null },
+                )
             }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(text = stringResource(MR.strings.pref_category_connections), style = MaterialTheme.typography.titleLarge)
-
-            Button(
-                onClick = { showLoginDialog = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(discord.nameRes()))
-            }
-
-            if (showLoginDialog) {
-                AlertDialog(
-                    onDismissRequest = { showLoginDialog = false },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                coroutineScope.launch {
-                                    val result = try {
-                                        discord.login(username, password)
-                                        context.toast(MR.strings.login_success)
-                                        true
-                                    } catch (e: Exception) {
-                                        discord.logout()
-                                        context.toast(e.message ?: "Login failed")
-                                        false
-                                    }
-                                    if (result) showLoginDialog = false
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(stringResource(MR.strings.login))
-                        }
-                    },
-                    title = {
-                        Text(stringResource(MR.strings.login_title, stringResource(discord.nameRes())))
-                    },
-                    text = {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedTextField(
-                                value = username,
-                                onValueChange = { username = it },
-                                label = { Text(stringResource(MR.strings.username)) },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-                            )
-                            OutlinedTextField(
-                                value = password,
-                                onValueChange = { password = it },
-                                label = { Text(stringResource(MR.strings.password)) },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Password,
-                                    imeAction = ImeAction.Done
-                                ),
-                                visualTransformation = if (hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
-                                trailingIcon = {
-                                    IconButton(onClick = { hidePassword = !hidePassword }) {
-                                        Icon(
-                                            imageVector = if (hidePassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    }
+            is LogoutConnectionsDialog -> {
+                ConnectionsLogoutDialog(
+                    service = service,
+                    onDismissRequest = { dialog = null },
                 )
             }
         }
     }
+
+    return listOf(
+        Preference.PreferenceGroup(
+            title = stringResource(MR.strings.special_services),
+            preferenceItems = persistentListOf(
+                Preference.PreferenceItem.ConnectionsPreference(
+                    title = stringResource(connectionsManager.discord.nameRes()),
+                    service = connectionsManager.discord,
+                    login = {
+                        dialog = LoginConnectionsDialog(
+                            service = connectionsManager.discord,
+                            uNameStringRes = MR.strings.username, // o uno específico
+                        )
+                    },
+                    openSettings = {
+                        navigator.push(SettingsDiscordScreen)
+                    },
+                )
+            )
+        )
+    )
 }
