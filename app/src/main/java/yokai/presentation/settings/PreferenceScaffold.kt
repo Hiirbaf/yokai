@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.StringResource
 import yokai.presentation.component.AppBar
-import yokai.presentation.settings.YokaiScaffold
+import yokai.presentation.settings.SettingsScaffold
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
