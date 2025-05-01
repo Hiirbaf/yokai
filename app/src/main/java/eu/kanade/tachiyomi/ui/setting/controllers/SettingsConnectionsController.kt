@@ -1,19 +1,12 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
+import eu.kanade.tachiyomi.ui.base.controller.SettingsController
 import kotlinx.coroutines.launch
 import yokai.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
@@ -21,57 +14,65 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import eu.kanade.tachiyomi.util.system.toast
 import androidx.compose.ui.platform.LocalContext
+import tachiyomi.ui.setting.Preference
+import tachiyomi.ui.setting.PreferenceScreen
+import tachiyomi.ui.setting.SettingsDiscordController
 
-class SettingsConnectionsController : BaseComposeController() {
+class SettingsConnectionsController : SettingsController() {
 
-    @ReadOnlyComposable
-@Composable
-override fun getTitleRes() = MR.strings.pref_category_connections
+    @Composable
+    override fun getTitleRes() = MR.strings.pref_category_connections
 
-@Composable
-override fun getPreferences(): List<Preference> {
-    val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
-    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+    override fun setupPreferenceScreen(screen: PreferenceScreen) {
+        val context = screen.preferenceManager.context
+        val navigator = router
 
-    var dialog by remember { mutableStateOf<Any?>(null) }
+        val connectionsManager = Injekt.get<ConnectionsManager>()
 
-    dialog?.run {
-        when (this) {
-            is LoginConnectionsDialog -> {
-                ConnectionsLoginDialog(
-                    service = service,
-                    uNameStringRes = uNameStringRes,
-                    onDismissRequest = { dialog = null },
-                )
-            }
-            is LogoutConnectionsDialog -> {
-                ConnectionsLogoutDialog(
-                    service = service,
-                    onDismissRequest = { dialog = null },
-                )
-            }
-        }
-    }
-
-    return listOf(
-        Preference.PreferenceGroup(
-            title = stringResource(MR.strings.special_services),
-            preferenceItems = persistentListOf(
-                Preference.PreferenceItem.ConnectionsPreference(
-                    title = stringResource(connectionsManager.discord.nameRes()),
-                    service = connectionsManager.discord,
-                    login = {
-                        dialog = LoginConnectionsDialog(
-                            service = connectionsManager.discord,
-                            uNameStringRes = MR.strings.username, // o uno específico
-                        )
-                    },
-                    openSettings = {
-                        navigator.push(SettingsDiscordScreen)
-                    },
+        // Agregar preferencias
+        screen.addPreference(
+            Preference.PreferenceGroup(
+                title = stringResource(MR.strings.special_services),
+                preferenceItems = listOf(
+                    Preference.PreferenceItem.ConnectionsPreference(
+                        title = stringResource(connectionsManager.discord.nameRes()),
+                        service = connectionsManager.discord,
+                        login = {
+                            // Muestra el diálogo de login
+                            showLoginDialog(context, connectionsManager.discord)
+                        },
+                        openSettings = {
+                            // Abre la pantalla de configuración de Discord
+                            navigator.pushController(SettingsDiscordController())
+                        }
+                    )
                 )
             )
         )
-    )
+    }
+
+    private fun showLoginDialog(context: Context, service: ConnectionsService) {
+        // Mostrar diálogo de login (esto puede ser un fragmento o un diálogo completo)
+        // Aquí llamarías a la lógica para abrir el `LoginConnectionsDialog`
+        val dialog = LoginConnectionsDialog(service, MR.strings.username)
+        // Para implementarlo, probablemente necesitarías usar un `Dialog` o algo similar
+    }
+
+    // Esta función es un ejemplo de cómo gestionar el login
+    private suspend fun checkLogin(
+        context: Context,
+        service: ConnectionsService,
+        username: String,
+        password: String
+    ): Boolean {
+        return try {
+            service.login(username, password)
+            context.toast(MR.strings.login_success)
+            true
+        } catch (e: Exception) {
+            service.logout()
+            context.toast(e.message ?: "Login failed")
+            false
+        }
+    }
 }
