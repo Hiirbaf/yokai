@@ -26,6 +26,48 @@ fun PreferenceScreen(
         }
     }
 
+    ScrollbarLazyColumn(
+        modifier = modifier,
+        state = state,
+        contentPadding = contentPadding,
+    ) {
+        items.fastForEachIndexed { i, preference ->
+            when (preference) {
+                // Create Preference Group
+                is Preference.PreferenceGroup -> {
+                    if (!preference.enabled) return@fastForEachIndexed
+
+                    item {
+                        Column {
+                            PreferenceGroupHeader(title = preference.title)
+                        }
+                    }
+                    items(preference.preferenceItems) { item ->
+                        PreferenceItem(
+                            item = item,
+                            highlightKey = highlightKey,
+                        )
+                    }
+                    item {
+                        if (i < items.lastIndex) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+                }
+
+                // Create Preference Item
+                is Preference.PreferenceItem<*> -> item {
+                    PreferenceItem(
+                        item = preference,
+                        highlightKey = highlightKey,
+                    )
+                }
+            }
+        }
+    }
+}
+
+
 @Composable
 fun PreferenceScaffold(
     titleRes: StringResource,
