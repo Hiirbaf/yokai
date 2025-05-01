@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.StringResource
 import yokai.presentation.component.AppBar
-import yokai.presentation.Scaffold
+import yokai.presentation.settings.YokaiScaffold
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
@@ -14,7 +14,7 @@ fun PreferenceScaffold(
     onBackPressed: (() -> Unit)? = null,
     itemsProvider: @Composable () -> List<Preference>,
 ) {
-    Scaffold(
+    YokaiScaffold(
         topBar = {
             AppBar(
                 title = stringResource(titleRes),
