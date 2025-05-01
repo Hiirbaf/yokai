@@ -6,6 +6,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.preference.Preference
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
 
 interface SearchableSettings : Screen {
 
