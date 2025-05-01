@@ -24,18 +24,28 @@ import androidx.compose.ui.platform.LocalContext
 
 class SettingsConnectionsController : BaseComposeController() {
 
+    @ReadOnlyComposable
     @Composable
-    override fun ScreenContent() {
+    override fun getTitleRes() = MR.strings.pref_category_connections
+
+    @Composable
+    override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-        val coroutineScope = rememberCoroutineScope()
 
-        var showLoginDialog by remember { mutableStateOf(false) }
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var hidePassword by remember { mutableStateOf(true) }
-        val discord = connectionsManager.discord
-
+        var dialog by remember { mutableStateOf<Any?>(null) }
+        dialog?.run {
+            when (this) {
+                is LoginConnectionsDialog -> {
+                    ConnectionsLoginDialog(
+                        service = service,
+                        uNameStringRes = uNameStringRes,
+                        onDismissRequest = { dialog = null },
+                    )
+                }
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
