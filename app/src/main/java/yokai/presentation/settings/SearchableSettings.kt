@@ -6,6 +6,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.preference.Preference
+import yokai.presentation.settings.PreferenceScaffold
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import cafe.adriel.voyager.core.screen.Screen
 
@@ -25,7 +26,7 @@ interface SearchableSettings : Screen {
     @Composable
     override fun Content() {
         val handleBack = LocalBackPress.current
-        SettingsScaffold(
+        PreferenceScaffold(
             titleRes = getTitleRes(),
             onBackPressed = if (handleBack != null) handleBack::invoke else null,
             actions = { AppBarAction() },
