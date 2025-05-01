@@ -7,6 +7,7 @@ import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.preference.Preference
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import cafe.adriel.voyager.core.screen.Screen
 
 interface SearchableSettings : Screen {
 
