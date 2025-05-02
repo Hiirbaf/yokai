@@ -123,7 +123,7 @@ class SettingsConnectionsController :
                             updatePreference(service)
                         } else {
                             val dialog = TrackLogoutDialog(service)
-                            dialog.targetController = this@SettingsTrackingController
+                            dialog.targetController = this@SettingsConnectionsController
                             dialog.showDialog(router)
                         }
                     } else {
