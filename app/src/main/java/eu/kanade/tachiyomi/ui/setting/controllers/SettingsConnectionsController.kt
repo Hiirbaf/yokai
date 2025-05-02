@@ -1,254 +1,162 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
-import android.content.Context
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import yokai.presentation.component.preference.Preference
-import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
-import eu.kanade.tachiyomi.util.system.toast
-import kotlinx.collections.immutable.persistentListOf
-import eu.kanade.tachiyomi.util.system.launchIO
-import eu.kanade.tachiyomi.util.system.withUIContext
+import android.app.Activity
+import androidx.preference.PreferenceGroup
+import androidx.preference.PreferenceScreen
+import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
-import yokai.presentation.settings.SearchableSettings
+import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
+import eu.kanade.tachiyomi.data.preference.changesIn
+import eu.kanade.tachiyomi.data.track.EnhancedTrackService
+import eu.kanade.tachiyomi.data.track.TrackManager
+import eu.kanade.tachiyomi.data.track.TrackPreferences
+import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.data.track.anilist.AnilistApi
+import eu.kanade.tachiyomi.data.track.bangumi.BangumiApi
+import eu.kanade.tachiyomi.data.track.myanimelist.MyAnimeListApi
+import eu.kanade.tachiyomi.data.track.shikimori.ShikimoriApi
+import eu.kanade.tachiyomi.source.SourceManager
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
+import eu.kanade.tachiyomi.ui.setting.add
+import eu.kanade.tachiyomi.ui.setting.defaultValue
+import eu.kanade.tachiyomi.ui.setting.iconRes
+import eu.kanade.tachiyomi.ui.setting.infoPreference
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
+import eu.kanade.tachiyomi.ui.setting.preferenceCategory
+import eu.kanade.tachiyomi.ui.setting.switchPreference
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
+import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.openInBrowser
+import eu.kanade.tachiyomi.util.view.snack
+import eu.kanade.tachiyomi.widget.preference.TrackLoginDialog
+import eu.kanade.tachiyomi.widget.preference.TrackLogoutDialog
+import eu.kanade.tachiyomi.widget.preference.TrackerPreference
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import androidx.compose.ui.res.stringResource as stringResourceInt
+import uy.kohesive.injekt.injectLazy
+import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
-object SettingsConnectionsController : SearchableSettings {
+class SettingsConnectionsController :
+    SettingsLegacyController(),
+    TrackLoginDialog.Listener,
+    TrackLogoutDialog.Listener {
 
-    @ReadOnlyComposable
-    @Composable
-    override fun getTitleRes() = MR.strings.pref_category_connections
+    private val trackManager: TrackManager by injectLazy()
+    val trackPreferences: TrackPreferences by injectLazy()
 
-    @Composable
-    override fun getPreferences(): List<Preference> {
-        val context = LocalContext.current
-        val navigator = LocalNavigator.currentOrThrow
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+    override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
+        titleRes = MR.strings.tracking
 
-        var dialog by remember { mutableStateOf<Any?>(null) }
-        dialog?.run {
-            when (this) {
-                is LoginConnectionsDialog -> {
-                    ConnectionsLoginDialog(
-                        service = service,
-                        uNameStringRes = uNameStringRes,
-                        onDismissRequest = { dialog = null },
-                    )
+        preferenceCategory {
+            titleRes = MR.strings.services
+
+            trackPreference(trackManager.myAnimeList) {
+                activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
+            }
+            trackPreference(trackManager.aniList) {
+                activity?.openInBrowser(AnilistApi.authUrl(), trackManager.aniList.getLogoColor(), true)
+            }
+            preference {
+                key = "update_anilist_scoring"
+                isPersistent = false
+                isIconSpaceReserved = true
+                title = context.getString(MR.strings.update_tracking_scoring_type, context.getString(MR.strings.anilist))
+
+                preferences.getStringPref(trackManager.aniList.getUsername())
+                    .changesIn(viewScope) {
+                        isVisible = it.isNotEmpty()
+                    }
+
+                onClick {
+                    viewScope.launchIO {
+                        val (result, error) = trackManager.aniList.updatingScoring()
+                        if (result) {
+                            view?.snack(MR.strings.scoring_type_updated)
+                        } else {
+                            view?.snack(
+                                context.getString(
+                                    MR.strings.could_not_update_scoring_,
+                                    error?.localizedMessage.orEmpty(),
+                                ),
+                            )
+                        }
+                    }
                 }
             }
+            trackPreference(trackManager.shikimori) {
+                activity?.openInBrowser(ShikimoriApi.authUrl(), trackManager.shikimori.getLogoColor(), true)
+            }
+            trackPreference(trackManager.bangumi) {
+                activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
+            }
+            infoPreference(MR.strings.tracking_info)
         }
-
-        return listOf(
-            Preference.PreferenceGroup(
-                title = stringResource(MR.strings.special_services),
-                preferenceItems = persistentListOf(
-                    Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(connectionsManager.discord.nameRes()),
-                        service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
-                        openSettings = { navigator.push(SettingsDiscordScreen) }
-                    )
-                )
-            )
-        )
+        preferenceCategory {
+            titleRes = MR.strings.enhanced_services
+            val sourceManager = Injekt.get<SourceManager>()
+            val enhancedTrackers = trackManager.services
+                .filter { service ->
+                    if (service !is EnhancedTrackService) return@filter false
+                    sourceManager.getCatalogueSources().any { service.accept(it) }
+                }
+            enhancedTrackers.forEach { trackPreference(it) }
+            infoPreference(MR.strings.enhanced_tracking_info)
+        }
     }
 
-    @Composable
-    private fun ConnectionsLoginDialog(
-        service: ConnectionsService,
-        @StringRes uNameStringRes: Int,
-        onDismissRequest: () -> Unit,
-    ) {
-        val context = LocalContext.current
-        val scope = rememberCoroutineScope()
-
-        var username by remember { mutableStateOf(TextFieldValue(service.getUsername())) }
-        var password by remember { mutableStateOf(TextFieldValue(service.getPassword())) }
-        var processing by remember { mutableStateOf(false) }
-        var inputError by remember { mutableStateOf(false) }
-
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(
-                            MR.strings.login_title,
-                            stringResource(service.nameRes()),
-                        ),
-                        modifier = Modifier.weight(1f),
-                    )
-                    IconButton(onClick = onDismissRequest) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = stringResource(MR.strings.action_close),
-                        )
+    private inline fun PreferenceGroup.trackPreference(
+        service: TrackService,
+        crossinline login: () -> Unit = { },
+    ): TrackerPreference {
+        return add(
+            TrackerPreference(context).apply {
+                key = trackPreferences.trackUsername(service).key()
+                title = context.getString(service.nameRes())
+                iconRes = service.getLogo()
+                iconColor = service.getLogoColor()
+                onClick {
+                    if (service.isLogged) {
+                        if (service is EnhancedTrackService) {
+                            service.logout()
+                            updatePreference(service)
+                        } else {
+                            val dialog = TrackLogoutDialog(service)
+                            dialog.targetController = this@SettingsTrackingController
+                            dialog.showDialog(router)
+                        }
+                    } else {
+                        if (service is EnhancedTrackService) {
+                            service.loginNoop()
+                            updatePreference(service)
+                        } else {
+                            login()
+                        }
                     }
                 }
             },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text(text = stringResourceInt(uNameStringRes)) },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        singleLine = true,
-                        isError = inputError && username.text.isEmpty(),
-                    )
-
-                    var hidePassword by remember { mutableStateOf(true) }
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text(text = stringResource(MR.strings.password)) },
-                        trailingIcon = {
-                            IconButton(onClick = { hidePassword = !hidePassword }) {
-                                Icon(
-                                    imageVector = if (hidePassword) {
-                                        Icons.Filled.Visibility
-                                    } else {
-                                        Icons.Filled.VisibilityOff
-                                    },
-                                    contentDescription = null,
-                                )
-                            }
-                        },
-                        visualTransformation = if (hidePassword) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done,
-                        ),
-                        singleLine = true,
-                        isError = inputError && password.text.isEmpty(),
-                    )
-                }
-            },
-            confirmButton = {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !processing,
-                    onClick = {
-                        if (username.text.isEmpty() || password.text.isEmpty()) {
-                            inputError = true
-                            return@Button
-                        }
-                        scope.launchIO {
-                            inputError = false
-                            processing = true
-                            val result = checkLogin(
-                                context = context,
-                                service = service,
-                                username = username.text,
-                                password = password.text,
-                            )
-                            if (result) onDismissRequest()
-                            processing = false
-                        }
-                    },
-                ) {
-                    val id = if (processing) MR.strings.loading else MR.strings.login
-                    Text(text = stringResource(id))
-                }
-            },
         )
     }
 
-    private suspend fun checkLogin(
-        context: Context,
-        service: ConnectionsService,
-        username: String,
-        password: String,
-    ): Boolean {
-        return try {
-            service.login(username, password)
-            withUIContext { context.toast(MR.strings.login_success) }
-            true
-        } catch (e: Throwable) {
-            service.logout()
-            withUIContext { context.toast(e.message.toString()) }
-            false
-        }
+    override fun onActivityResumed(activity: Activity) {
+        super.onActivityResumed(activity)
+        updatePreference(trackManager.myAnimeList)
+        updatePreference(trackManager.aniList)
+        updatePreference(trackManager.shikimori)
+        updatePreference(trackManager.bangumi)
     }
-}
 
-@Composable
-internal fun ConnectionsLogoutDialog(
-    service: ConnectionsService,
-    onDismissRequest: () -> Unit,
-) {
-    val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        },
-        confirmButton = {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onDismissRequest,
-                ) {
-                    Text(text = stringResource(MR.strings.action_cancel))
-                }
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        service.logout()
-                        onDismissRequest()
-                        context.toast(MR.strings.logout_success)
-                        navigator.pop()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                    ),
-                ) {
-                    Text(text = stringResource(MR.strings.logout))
-                }
-            }
-        },
-    )
-}
+    private fun updatePreference(service: TrackService) {
+        val pref = findPreference(trackPreferences.trackUsername(service).key()) as? TrackerPreference
+        pref?.notifyChanged()
+    }
 
-private data class LoginConnectionsDialog(
-    val service: ConnectionsService,
-    @StringRes val uNameStringRes: Int,
-)
+    override fun trackLoginDialogClosed(service: TrackService) {
+        updatePreference(service)
+    }
 
-internal data class LogoutConnectionsDialog(
-    val service: ConnectionsService,
-)
+    override fun trackLogoutDialogClosed(service: TrackService) {
+        updatePreference(service)
+    }
+    }
