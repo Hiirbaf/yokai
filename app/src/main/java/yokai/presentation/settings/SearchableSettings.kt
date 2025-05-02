@@ -1,4 +1,4 @@
-package yokai.presentation.settings
+/*package yokai.presentation.settings
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -46,3 +46,4 @@ interface SearchableSettings : Screen {
         var highlightKey: String? = null
     }
 }
+*/
