@@ -11,7 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController.kt
+import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import yokai.presentation.component.preference.widget.PreferenceGroupHeader
 import kotlinx.coroutines.delay
 import yokai.presentation.core.components.FastScrollLazyVerticalGrid
@@ -29,7 +29,7 @@ fun PreferenceScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     val state = rememberLazyListState()
-    val highlightKey = SearchableSettings.highlightKey
+    val highlightKey = BaseComposeController.highlightKey
     if (highlightKey != null) {
         LaunchedEffect(Unit) {
             val i = items.findHighlightedIndex(highlightKey)
@@ -37,7 +37,7 @@ fun PreferenceScreen(
                 delay(0.5.seconds)
                 state.animateScrollToItem(i)
             }
-            SearchableSettings.highlightKey = null
+            BaseComposeController.highlightKey = null
         }
     }
 
