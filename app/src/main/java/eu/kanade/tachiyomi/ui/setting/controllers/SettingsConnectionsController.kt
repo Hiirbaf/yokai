@@ -3,22 +3,26 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.app.Activity
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
+import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.data.track.bangumi.BangumiApi
+import eu.kanade.tachiyomi.data.track.myanimelist.MyAnimeListApi
+import eu.kanade.tachiyomi.data.track.shikimori.ShikimoriApi
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
+import eu.kanade.tachiyomi.ui.setting.add
+import eu.kanade.tachiyomi.ui.setting.iconRes
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
+import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.widget.preference.TrackLoginDialog
 import eu.kanade.tachiyomi.widget.preference.TrackLogoutDialog
 import eu.kanade.tachiyomi.widget.preference.TrackerPreference
 import uy.kohesive.injekt.injectLazy
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.material3.*
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.widget.preference.ConnectionsLogoutDialog
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 
 class SettingsConnectionsController :
@@ -28,14 +32,15 @@ class SettingsConnectionsController :
 
     private val trackManager: TrackManager by injectLazy()
     private val trackPreferences: TrackPreferences by injectLazy()
+    private val connectionsManager: ConnectionsManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = MR.strings.tracking
+        titleRes = R.string.pref_category_tracking
 
         preferenceCategory {
-            titleRes = MR.strings.services
+            titleRes = R.string.pref_title_services
 
-            // Servicios de tracking
+            // Trackers
             trackPreference(trackManager.myAnimeList) {
                 activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
             }
@@ -46,22 +51,30 @@ class SettingsConnectionsController :
                 activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
             }
 
-            // Servicio de Discord desde Compose (usando ComposePreference)
-            add(ComposePreference(context).apply {
-                key = "discord_connection"
-                title = context.getString(MR.strings.discord)
-                setContent {
-                    DiscordConnectionsPreference()
-                }
-            })
+            // Discord
+            preference {
+                key = "pref_discord_login"
+                title = context.getString(R.string.pref_title_discord)
+                iconRes = R.drawable.ic_discord_24dp
+                iconColor = 0x7289DA // Color oficial Discord
 
-            infoPreference(MR.strings.tracking_info)
+                onClick {
+                    val service = connectionsManager.discord
+                    if (service.isLogged()) {
+                        val dialog = ConnectionsLogoutDialog(service)
+                        dialog.targetController = this@SettingsConnectionsController
+                        dialog.showDialog(router)
+                    } else {
+                        context.openDiscordLoginActivity()
+                    }
+                }
+            }
         }
     }
 
-    private inline fun PreferenceGroup.trackPreference(
+    private inline fun preferenceCategory.trackPreference(
         service: TrackService,
-        crossinline login: () -> Unit = { },
+        crossinline login: () -> Unit = {},
     ): TrackerPreference {
         return add(
             TrackerPreference(context).apply {
@@ -101,42 +114,4 @@ class SettingsConnectionsController :
     override fun trackLogoutDialogClosed(service: TrackService) {
         updatePreference(service)
     }
-}
-
-@Composable
-fun DiscordConnectionsPreference() {
-    val context = LocalContext.current
-    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-    val service = connectionsManager.discord
-
-    var showLoginDialog by remember { mutableStateOf(false) }
-    var showLogoutDialog by remember { mutableStateOf(false) }
-
-    if (showLoginDialog) {
-        ConnectionsLoginDialog(
-            service = service,
-            uNameStringRes = MR.strings.username,
-            onDismissRequest = { showLoginDialog = false },
-        )
     }
-
-    if (showLogoutDialog) {
-        ConnectionsLogoutDialog(
-            service = service,
-            onDismissRequest = { showLogoutDialog = false },
-        )
-    }
-
-    ConnectionsPreference(
-        title = stringResource(service.nameRes()),
-        service = service,
-        login = { showLoginDialog = true },
-        openSettings = {
-            if (service.isLogged()) {
-                showLogoutDialog = true
-            } else {
-                context.openDiscordLoginActivity()
-            }
-        }
-    )
-}
