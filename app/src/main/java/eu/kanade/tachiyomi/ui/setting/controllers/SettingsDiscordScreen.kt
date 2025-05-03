@@ -78,17 +78,17 @@ object SettingsDiscordScreen : BaseComposeController {
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.SwitchPreference(
-                        preference = enableDRPCPref,
+                        pref = enableDRPCPref,
                         title = stringResource(MR.strings.pref_enable_discord_rpc),
                     ),
                     Preference.PreferenceItem.SwitchPreference(
-                        preference = useChapterTitlesPref,
+                        pref = useChapterTitlesPref,
                         enabled = enableDRPC,
                         title = stringResource(MR.strings.show_chapters_titles_title),
                         subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
                     ),
                     Preference.PreferenceItem.ListPreference(
-                        preference = discordRPCStatus,
+                        pref = discordRPCStatus,
                         title = stringResource(MR.strings.pref_discord_status),
                         entries = persistentMapOf(
                             -1 to stringResource(MR.strings.pref_discord_dnd),
