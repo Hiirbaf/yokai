@@ -17,7 +17,7 @@ import uy.kohesive.injekt.injectLazy
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.*
-import yokai.domain.connections.ConnectionsManager
+import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 
