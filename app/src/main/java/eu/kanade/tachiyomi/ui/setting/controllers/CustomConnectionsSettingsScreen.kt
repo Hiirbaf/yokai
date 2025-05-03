@@ -224,7 +224,6 @@ private suspend fun checkLogin(
             false
         }
     }
-}
 
 @Composable
 internal fun ConnectionsLogoutDialog(
