@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.app.Activity
-import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
@@ -9,50 +8,17 @@ import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
-import eu.kanade.tachiyomi.data.track.TrackService
-import eu.kanade.tachiyomi.data.track.bangumi.BangumiApi
-import eu.kanade.tachiyomi.data.track.myanimelist.MyAnimeListApi
-import eu.kanade.tachiyomi.data.track.shikimori.ShikimoriApi
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
-import eu.kanade.tachiyomi.ui.setting.add
-import eu.kanade.tachiyomi.ui.setting.iconRes
-import eu.kanade.tachiyomi.ui.setting.infoPreference
-import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.composePreference
-import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
-import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.widget.preference.TrackLoginDialog
 import eu.kanade.tachiyomi.widget.preference.TrackLogoutDialog
 import eu.kanade.tachiyomi.widget.preference.TrackerPreference
 import uy.kohesive.injekt.injectLazy
 import androidx.compose.runtime.*
-import androidx.compose.ui.res.stringResource as stringResourceInt
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.text.input.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Close
-import kotlinx.coroutines.launch
-import tachiyomi.presentation.core.components.material.*
-import tachiyomi.presentation.core.screens.Preference
-import tachiyomi.presentation.core.screens.Preference.PreferenceItem.ConnectionsPreference
-import tachiyomi.presentation.core.screens.Preference.PreferenceItem.InfoPreference
-import yokai.presentation.component.preference.PreferenceGroup
-import cafe.adriel.voyager.navigator.LocalNavigator
-import eu.kanade.tachiyomi.util.system.toast
-import eu.kanade.tachiyomi.util.system.withUIContext
-import yokai.domain.connections.ConnectionsService
 import yokai.domain.connections.ConnectionsManager
-import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.data.connections.ConnectionsService
+import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 
 class SettingsConnectionsController :
@@ -80,10 +46,14 @@ class SettingsConnectionsController :
                 activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
             }
 
-            // Servicio de Discord desde Compose
-            composePreference {
-                DiscordConnectionsPreference()
-            }
+            // Servicio de Discord desde Compose (usando ComposePreference)
+            add(ComposePreference(context).apply {
+                key = "discord_connection"
+                title = context.getString(MR.strings.discord)
+                setContent {
+                    DiscordConnectionsPreference()
+                }
+            })
 
             infoPreference(MR.strings.tracking_info)
         }
@@ -136,7 +106,6 @@ class SettingsConnectionsController :
 @Composable
 fun DiscordConnectionsPreference() {
     val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
     val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
     val service = connectionsManager.discord
 
