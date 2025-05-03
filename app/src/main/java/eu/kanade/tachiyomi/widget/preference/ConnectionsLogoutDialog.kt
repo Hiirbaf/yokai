@@ -9,17 +9,16 @@ import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
-import eu.kanade.tachiyomi.ui.base.controller.ControllerDialog
 
 class ConnectionsLogoutDialog(
     private val service: ConnectionsService,
-) : DialogController(), ControllerDialog {
+) : DialogController() {
 
     override fun onCreateDialog(savedViewState: Bundle?): Dialog {
         val activity = activity ?: throw IllegalStateException()
 
         return MaterialAlertDialogBuilder(activity)
-            .setTitle(activity.getString(R.string.logout_title, activity.getString(service.nameRes())))
+            .setTitle(activity.getString(R.string.logout_title, activity.getString(service.nameRes().resourceId)))
             .setNegativeButton(R.string.action_cancel, null)
             .setPositiveButton(R.string.logout) { _, _ ->
                 service.logout()
