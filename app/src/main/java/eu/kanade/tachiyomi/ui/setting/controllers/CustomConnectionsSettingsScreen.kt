@@ -7,8 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.ui.text.input
-import androidx.compose.ui.text
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +25,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
