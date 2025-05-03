@@ -59,7 +59,6 @@ class SettingsConnectionsController :
             key = "pref_discord_login"
             title = context.getString(R.string.connections_discord) // Verifica el nombre exacto
             iconRes = R.drawable.ic_discord_24dp
-            iconColor = 0x7289DA.toInt()
 
             onClick {
                 val service = connectionsManager.discord
