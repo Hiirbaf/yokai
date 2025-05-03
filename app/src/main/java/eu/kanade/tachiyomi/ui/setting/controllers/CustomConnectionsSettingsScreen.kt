@@ -192,8 +192,73 @@ object CustomConnectionsSettingsScreen : Screen {
         )
     }
 
-// Puedes definir esto en el mismo archivo o en otro donde tengas tus dialogs
+private suspend fun checkLogin(
+        context: Context,
+        service: ConnectionsService,
+        username: String,
+        password: String,
+    ): Boolean {
+        return try {
+            service.login(username, password)
+            withUIContext { context.toast(MR.strings.login_success) }
+            true
+        } catch (e: Throwable) {
+            service.logout()
+            withUIContext { context.toast(e.message.toString()) }
+            false
+        }
+    }
+}
+
+@Composable
+internal fun ConnectionsLogoutDialog(
+    service: ConnectionsService,
+    onDismissRequest: () -> Unit,
+) {
+    val context = LocalContext.current
+    val navigator = LocalNavigator.currentOrThrow
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(
+                text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        confirmButton = {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDismissRequest,
+                ) {
+                    Text(text = stringResource(MR.strings.action_cancel))
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        service.logout()
+                        onDismissRequest()
+                        context.toast(MR.strings.logout_success)
+                        navigator.pop()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Text(text = stringResource(MR.strings.logout))
+                }
+            }
+        },
+    )
+}
+
 private data class LoginConnectionsDialog(
-    val service: eu.kanade.tachiyomi.data.connections.ConnectionsService,
-    @androidx.annotation.StringRes val uNameStringRes: Int,
+    val service: ConnectionsService,
+    @StringRes val uNameStringRes: Int,
+)
+
+internal data class LogoutConnectionsDialog(
+    val service: ConnectionsService,
 )
