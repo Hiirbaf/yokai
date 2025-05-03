@@ -239,7 +239,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router()
+                        router?.invoke()  // Usar el operador ?.invoke para llamar a la función de manera segura
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
@@ -252,7 +252,6 @@ internal fun ConnectionsLogoutDialog(
         },
     )
 }
-
 private suspend fun checkLogin(
     context: Context,
     service: ConnectionsService,
