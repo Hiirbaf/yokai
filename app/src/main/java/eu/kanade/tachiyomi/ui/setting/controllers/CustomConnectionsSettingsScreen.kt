@@ -101,7 +101,7 @@ object CustomConnectionsSettingsScreen : Screen {
     }
 }
 
-@Composable
+    @Composable
     private fun ConnectionsLoginDialog(
         service: ConnectionsService,
         @StringRes uNameStringRes: Int,
