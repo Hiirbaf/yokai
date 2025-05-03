@@ -1,107 +1,84 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalUriHandler
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import cafe.adriel.voyager.hilt.getViewModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import eu.kanade.presentation.scene.settings.SettingsScene
+import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.ui.setting.SettingsViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
-import yokai.domain.connections.service.ConnectionsPreferences
-import yokai.i18n.MR
+import tachiyomi.domain.connections.ConnectionsPreferences
+import tachiyomi.domain.connections.service.ConnectionsManager
+import tachiyomi.i18n.MR
+import tachiyomi.presentation.core.components.material.dialog.Dialog
+import tachiyomi.presentation.core.components.material.dialog.LogoutConnectionsDialog
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.PreferenceScreen
 
-class SettingsDiscordScreen : BaseComposeController() {
+@Composable
+fun SettingsDiscordScreen() {
+    val navigator = LocalNavigator.current
+    val settingsViewModel = getViewModel<SettingsViewModel>()
+    val connectionsManager = settingsViewModel.connectionsManager
+    val enableDRPCPref = settingsViewModel.enableDiscordRPCPref
+    val useChapterTitlesPref = settingsViewModel.useChapterTitlesPref
+    val discordRPCStatus = settingsViewModel.discordRPCStatusPref
 
-    @Composable
-    override fun ScreenContent() {
-        val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+    val enableDRPC by enableDRPCPref.collectAsState()
 
-        val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
-        val useChapterTitlesPref = connectionsPreferences.useChapterTitles()
-        val discordRPCStatus = connectionsPreferences.discordRPCStatus()
+    var dialog by remember { mutableStateOf<Dialog?>(null) }
 
-        val enableDRPC = enableDRPCPref.get()
-        val useChapterTitles = useChapterTitlesPref.get()
-
-        var dialog by remember { mutableStateOf<Any?>(null) }
-
-        dialog?.run {
-            when (this) {
-                is LogoutConnectionsDialog -> {
-                    ConnectionsLogoutDialog(
-                        service = service,
-                        onDismissRequest = {
-                            dialog = null
-                            enableDRPCPref.set(false)
-                        },
-                    )
-                }
-            }
-        }
-
+    SettingsScene(
+        title = stringResource(MR.strings.pref_category_connections),
+        onBackPressed = { navigator?.pop() },
+    ) {
         PreferenceScreen(
-            title = stringResource(MR.strings.pref_category_connections),
-            actions = {
-                val uriHandler = LocalUriHandler.current
-                IconButton(
-                    onClick = {
-                        uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/")
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-                        contentDescription = stringResource(MR.strings.tracking_guide),
-                    )
-                }
-            },
-        ) {
-            Preference.PreferenceGroup(
-                title = stringResource(MR.strings.connections_discord),
-                preferenceItems = persistentListOf(
-                    Preference.PreferenceItem.SwitchPreference(
-                        pref = enableDRPCPref,
-                        title = stringResource(MR.strings.pref_enable_discord_rpc),
-                    ),
-                    Preference.PreferenceItem.SwitchPreference(
-                        pref = useChapterTitlesPref,
-                        enabled = enableDRPC,
-                        title = stringResource(MR.strings.show_chapters_titles_title),
-                        subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
-                    ),
-                    Preference.PreferenceItem.ListPreference(
-                        pref = discordRPCStatus,
-                        title = stringResource(MR.strings.pref_discord_status),
-                        entries = persistentMapOf(
-                            -1 to stringResource(MR.strings.pref_discord_dnd),
-                            0 to stringResource(MR.strings.pref_discord_idle),
-                            1 to stringResource(MR.strings.pref_discord_online),
+            items = persistentListOf(
+                Preference.PreferenceGroup(
+                    title = stringResource(MR.strings.connections_discord),
+                    preferenceItems = persistentListOf(
+                        Preference.PreferenceItem.SwitchPreference(
+                            pref = enableDRPCPref,
+                            title = stringResource(MR.strings.pref_enable_discord_rpc),
                         ),
-                        enabled = enableDRPC,
+                        Preference.PreferenceItem.SwitchPreference(
+                            pref = useChapterTitlesPref,
+                            enabled = enableDRPC,
+                            title = stringResource(MR.strings.show_chapters_titles_title),
+                            subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
+                        ),
+                        Preference.PreferenceItem.ListPreference(
+                            pref = discordRPCStatus,
+                            title = stringResource(MR.strings.pref_discord_status),
+                            entries = persistentMapOf(
+                                -1 to stringResource(MR.strings.pref_discord_dnd),
+                                0 to stringResource(MR.strings.pref_discord_idle),
+                                1 to stringResource(MR.strings.pref_discord_online),
+                            ),
+                            enabled = enableDRPC,
+                        ),
                     ),
                 ),
-            )
+                Preference.PreferenceGroup(
+                    title = stringResource(MR.strings.pref_category_misc),
+                    preferenceItems = persistentListOf(
+                        Preference.PreferenceItem.TextPreference(
+                            title = stringResource(MR.strings.logout),
+                            onClick = {
+                                dialog = LogoutConnectionsDialog(connectionsManager.discord)
+                            },
+                        ),
+                    ),
+                ),
+            ),
+        )
 
-            Preference.PreferenceGroup(
-                title = stringResource(MR.strings.pref_category_misc),
-                preferenceItems = persistentListOf(
-                    Preference.PreferenceItem.TextPreference(
-                        title = stringResource(MR.strings.logout),
-                        onClick = {
-                            dialog = LogoutConnectionsDialog(connectionsManager.discord)
-                        },
-                    ),
-                ),
-            )
-        }
+        dialog?.Content()
     }
 }
