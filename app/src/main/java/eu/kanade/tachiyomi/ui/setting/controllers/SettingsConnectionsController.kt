@@ -57,7 +57,7 @@ class SettingsConnectionsController :
         // Discord
         preference {
             key = "pref_discord_login"
-            title = context.getString(R.string.connections_discord) // Verifica el nombre exacto
+            title = MR.strings.connections_discord.getString(context) // Verifica el nombre exacto
             iconRes = R.drawable.ic_discord_24dp
 
             onClick {
