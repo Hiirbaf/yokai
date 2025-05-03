@@ -45,13 +45,15 @@ import tachiyomi.presentation.core.components.material.*
 import tachiyomi.presentation.core.screens.Preference
 import tachiyomi.presentation.core.screens.Preference.PreferenceItem.ConnectionsPreference
 import tachiyomi.presentation.core.screens.Preference.PreferenceItem.InfoPreference
-import tachiyomi.presentation.core.screens.Preference.PreferenceGroup
-import tachiyomi.presentation.core.screens.LocalNavigator
-import tachiyomi.presentation.core.toast
-import tachiyomi.core.util.lang.withUIContext
-import tachiyomi.domain.connections.ConnectionsService
-import tachiyomi.domain.connections.ConnectionsManager
-import tachiyomi.presentation.core.util.openDiscordLoginActivity
+import yokai.presentation.component.preference.PreferenceGroup
+import cafe.adriel.voyager.navigator.LocalNavigator
+import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
+import yokai.domain.connections.ConnectionsService
+import yokai.domain.connections.ConnectionsManager
+import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.data.connections.ConnectionsService
+import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 
 class SettingsConnectionsController :
     SettingsLegacyController(),
