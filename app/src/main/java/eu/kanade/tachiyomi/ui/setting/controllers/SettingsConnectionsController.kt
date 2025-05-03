@@ -21,9 +21,6 @@ import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.openInBrowser
-import eu.kanade.tachiyomi.widget.preference.TrackLoginDialog
-import eu.kanade.tachiyomi.widget.preference.TrackLogoutDialog
-import eu.kanade.tachiyomi.widget.preference.TrackerPreference
 import uy.kohesive.injekt.injectLazy
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.widget.preference.ConnectionsLogoutDialog
@@ -43,17 +40,6 @@ class SettingsConnectionsController :
 
     preferenceCategory {
         title = MR.strings.pref_category_connections.getString(context)
-
-        // Trackers
-        trackPreference(trackManager.myAnimeList) {
-            activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
-        }
-        trackPreference(trackManager.shikimori) {
-            activity?.openInBrowser(ShikimoriApi.authUrl(), trackManager.shikimori.getLogoColor(), true)
-        }
-        trackPreference(trackManager.bangumi) {
-            activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
-        }
 
         // Discord
         preference {
