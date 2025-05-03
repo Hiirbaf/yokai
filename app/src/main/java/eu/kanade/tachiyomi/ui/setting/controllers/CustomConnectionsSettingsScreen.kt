@@ -88,9 +88,12 @@ object CustomConnectionsSettingsScreen : Screen {
                         modifier = Modifier.weight(1f),
                     )
                     IconButton(onClick = {
-                        navigator.push(SettingsDiscordScreen)
-                    }) {
-                        Icon(Icons.Default.Settings, contentDescription = null)
+    dialog = LoginConnectionsDialog(
+        service = connectionsManager.discord,
+        uNameStringRes = MR.strings.username,
+    )
+}) {
+    Icon(Icons.Default.Settings, contentDescription = null)
                     }
                 }
             }
