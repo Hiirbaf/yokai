@@ -63,7 +63,7 @@ class SettingsConnectionsController :
 
             onClick {
                 val service = connectionsManager.discord
-                if (service.isLogged()) {
+                if (service.isLogged) {
                     val dialog = ConnectionsLogoutDialog(service)
                     dialog.targetController = this@SettingsConnectionsController
                     dialog.showDialog(router)
