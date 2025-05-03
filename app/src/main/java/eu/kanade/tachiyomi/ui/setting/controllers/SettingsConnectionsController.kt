@@ -37,10 +37,10 @@ class SettingsConnectionsController :
     private val connectionsManager: ConnectionsManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.pref_category_tracking
+        titleRes = MR.strings.pref_category_connections
 
         preferenceCategory {
-            titleRes = R.string.pref_title_services
+            titleRes = MR.strings.pref_category_connections
 
             // Trackers
             trackPreference(trackManager.myAnimeList) {
@@ -56,7 +56,7 @@ class SettingsConnectionsController :
             // Discord
             preference {
                 key = "pref_discord_login"
-                title = context.getString(R.string.pref_title_discord)
+                title = context.getString(R.string.connections_discordd)
                 iconRes = R.drawable.ic_discord_24dp
                 iconColor = 0x7289DA // Color oficial Discord
 
