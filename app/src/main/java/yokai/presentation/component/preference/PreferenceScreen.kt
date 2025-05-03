@@ -14,7 +14,7 @@ import androidx.compose.ui.util.fastForEachIndexed
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController.kt
 import yokai.presentation.component.preference.widget.PreferenceGroupHeader
 import kotlinx.coroutines.delay
-import tachiyomi.presentation.core.components.ScrollbarLazyColumn
+import yokai.presentation.core.components.FastScrollLazyVerticalGrid
 import kotlin.time.Duration.Companion.seconds
 
 /**
