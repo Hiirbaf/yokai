@@ -23,7 +23,6 @@ import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
-import tachiyomi.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
 import tachiyomi.presentation.core.util.collectAsState
