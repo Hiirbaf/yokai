@@ -37,6 +37,7 @@ import yokai.data.AndroidDatabaseHandler
 import yokai.data.Database
 import yokai.data.DatabaseHandler
 import yokai.domain.SplashState
+import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.domain.storage.StorageManager
 
 fun appModule(app: Application) = module {
@@ -158,6 +159,7 @@ fun appModule(app: Application) = module {
     single { AndroidStorageFolderProvider(app) }
     single { StorageManager(app, get()) }
     single { ConnectionsManager() }
+    single { ConnectionsPreferences(get()) }
 
     single { SplashState() }
 }
