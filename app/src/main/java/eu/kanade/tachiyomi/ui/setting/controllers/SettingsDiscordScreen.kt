@@ -17,7 +17,7 @@ import uy.kohesive.injekt.api.get
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
-import yokai.presentation.screen.preference.PreferenceScreen
+import yokai.presentation.component.preference.PreferenceScreen
 
 class SettingsDiscordScreen : BaseComposeController() {
 
