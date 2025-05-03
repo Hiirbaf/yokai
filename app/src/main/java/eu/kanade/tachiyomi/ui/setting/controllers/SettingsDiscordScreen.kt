@@ -29,6 +29,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import tachiyomi.presentation.core.util.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 
 object SettingsDiscordScreen : BaseComposeController {
 
