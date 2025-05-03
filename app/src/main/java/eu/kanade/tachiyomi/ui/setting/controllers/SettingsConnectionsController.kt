@@ -27,12 +27,10 @@ import eu.kanade.tachiyomi.widget.preference.ConnectionsLogoutDialog
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 
 class SettingsConnectionsController :
-    SettingsLegacyController(),
-    TrackLoginDialog.Listener,
-    TrackLogoutDialog.Listener {
+    SettingsLegacyController() {
 
-    private val trackManager: TrackManager by injectLazy()
-    private val trackPreferences: TrackPreferences by injectLazy()
+   // private val trackManager: TrackManager by injectLazy()
+   // private val trackPreferences: TrackPreferences by injectLazy()
     private val connectionsManager: ConnectionsManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
@@ -61,7 +59,7 @@ class SettingsConnectionsController :
     }
     }
 
-    private inline fun PreferenceGroup.trackPreference(
+  /*  private inline fun PreferenceGroup.trackPreference(
         service: TrackService,
         crossinline login: () -> Unit = {},
     ): TrackerPreference {
@@ -82,7 +80,7 @@ class SettingsConnectionsController :
                 }
             },
         )
-    }
+    } */
 
     override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
