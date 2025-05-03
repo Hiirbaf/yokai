@@ -17,6 +17,7 @@ import uy.kohesive.injekt.api.get
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
+import yokai.presentation.screen.preference.PreferenceScreen
 
 class SettingsDiscordScreen : BaseComposeController() {
 
@@ -24,6 +25,7 @@ class SettingsDiscordScreen : BaseComposeController() {
     override fun ScreenContent() {
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+
         val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
         val useChapterTitlesPref = connectionsPreferences.useChapterTitles()
         val discordRPCStatus = connectionsPreferences.discordRPCStatus()
@@ -51,9 +53,11 @@ class SettingsDiscordScreen : BaseComposeController() {
             title = stringResource(MR.strings.pref_category_connections),
             actions = {
                 val uriHandler = LocalUriHandler.current
-                IconButton(onClick = {
-                    uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/")
-                }) {
+                IconButton(
+                    onClick = {
+                        uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/")
+                    },
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
                         contentDescription = stringResource(MR.strings.tracking_guide),
@@ -87,11 +91,16 @@ class SettingsDiscordScreen : BaseComposeController() {
                 ),
             )
 
-            Preference.PreferenceItem.TextPreference(
-                title = stringResource(MR.strings.logout),
-                onClick = {
-                    dialog = LogoutConnectionsDialog(connectionsManager.discord)
-                },
+            Preference.PreferenceGroup(
+                title = stringResource(MR.strings.pref_category_misc),
+                preferenceItems = persistentListOf(
+                    Preference.PreferenceItem.TextPreference(
+                        title = stringResource(MR.strings.logout),
+                        onClick = {
+                            dialog = LogoutConnectionsDialog(connectionsManager.discord)
+                        },
+                    ),
+                ),
             )
         }
     }
