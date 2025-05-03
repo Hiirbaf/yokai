@@ -8,11 +8,9 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.changesIn
-import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.data.track.TrackService
-import eu.kanade.tachiyomi.data.track.anilist.AnilistApi
 import eu.kanade.tachiyomi.data.track.bangumi.BangumiApi
 import eu.kanade.tachiyomi.data.track.myanimelist.MyAnimeListApi
 import eu.kanade.tachiyomi.data.track.shikimori.ShikimoriApi
@@ -55,36 +53,6 @@ class SettingsConnectionsController :
             trackPreference(trackManager.myAnimeList) {
                 activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
             }
-            trackPreference(trackManager.aniList) {
-                activity?.openInBrowser(AnilistApi.authUrl(), trackManager.aniList.getLogoColor(), true)
-            }
-            preference {
-                key = "update_anilist_scoring"
-                isPersistent = false
-                isIconSpaceReserved = true
-                title = context.getString(MR.strings.update_tracking_scoring_type, context.getString(MR.strings.anilist))
-
-                preferences.getStringPref(trackManager.aniList.getUsername())
-                    .changesIn(viewScope) {
-                        isVisible = it.isNotEmpty()
-                    }
-
-                onClick {
-                    viewScope.launchIO {
-                        val (result, error) = trackManager.aniList.updatingScoring()
-                        if (result) {
-                            view?.snack(MR.strings.scoring_type_updated)
-                        } else {
-                            view?.snack(
-                                context.getString(
-                                    MR.strings.could_not_update_scoring_,
-                                    error?.localizedMessage.orEmpty(),
-                                ),
-                            )
-                        }
-                    }
-                }
-            }
             trackPreference(trackManager.shikimori) {
                 activity?.openInBrowser(ShikimoriApi.authUrl(), trackManager.shikimori.getLogoColor(), true)
             }
@@ -92,17 +60,6 @@ class SettingsConnectionsController :
                 activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
             }
             infoPreference(MR.strings.tracking_info)
-        }
-        preferenceCategory {
-            titleRes = MR.strings.enhanced_services
-            val sourceManager = Injekt.get<SourceManager>()
-            val enhancedTrackers = trackManager.services
-                .filter { service ->
-                    if (service !is EnhancedTrackService) return@filter false
-                    sourceManager.getCatalogueSources().any { service.accept(it) }
-                }
-            enhancedTrackers.forEach { trackPreference(it) }
-            infoPreference(MR.strings.enhanced_tracking_info)
         }
     }
 
