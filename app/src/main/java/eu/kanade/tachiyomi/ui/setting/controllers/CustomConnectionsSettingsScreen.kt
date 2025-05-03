@@ -38,6 +38,7 @@ import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
+import dev.icerock.moko.resources.StringResource
 
 object CustomConnectionsSettingsScreen : Screen {
 
