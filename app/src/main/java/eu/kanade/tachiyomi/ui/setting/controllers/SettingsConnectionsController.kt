@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import yokai.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.data.track.TrackService
