@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,6 +17,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
