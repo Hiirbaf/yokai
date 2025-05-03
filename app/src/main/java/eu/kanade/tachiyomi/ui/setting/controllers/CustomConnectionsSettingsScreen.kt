@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
+import eu.kanade.tachiyomi.util.system.launchIO
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
 import uy.kohesive.injekt.Injekt
