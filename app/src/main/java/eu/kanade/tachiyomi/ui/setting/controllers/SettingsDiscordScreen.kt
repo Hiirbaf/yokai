@@ -27,6 +27,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import androidx.glance.LocalContext
 
 @Composable
 fun SettingsDiscordScreen() {
