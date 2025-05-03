@@ -5,60 +5,34 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.util.fastMap
-import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.presentation.category.visualName
-import yokai.presentation.component.preference.Preference
-import yokai.presentation.component.preference.widget.TriStateListDialog
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.coroutines.runBlocking
-import yokai.i18n.MR
-import dev.icerock.moko.resources.compose.stringResource
-import tachiyomi.presentation.core.util.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
+import yokai.domain.connections.service.ConnectionsPreferences
+import yokai.i18n.MR
+import yokai.presentation.component.preference.Preference
 
-object SettingsDiscordScreen : BaseComposeController {
-
-@ReadOnlyComposable
-    @Composable
-    override fun getTitleRes() = MR.strings.pref_category_connections
+class SettingsDiscordScreen : BaseComposeController() {
 
     @Composable
-    override fun RowScope.AppBarAction() {
-        val uriHandler = LocalUriHandler.current
-        IconButton(onClick = { uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/") }) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-                contentDescription = stringResource(MR.strings.tracking_guide),
-            )
-        }
-    }
-
-    @Composable
-    override fun getPreferences(): List<Preference> {
+    override fun ScreenContent() {
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
         val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
         val useChapterTitlesPref = connectionsPreferences.useChapterTitles()
         val discordRPCStatus = connectionsPreferences.discordRPCStatus()
 
-        val enableDRPC by enableDRPCPref.collectAsState()
-        val useChapterTitles by useChapterTitlesPref.collectAsState()
+        val enableDRPC = enableDRPCPref.get()
+        val useChapterTitles = useChapterTitlesPref.get()
 
         var dialog by remember { mutableStateOf<Any?>(null) }
+
         dialog?.run {
             when (this) {
                 is LogoutConnectionsDialog -> {
@@ -73,7 +47,20 @@ object SettingsDiscordScreen : BaseComposeController {
             }
         }
 
-        return listOf(
+        PreferenceScreen(
+            title = stringResource(MR.strings.pref_category_connections),
+            actions = {
+                val uriHandler = LocalUriHandler.current
+                IconButton(onClick = {
+                    uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/")
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                        contentDescription = stringResource(MR.strings.tracking_guide),
+                    )
+                }
+            },
+        ) {
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
@@ -98,11 +85,14 @@ object SettingsDiscordScreen : BaseComposeController {
                         enabled = enableDRPC,
                     ),
                 ),
-            ),
+            )
+
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.logout),
-                onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) },
-            ),
-        )
+                onClick = {
+                    dialog = LogoutConnectionsDialog(connectionsManager.discord)
+                },
+            )
+        }
     }
 }
