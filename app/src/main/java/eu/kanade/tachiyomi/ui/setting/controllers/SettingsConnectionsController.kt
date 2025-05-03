@@ -80,7 +80,7 @@ class SettingsConnectionsController :
                 }
             },
         )
-    } */
+    } 
 
     override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
@@ -100,5 +100,5 @@ class SettingsConnectionsController :
 
     override fun trackLogoutDialogClosed(service: TrackService) {
         updatePreference(service)
-    }
+    }*/
     }
