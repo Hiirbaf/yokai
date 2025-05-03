@@ -38,41 +38,41 @@ class SettingsConnectionsController :
     private val connectionsManager: ConnectionsManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = MR.strings.pref_category_connections
+    title = MR.strings.pref_category_connections.getString(context)
 
-        preferenceCategory {
-            titleRes = MR.strings.pref_category_connections
+    preferenceCategory {
+        title = MR.strings.pref_category_connections.getString(context)
 
-            // Trackers
-            trackPreference(trackManager.myAnimeList) {
-                activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
-            }
-            trackPreference(trackManager.shikimori) {
-                activity?.openInBrowser(ShikimoriApi.authUrl(), trackManager.shikimori.getLogoColor(), true)
-            }
-            trackPreference(trackManager.bangumi) {
-                activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
-            }
+        // Trackers
+        trackPreference(trackManager.myAnimeList) {
+            activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
+        }
+        trackPreference(trackManager.shikimori) {
+            activity?.openInBrowser(ShikimoriApi.authUrl(), trackManager.shikimori.getLogoColor(), true)
+        }
+        trackPreference(trackManager.bangumi) {
+            activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
+        }
 
-            // Discord
-            preference {
-                key = "pref_discord_login"
-                title = context.getString(R.string.connections_discordd)
-                iconRes = R.drawable.ic_discord_24dp
-                iconColor = 0x7289DA // Color oficial Discord
+        // Discord
+        preference {
+            key = "pref_discord_login"
+            title = context.getString(R.string.connections_discord) // Verifica el nombre exacto
+            iconRes = R.drawable.ic_discord_24dp
+            iconColor = 0x7289DA.toInt()
 
-                onClick {
-                    val service = connectionsManager.discord
-                    if (service.isLogged()) {
-                        val dialog = ConnectionsLogoutDialog(service)
-                        dialog.targetController = this@SettingsConnectionsController
-                        dialog.showDialog(router)
-                    } else {
-                        context.openDiscordLoginActivity()
-                    }
+            onClick {
+                val service = connectionsManager.discord
+                if (service.isLogged()) {
+                    val dialog = ConnectionsLogoutDialog(service)
+                    dialog.targetController = this@SettingsConnectionsController
+                    dialog.showDialog(router)
+                } else {
+                    context.openDiscordLoginActivity()
                 }
             }
         }
+    }
     }
 
     private inline fun preferenceCategory.trackPreference(
