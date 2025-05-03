@@ -5,6 +5,7 @@ import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
+import androidx.preference.PreferenceGroup
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
@@ -74,7 +75,7 @@ class SettingsConnectionsController :
     }
     }
 
-    private inline fun preferenceCategory.trackPreference(
+    private inline fun PreferenceGroup.trackPreference(
         service: TrackService,
         crossinline login: () -> Unit = {},
     ): TrackerPreference {
