@@ -3,38 +3,25 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.app.Activity
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
-import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.bangumi.BangumiApi
 import eu.kanade.tachiyomi.data.track.myanimelist.MyAnimeListApi
 import eu.kanade.tachiyomi.data.track.shikimori.ShikimoriApi
-import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.add
-import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.iconRes
 import eu.kanade.tachiyomi.ui.setting.infoPreference
 import eu.kanade.tachiyomi.ui.setting.onClick
-import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
-import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openInBrowser
-import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.widget.preference.TrackLoginDialog
 import eu.kanade.tachiyomi.widget.preference.TrackLogoutDialog
 import eu.kanade.tachiyomi.widget.preference.TrackerPreference
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsConnectionsController :
     SettingsLegacyController(),
@@ -42,7 +29,7 @@ class SettingsConnectionsController :
     TrackLogoutDialog.Listener {
 
     private val trackManager: TrackManager by injectLazy()
-    val trackPreferences: TrackPreferences by injectLazy()
+    private val trackPreferences: TrackPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = MR.strings.tracking
@@ -75,21 +62,11 @@ class SettingsConnectionsController :
                 iconColor = service.getLogoColor()
                 onClick {
                     if (service.isLogged) {
-                        if (service is EnhancedTrackService) {
-                            service.logout()
-                            updatePreference(service)
-                        } else {
-                            val dialog = TrackLogoutDialog(service)
-                            dialog.targetController = this@SettingsConnectionsController
-                            dialog.showDialog(router)
-                        }
+                        val dialog = TrackLogoutDialog(service)
+                        dialog.targetController = this@SettingsConnectionsController
+                        dialog.showDialog(router)
                     } else {
-                        if (service is EnhancedTrackService) {
-                            service.loginNoop()
-                            updatePreference(service)
-                        } else {
-                            login()
-                        }
+                        login()
                     }
                 }
             },
@@ -99,7 +76,6 @@ class SettingsConnectionsController :
     override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
         updatePreference(trackManager.myAnimeList)
-        updatePreference(trackManager.aniList)
         updatePreference(trackManager.shikimori)
         updatePreference(trackManager.bangumi)
     }
