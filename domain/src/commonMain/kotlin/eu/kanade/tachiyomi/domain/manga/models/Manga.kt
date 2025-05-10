@@ -126,6 +126,28 @@ interface Manga : SManga {
             isManhwaTag(tagLower) || isComicTag(tagLower) || isWebtoonTag(tagLower)
     }
 
+    
+
+    // Used to display the chapter's title one way or another
+    var displayMode: Int
+        get() = chapter_flags and CHAPTER_DISPLAY_MASK
+        set(mode) = setChapterFlags(mode, CHAPTER_DISPLAY_MASK)
+
+    var readFilter: Int
+        get() = chapter_flags and CHAPTER_READ_MASK
+        set(filter) = setChapterFlags(filter, CHAPTER_READ_MASK)
+
+    var downloadedFilter: Int
+        get() = chapter_flags and CHAPTER_DOWNLOADED_MASK
+        set(filter) = setChapterFlags(filter, CHAPTER_DOWNLOADED_MASK)
+
+    var bookmarkedFilter: Int
+        get() = chapter_flags and CHAPTER_BOOKMARKED_MASK
+        set(filter) = setChapterFlags(filter, CHAPTER_BOOKMARKED_MASK)
+
+    var sorting: Int
+        get() = chapter_flags 
+    
     fun isMangaTag(tag: String): Boolean {
     val normalized = tag.trim().lowercase()
     return normalized.contains("manga") ||
@@ -164,30 +186,27 @@ fun isWebtoonTag(tag: String): Boolean {
     val normalized = tag.trim().lowercase()
     return normalized.contains("webtoon")
 }
+    
+    fun isWebtoonSource(sourceName: String): Boolean {
+        return sourceName.contains("webtoon", true) ||
+            sourceName.contains("manhwa", true) ||
+            sourceName.contains("toonily", true)
+    }
+
+    fun isComicSource(sourceName: String): Boolean {
+        return sourceName.contains("gunnerkrigg", true) ||
+            sourceName.contains("dilbert", true) ||
+            sourceName.contains("cyanide", true) ||
+            sourceName.contains("xkcd", true) ||
+            sourceName.contains("tapas", true) ||
+            sourceName.contains("ComicExtra", true) ||
+            sourceName.contains("Read Comics Online", true) ||
+            sourceName.contains("ReadComicOnline", true)
+    }
 
     fun key(): String {
         return "manga-id-$id"
-    }
-
-    // Used to display the chapter's title one way or another
-    var displayMode: Int
-        get() = chapter_flags and CHAPTER_DISPLAY_MASK
-        set(mode) = setChapterFlags(mode, CHAPTER_DISPLAY_MASK)
-
-    var readFilter: Int
-        get() = chapter_flags and CHAPTER_READ_MASK
-        set(filter) = setChapterFlags(filter, CHAPTER_READ_MASK)
-
-    var downloadedFilter: Int
-        get() = chapter_flags and CHAPTER_DOWNLOADED_MASK
-        set(filter) = setChapterFlags(filter, CHAPTER_DOWNLOADED_MASK)
-
-    var bookmarkedFilter: Int
-        get() = chapter_flags and CHAPTER_BOOKMARKED_MASK
-        set(filter) = setChapterFlags(filter, CHAPTER_BOOKMARKED_MASK)
-
-    var sorting: Int
-        get() = chapter_flags and CHAPTER_SORTING_MASK
+    }and CHAPTER_SORTING_MASK
         set(sort) = setChapterFlags(sort, CHAPTER_SORTING_MASK)
 
     fun toMangaUpdate(): MangaUpdate {
