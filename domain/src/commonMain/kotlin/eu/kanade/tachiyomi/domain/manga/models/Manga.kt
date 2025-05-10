@@ -155,9 +155,8 @@ fun isManhwaTag(tag: String): Boolean {
 }
 
 fun isComicTag(tag: String): Boolean {
-    val normalized = tag.trim().lowercase()
-    return normalized.contains("comic") &&
-        !normalized.contains("webcomic")
+    var tag = tag.trim().lowercase()
+    return tag.contains("comic") && !tag.contains("webcomic")
 }
 
 fun isWebtoonTag(tag: String): Boolean {
