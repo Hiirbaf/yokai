@@ -127,47 +127,43 @@ interface Manga : SManga {
     }
 
     fun isMangaTag(tag: String): Boolean {
-        return tag in listOf("manga", "манга", "jp") || tag.startsWith("japanese")
-    }
+    val normalized = tag.trim().lowercase()
+    return normalized.contains("manga") ||
+        normalized.contains("манга") ||
+        normalized.startsWith("jp") ||
+        normalized.startsWith("japanese")
+}
 
-    fun isManhuaTag(tag: String): Boolean {
-        return tag in listOf("manhua", "маньхуа", "cn", "hk", "zh-Hans", "zh-Hant") || tag.startsWith("chinese")
-    }
+fun isManhuaTag(tag: String): Boolean {
+    val normalized = tag.trim().lowercase()
+    return normalized.contains("manhua") ||
+        normalized.contains("маньхуа") ||
+        normalized.contains("cn") ||
+        normalized.contains("hk") ||
+        normalized.contains("zh-hans") ||
+        normalized.contains("zh-hant") ||
+        normalized.startsWith("chinese")
+}
 
-    fun isLongStrip(): Boolean {
-        val currentTags =
-            genre?.split(",")?.map { it.trim().lowercase(Locale.US) } ?: emptyList()
-        return currentTags.any { it == "long strip" }
-    }
+fun isManhwaTag(tag: String): Boolean {
+    val normalized = tag.trim().lowercase()
+    return normalized.contains("manhwa") ||
+        normalized.contains("манхва") ||
+        normalized.contains("kr") ||
+        normalized.contains("long strip") ||
+        normalized.startsWith("korean")
+}
 
-    fun isManhwaTag(tag: String): Boolean {
-        return tag in listOf("long strip", "manhwa", "манхва", "kr") || tag.startsWith("korean")
-    }
+fun isComicTag(tag: String): Boolean {
+    val normalized = tag.trim().lowercase()
+    return normalized.contains("comic") &&
+        !normalized.contains("webcomic")
+}
 
-    fun isComicTag(tag: String): Boolean {
-        return tag in listOf("comic", "комикс", "en", "gb")
-    }
-
-    fun isWebtoonTag(tag: String): Boolean {
-        return tag.startsWith("webtoon")
-    }
-
-    fun isWebtoonSource(sourceName: String): Boolean {
-        return sourceName.contains("webtoon", true) ||
-            sourceName.contains("manhwa", true) ||
-            sourceName.contains("toonily", true)
-    }
-
-    fun isComicSource(sourceName: String): Boolean {
-        return sourceName.contains("gunnerkrigg", true) ||
-            sourceName.contains("dilbert", true) ||
-            sourceName.contains("cyanide", true) ||
-            sourceName.contains("xkcd", true) ||
-            sourceName.contains("tapas", true) ||
-            sourceName.contains("ComicExtra", true) ||
-            sourceName.contains("Read Comics Online", true) ||
-            sourceName.contains("ReadComicOnline", true)
-    }
+fun isWebtoonTag(tag: String): Boolean {
+    val normalized = tag.trim().lowercase()
+    return normalized.contains("webtoon")
+}
 
     fun key(): String {
         return "manga-id-$id"
