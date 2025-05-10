@@ -104,7 +104,7 @@ fun Manga.defaultReaderType(): Int {
     ) {
         ReadingModeType.LONG_STRIP.flagValue
     } else if (currentTags.any {
-                tag -> tag == "comic"
+                tag -> "comic" in tag
         } || (
             isComicSource(sourceName) &&
                 !sourceName.contains("tapas", true) &&
