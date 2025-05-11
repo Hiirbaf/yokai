@@ -145,7 +145,8 @@ interface Manga : SManga {
     }
 
     fun isComicTag(tag: String): Boolean {
-        return tag.contains("comic") && !tag.contains("webcomic")
+        val lowerTag = tag.lowercase(Locale.US)
+        return "comic" in lowerTag && "webcomic" !in lowerTag
     }
 
     fun isWebtoonTag(tag: String): Boolean {
@@ -164,8 +165,8 @@ interface Manga : SManga {
             sourceName.contains("cyanide", true) ||
             sourceName.contains("xkcd", true) ||
             sourceName.contains("tapas", true) ||
-            sourceName.contains("BatCave", true) ||
-            sourceName.contains("Marmota", true) ||
+           // sourceName.contains("BatCave", true) ||
+           // sourceName.contains("Marmota", true) ||
             sourceName.contains("ComicExtra", true) ||
             sourceName.contains("Read Comics Online", true) ||
             sourceName.contains("ReadComicOnline", true)
