@@ -688,13 +688,17 @@ class BrowseController :
     }
 
     private fun performSourceSearch(query: String) {
-        extQuery = query
+    extQuery = query
 
-    val filtered = presenter.sourceItems.filter { item ->
-        (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
+    val results = if (query.isBlank()) {
+        presenter.sourceItems  // Muestra todo
+    } else {
+        presenter.sourceItems.filter { item ->
+            (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
+        }
     }
 
-        adapter?.updateDataSet(filtered, true)
+    adapter?.updateDataSet(results, true)
     }
 
     private fun performGlobalSearch(query: String) {
