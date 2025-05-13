@@ -682,8 +682,8 @@ class BrowseController :
 
         // Create query listener which opens the global search view.
         setOnQueryTextChangeListener(searchView, true) {
-            if (!it.isNullOrBlank()) performSourceSearch(it)
-            true
+        performSourceSearch(it.orEmpty())
+        true
         }
     }
 
