@@ -688,13 +688,8 @@ class BrowseController :
     }
 
     private fun performSourceSearch(query: String) {
-    val filteredSources = adapter?.items?.filter { item ->
-        // Asegúrate de que cada `item` es un `SourceItem` y verifica si el nombre de la fuente coincide con la búsqueda
-        (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
-    }
-
-    // Actualiza el adaptador con los resultados filtrados
-    adapter?.updateDataSet(filteredSources ?: emptyList(), false)
+        extQuery = query
+        binding.bottomSheet.root.drawExtensions()
     }
 
     private fun performGlobalSearch(query: String) {
