@@ -689,7 +689,12 @@ class BrowseController :
 
     private fun performSourceSearch(query: String) {
         extQuery = query
-        binding.bottomSheet.root.drawExtensions()
+
+    val filtered = presenter.sourceItems.filter { item ->
+        (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
+    }
+
+        adapter?.updateDataSet(filtered, true)
     }
 
     private fun performGlobalSearch(query: String) {
