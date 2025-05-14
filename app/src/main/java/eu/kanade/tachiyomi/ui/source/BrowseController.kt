@@ -671,29 +671,28 @@ class BrowseController :
      * @param inflater used to load the menu xml.
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Inflate menu
-        inflater.inflate(R.menu.catalogue_main, menu)
+    inflater.inflate(R.menu.catalogue_main, menu)
 
-        // Initialize search option.
-        val searchView = activityBinding?.searchToolbar?.searchView
+    val searchView = activityBinding?.searchToolbar?.searchView
 
-        // Change hint to show global search.
-        activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(MR.strings.global_search)
+    activityBinding?.searchToolbar?.searchQueryHint =
+        view?.context?.getString(MR.strings.global_search)
 
-        // Create query listener which opens the global search view.
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-    override fun onQueryTextChange(newText: String?): Boolean {
-        extQuery = newText.orEmpty()
-        drawSourcesSimple()
-        return true
-    }
+    searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextChange(newText: String?): Boolean {
+            extQuery = newText.orEmpty()
+            drawSourcesSimple()
+            return true
+        }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
-    }
-})
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            return true
+        }
+    })
+}
 
-    private fun drawSourcesSimple() {
+// ESTA PARTE VA FUERA DE onCreateOptionsMenu
+private fun drawSourcesSimple() {
     val items = presenter.sourceItems.toList()
 
     val filtered = if (extQuery.isNotBlank()) {
@@ -705,7 +704,7 @@ class BrowseController :
     }
 
     adapter?.updateDataSet(filtered, true)
-    }
+}
 
     private fun performGlobalSearch(query: String) {
         router.pushController(GlobalSearchController(query).withFadeTransaction())
