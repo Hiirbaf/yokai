@@ -566,6 +566,7 @@ class BrowseController :
         super.onChangeEnded(handler, type)
         if (type.isEnter) {
             drawSourcesSimple()
+            activityBinding?.searchToolbar?.searchView?.setQuery(extQuery, false)
             binding.bottomSheet.root.canExpand = true
             setBottomPadding()
             updateTitleAndMenu()
