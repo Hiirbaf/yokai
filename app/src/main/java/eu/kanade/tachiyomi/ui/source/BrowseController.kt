@@ -681,36 +681,30 @@ class BrowseController :
         activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(MR.strings.global_search)
 
         // Create query listener which opens the global search view.
-        setOnQueryTextChangeListener(searchView, true) {
-    performSourceSearch(it.orEmpty())
-    true
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+    override fun onQueryTextChange(newText: String?): Boolean {
+        extQuery = newText.orEmpty()
+        drawSourcesSimple()
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+})
+
+    private fun drawSourcesSimple() {
+    val items = presenter.sourceItems.toList()
+
+    val filtered = if (extQuery.isNotBlank()) {
+        items.filter {
+            (it as? SourceItem)?.source?.name?.contains(extQuery, ignoreCase = true) == true
         }
-    }
-
-    private fun performSourceSearch(query: String) {
-    extQuery = query
-
-    val originalItems = presenter.sourceItems.toList() // Copia segura
-
-    val results = if (query.isBlank()) {
-        originalItems
     } else {
-        originalItems
-            .groupBy { it.header }
-            .flatMap { (header, items) ->
-                val filteredItems = items.filter { item ->
-                    (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
-                }
-
-                if (filteredItems.isNotEmpty()) {
-                    listOfNotNull(header) + filteredItems
-                } else {
-                    emptyList()
-                }
-            }
+        items
     }
 
-    adapter?.updateDataSet(results, true)
+    adapter?.updateDataSet(filtered, true)
     }
 
     private fun performGlobalSearch(query: String) {
