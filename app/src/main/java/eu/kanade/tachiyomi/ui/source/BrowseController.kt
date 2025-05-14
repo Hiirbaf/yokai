@@ -565,6 +565,7 @@ class BrowseController :
     override fun onChangeEnded(handler: ControllerChangeHandler, type: ControllerChangeType) {
         super.onChangeEnded(handler, type)
         if (type.isEnter) {
+            drawSourcesSimple()
             binding.bottomSheet.root.canExpand = true
             setBottomPadding()
             updateTitleAndMenu()
