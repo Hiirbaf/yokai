@@ -682,20 +682,32 @@ class BrowseController :
 
         // Create query listener which opens the global search view.
         setOnQueryTextChangeListener(searchView, true) {
-        performSourceSearch(it.orEmpty())
-        true
+    performSourceSearch(it.orEmpty())
+    true
         }
     }
 
     private fun performSourceSearch(query: String) {
     extQuery = query
 
+    val originalItems = presenter.sourceItems.toList() // Copia segura
+
     val results = if (query.isBlank()) {
-        presenter.sourceItems  // Muestra todo
+        originalItems
     } else {
-        presenter.sourceItems.filter { item ->
-            (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
-        }
+        originalItems
+            .groupBy { it.header }
+            .flatMap { (header, items) ->
+                val filteredItems = items.filter { item ->
+                    (item as? SourceItem)?.source?.name?.contains(query, ignoreCase = true) == true
+                }
+
+                if (filteredItems.isNotEmpty()) {
+                    listOfNotNull(header) + filteredItems
+                } else {
+                    emptyList()
+                }
+            }
     }
 
     adapter?.updateDataSet(results, true)
