@@ -134,15 +134,15 @@ data class ComicInfo(
 
     @XmlElement(false)
     @XmlSerialName("xmlns:ty", "", "")
-    val xmlNamespaceTy: String = "http://www.w3.org/2001/XMLSchema"
+    val xmlNamespaceTy: String = "http://tachiyomi.org/ns"
 
     @XmlElement(false)
     @XmlSerialName("xmlns:mh", "", "")
-    val xmlNamespaceMh: String = "http://www.w3.org/2001/XMLSchema"
+    val xmlNamespaceMh: String = "http://mihon.app/ns"
 
     @XmlElement(false)
     @XmlSerialName("xmlns:j2k", "", "")
-    val xmlNamespaceJ2k: String = "http://www.w3.org/2001/XMLSchema"
+    val xmlNamespaceJ2k: String = "http://j2k.app/ns"
 
     @Serializable
     @XmlSerialName("Title", "", "")
@@ -203,19 +203,19 @@ data class ComicInfo(
     // Tachi Note: The spec doesn't have a good field for this
     // REF: https://github.com/anansi-project/comicinfo/issues/5
     @Serializable
-    @XmlSerialName("PublishingStatusTachiyomi", "http://www.w3.org/2001/XMLSchema", "ty")
+    @XmlSerialName("PublishingStatusTachiyomi", "http://tachiyomi.org/ns", "ty")
     data class PublishingStatusTachiyomi(@XmlValue(true) val value: String = "")
 
     @Serializable
-    @XmlSerialName("Categories", "http://www.w3.org/2001/XMLSchema", "ty")
+    @XmlSerialName("Categories", "http://tachiyomi.org/ns", "ty")
     data class CategoriesTachiyomi(@XmlValue(true) val value: String = "")
 
     @Serializable
-    @XmlSerialName("SourceMihon", "http://www.w3.org/2001/XMLSchema", "mh")
+    @XmlSerialName("SourceMihon", "http://mihon.app/ns", "mh")
     data class SourceMihon(@XmlValue(true) val value: String = "")
 
     @Serializable
-    @XmlSerialName("LanguageJ2K", "http://www.w3.org/2001/XMLSchema", "j2k")
+    @XmlSerialName("LanguageJ2K", "http://j2k.app/ns", "j2k")
     data class LanguageJ2K(@XmlValue(true) val value: String = "")
 }
 
