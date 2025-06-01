@@ -124,22 +124,27 @@ data class ComicInfo(
     val source: SourceMihon?,
     val language: LanguageJ2K?,
 ) {
+    @Suppress("UNUSED")
     @XmlElement(false)
     @XmlSerialName("xmlns:xsd", "", "")
     val xmlSchema: String = "http://www.w3.org/2001/XMLSchema"
 
+    @Suppress("UNUSED")
     @XmlElement(false)
     @XmlSerialName("xmlns:xsi", "", "")
     val xmlSchemaInstance: String = "http://www.w3.org/2001/XMLSchema-instance"
 
+    @Suppress("UNUSED")
     @XmlElement(false)
     @XmlSerialName("xmlns:ty", "", "")
     val xmlNamespaceTy: String = "http://tachiyomi.org/ns"
 
+    @Suppress("UNUSED")
     @XmlElement(false)
     @XmlSerialName("xmlns:mh", "", "")
     val xmlNamespaceMh: String = "http://mihon.app/ns"
 
+    @Suppress("UNUSED")
     @XmlElement(false)
     @XmlSerialName("xmlns:j2k", "", "")
     val xmlNamespaceJ2k: String = "http://j2k.app/ns"
