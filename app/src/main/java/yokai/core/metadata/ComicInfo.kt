@@ -132,6 +132,18 @@ data class ComicInfo(
     @XmlSerialName("xmlns:xsi", "", "")
     val xmlSchemaInstance: String = "http://www.w3.org/2001/XMLSchema-instance"
 
+    @XmlElement(false)
+    @XmlSerialName("xmlns:ty", "", "")
+    val xmlNamespaceTy: String = "http://www.w3.org/2001/XMLSchema"
+
+    @XmlElement(false)
+    @XmlSerialName("xmlns:mh", "", "")
+    val xmlNamespaceMh: String = "http://www.w3.org/2001/XMLSchema"
+
+    @XmlElement(false)
+    @XmlSerialName("xmlns:j2k", "", "")
+    val xmlNamespaceJ2k: String = "http://www.w3.org/2001/XMLSchema"
+
     @Serializable
     @XmlSerialName("Title", "", "")
     data class Title(@XmlValue(true) val value: String = "")
