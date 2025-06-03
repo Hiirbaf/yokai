@@ -220,6 +220,23 @@ class SettingsLibraryController : SettingsLegacyController() {
                 bindTo(uiPreferences.enableChapterSwipeAction())
                 titleRes = MR.strings.enable_chapter_swipe_action
             }
+            intListPreference(activity) {
+            key = libraryPreferences.swipeToStartAction().key()
+            title = activity.getString(MR.strings.enable_chapter_swipe_action)
+            entries = listOf(
+            activity.getString(R.string.disabled),
+            activity.getString(R.string.action_bookmark),
+            activity.getString(R.string.action_mark_as_read),
+            activity.getString(R.string.action_download),
+            )
+            entryValues = listOf(
+            LibraryPreferences.ChapterSwipeAction.Disabled,
+            LibraryPreferences.ChapterSwipeAction.ToggleBookmark,
+            LibraryPreferences.ChapterSwipeAction.ToggleRead,
+            LibraryPreferences.ChapterSwipeAction.Download,
+            )
+            defaultValue = LibraryPreferences.ChapterSwipeAction.Disabled
+            }
             multiSelectListPreferenceMat(activity) {
                 bindTo(libraryPreferences.markDuplicateReadChapterAsRead())
                 titleRes = MR.strings.pref_mark_as_read_duplicate_read_chapter
