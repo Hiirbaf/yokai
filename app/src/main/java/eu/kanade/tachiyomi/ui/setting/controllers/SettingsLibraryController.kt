@@ -222,7 +222,7 @@ class SettingsLibraryController : SettingsLegacyController() {
             }
             intListPreference(activity) {
             key = libraryPreferences.swipeToStartAction().key()
-            title = activity.getString(MR.strings.enable_chapter_swipe_action)
+            titleRes = MR.strings.enable_chapter_swipe_action
             entries = listOf(
             activity.getString(R.string.disabled),
             activity.getString(R.string.action_bookmark),
