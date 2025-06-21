@@ -49,19 +49,17 @@
             android:background="@android:color/transparent">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/toolbar_title"
-                style="?textAppearanceTitleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTint="?actionBarTintColor"
-                android:ellipsize="end"
-                android:layout_gravity="center"
-                android:maxLines="1"
-                android:textColor="?actionBarTintColor"
-                android:textSize="20sp"
-                tools:drawableEnd="@drawable/ic_arrow_drop_down_24dp"
-                tools:drawableStart="@drawable/ic_blank_24dp"
-                tools:text="Title Text" />
+            android:id="@+id/toolbar_title"
+            style="?textAppearanceTitleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTint="?actionBarTintColor"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="?actionBarTintColor"
+            android:textSize="20sp"
+            tools:text="Injustice: Gods Among Us Year Four" />
         </eu.kanade.tachiyomi.ui.base.CenteredToolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
