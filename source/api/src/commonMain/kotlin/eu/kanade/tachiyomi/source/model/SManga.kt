@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.source.model
 
+import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import java.io.Serializable
 
 interface SManga : Serializable {
@@ -24,9 +25,51 @@ interface SManga : Serializable {
 
     var initialized: Boolean
 
-    fun getGenres(): List<String>? {
-        if (genre.isNullOrBlank()) return null
-        return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
+    val originalTitle: String
+        get() = (this as? MangaImpl)?.ogTitle ?: title
+    val originalAuthor: String?
+        get() = (this as? MangaImpl)?.ogAuthor ?: author
+    val originalArtist: String?
+        get() = (this as? MangaImpl)?.ogArtist ?: artist
+    val originalDescription: String?
+        get() = (this as? MangaImpl)?.ogDesc ?: description
+    val originalGenre: String?
+        get() = (this as? MangaImpl)?.ogGenre ?: genre
+    val originalStatus: Int
+        get() = (this as? MangaImpl)?.ogStatus ?: status
+
+    val hasSameAuthorAndArtist: Boolean
+        get() = author == artist || artist.isNullOrBlank() ||
+            author?.contains(artist ?: "", true) == true
+
+    fun copyFrom(other: SManga) {
+        if (other.author != null) {
+            author = other.originalAuthor
+        }
+
+        if (other.artist != null) {
+            artist = other.originalArtist
+        }
+
+        if (other.description != null) {
+            description = other.originalDescription
+        }
+
+        if (other.genre != null) {
+            genre = other.originalGenre
+        }
+
+        if (other.thumbnail_url != null) {
+            thumbnail_url = other.thumbnail_url
+        }
+
+        status = other.originalStatus
+
+        update_strategy = other.update_strategy
+
+        if (!initialized) {
+            initialized = other.initialized
+        }
     }
 
     fun copy() = create().also {
@@ -51,7 +94,7 @@ interface SManga : Serializable {
         const val ON_HIATUS = 6
 
         fun create(): SManga {
-            return SMangaImpl()
+            return MangaImpl()
         }
     }
 }
