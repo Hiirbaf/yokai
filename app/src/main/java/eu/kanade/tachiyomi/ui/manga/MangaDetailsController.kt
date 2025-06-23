@@ -1346,6 +1346,7 @@ class MangaDetailsController :
         if ((!isControllerVisible && alpha == null) || isScrollingDown) return
         val scrolledList = binding.recycler
         val toolbarTextView = activityBinding?.toolbar?.toolbarTitle ?: return
+        toolbarTextView.text = manga.title
         val tbAlpha = when {
             isTablet -> 0f
             // Specific alpha provided
