@@ -79,11 +79,15 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             titleRes = MR.strings.browse
             onClick { navigateTo(SettingsBrowseController()) }
         }
-        preference {
+        preferenceLongClickable {
             iconRes = R.drawable.ic_sync_24dp
             iconTint = tintColor
             titleRes = MR.strings.tracking
             onClick { navigateTo(SettingsTrackingController()) }
+            onLongClick {
+                navigateTo(SettingsDiscordRpcController())
+                context.toast("Discord")
+            }
         }
         preferenceLongClickable {
             iconRes = R.drawable.ic_storage_24dp
