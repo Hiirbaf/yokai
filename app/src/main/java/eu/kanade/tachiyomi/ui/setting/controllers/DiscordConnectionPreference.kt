@@ -8,7 +8,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
-import tachiyomi.R
+import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
 
 class DiscordConnectionPreference @JvmOverloads constructor(
     context: Context,
