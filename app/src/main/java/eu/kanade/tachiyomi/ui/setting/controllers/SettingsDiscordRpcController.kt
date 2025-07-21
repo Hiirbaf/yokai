@@ -3,7 +3,8 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.content.Context
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
-import com.jery.tachisy_rpc.R
+import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 
 class SettingsDiscordRpcController : SettingsLegacyController() {
