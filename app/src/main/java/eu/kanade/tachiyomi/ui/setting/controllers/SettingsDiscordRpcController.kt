@@ -10,21 +10,20 @@ import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 class SettingsDiscordRpcController : SettingsLegacyController() {
 
     override fun setupPreferenceScreen(screen: PreferenceScreen): PreferenceScreen = screen.apply {
-        title = "Discord RPC"
+    title = "Discord RPC"
 
-        val context: Context = preferenceManager.context
+    val context = preferenceManager.context
 
-        // Preferencia para activar/desactivar el RPC
-        val enableRpcPref = SwitchPreferenceCompat(context).apply {
-            key = "pref_discord_rpc_enabled"
-            title = "Habilitar Discord Rich Presence"
-            summary = "Muestra lo que estás leyendo en Discord"
-
-            setDefaultValue(true)
+    val connectionPref = DiscordConnectionPreference(context).apply {
+        title = "Discord"
+        onLoginClick = {
+            context.openDiscordLoginActivity()
         }
+        onSettingsClick = {
+            router.pushController(SettingsDiscordScreen().withFadeTransaction())
+        }
+    }
 
-        addPreference(enableRpcPref)
-
-        // Aquí puedes agregar más configuraciones si lo necesitás, como detalles adicionales
+    addPreference(connectionPref)
     }
 }
