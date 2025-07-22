@@ -10,7 +10,7 @@ import android.os.Looper
 import androidx.compose.ui.util.fastAny
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.connection.ConnectionManager
+import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.network.GET
