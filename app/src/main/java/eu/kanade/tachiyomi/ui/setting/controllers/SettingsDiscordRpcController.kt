@@ -18,7 +18,8 @@ class SettingsDiscordRpcController : SettingsLegacyController() {
     val connectionPref = DiscordConnectionPreference(context).apply {
         title = "Discord"
         onLoginClick = {
-            context.openDiscordLoginActivity()
+            //context.openDiscordLoginActivity()
+            context.toast("Configuración avanzada no disponible todavía.")
         }
         onSettingsClick = {
             router.pushController(SettingsDiscordScreen().withFadeTransaction())
