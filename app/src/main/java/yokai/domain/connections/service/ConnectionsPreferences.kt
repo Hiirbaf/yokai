@@ -1,4 +1,4 @@
-package eu.kanade.domain.connections.service
+package yokai.domain.connections.service
 
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 import tachiyomi.core.common.preference.PreferenceStore
