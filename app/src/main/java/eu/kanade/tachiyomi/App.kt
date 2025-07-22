@@ -216,6 +216,14 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         }
     }
 
+    override fun onStart(owner: LifecycleOwner) {
+        SecureActivityDelegate.onApplicationStart()
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        SecureActivityDelegate.onApplicationStopped()
+    }
+
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         MultiDex.install(this)
