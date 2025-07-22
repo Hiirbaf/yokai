@@ -16,7 +16,7 @@ import eu.kanade.tachiyomi.data.connection.ConnectionManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.view.setComposeContent
-import tachiyomi.i18n.MR
+import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 
