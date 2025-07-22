@@ -6,8 +6,8 @@ import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import yokai.domain.connection.service.ConnectionsPreferences
-import yokai.R
-import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import tachiyomi.R
+import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
