@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import yokai.i18n.MR
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 
