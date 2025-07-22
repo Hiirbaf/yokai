@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import yokai.domain.connection.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import tachiyomi.R
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
