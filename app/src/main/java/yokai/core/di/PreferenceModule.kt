@@ -63,4 +63,6 @@ fun preferenceModule(application: Application) = module {
             preferenceStore = get(),
         )
     }
+    
+    single { yokai.domain.connections.service.ConnectionsPreferences(get()) }
 }
