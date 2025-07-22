@@ -40,7 +40,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.main.MainActivity
-import eu.kanade.tachiyomi.ui.setting.connections.DiscordLoginActivity
+import eu.kanade.tachiyomi.ui.setting.connection.DiscordLoginActivity
 import java.io.File
 import java.util.Locale
 import kotlin.math.max
