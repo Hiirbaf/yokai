@@ -8,9 +8,9 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.compose.ui.util.fastAny
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.connections.ConnectionManager
+import eu.kanade.tachiyomi.data.connection.ConnectionManager
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.network.GET
