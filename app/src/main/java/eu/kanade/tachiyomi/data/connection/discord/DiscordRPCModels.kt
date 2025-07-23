@@ -169,10 +169,10 @@ enum class DiscordScreen(
 ) {
     APP(R.string.app_name, R.string.browsing, R.string.library, tachiyomiImageUrl),
     LIBRARY(R.string.app_name, R.string.browsing, R.string.library, libraryImageUrl),
-    UPDATES(R.string.app_name, R.string.scrolling, R.string.label_recent_updates, updatesImageUrl),
-    HISTORY(R.string.app_name, R.string.scrolling, R.string.label_recent_manga, historyImageUrl),
-    BROWSE(R.string.app_name, R.string.browsing, R.string.label_sources, browseImageUrl),
-    MORE(R.string.app_name, R.string.messing, R.string.label_settings, moreImageUrl),
+    UPDATES(R.string.app_name, R.string.scrolling, R.string.recents, updatesImageUrl),
+    HISTORY(R.string.app_name, R.string.scrolling, R.string.recents, historyImageUrl),
+    BROWSE(R.string.app_name, R.string.browsing, R.string.browse, browseImageUrl),
+    MORE(R.string.app_name, R.string.messing, R.string.settings, moreImageUrl),
     WEBVIEW(R.string.app_name, R.string.browsing, R.string.action_web_view, webviewImageUrl),
     COMIC(R.string.app_name, R.string.comic, R.string.reading, comicImageUrl),
 }
