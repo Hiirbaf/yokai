@@ -141,7 +141,7 @@ class DiscordRPCService : Service() {
             if (rpc == null || readerData.thumbnailUrl == null || readerData.mangaId == null) return
 
             val categoryIds = Injekt.get<GetCategories>()
-                .await(readerData.mangaId)
+                .awaitByMangaId(readerData.mangaId)
                 .map { it.id.toString() }
                 .run { ifEmpty { plus(UNCATEGORIZED_ID.toString()) } }
 
