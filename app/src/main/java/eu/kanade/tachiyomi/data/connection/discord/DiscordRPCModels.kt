@@ -167,8 +167,8 @@ enum class DiscordScreen(
     @StringRes val state: Int,
     val imageUrl: String,
 ) {
-    APP(R.string.app_name, R.string.browsing, R.string.label_library, tachiyomiImageUrl),
-    LIBRARY(R.string.app_name, R.string.browsing, R.string.label_library, libraryImageUrl),
+    APP(R.string.app_name, R.string.browsing, R.string.library, tachiyomiImageUrl),
+    LIBRARY(R.string.app_name, R.string.browsing, R.string.library, libraryImageUrl),
     UPDATES(R.string.app_name, R.string.scrolling, R.string.label_recent_updates, updatesImageUrl),
     HISTORY(R.string.app_name, R.string.scrolling, R.string.label_recent_manga, historyImageUrl),
     BROWSE(R.string.app_name, R.string.browsing, R.string.label_sources, browseImageUrl),
