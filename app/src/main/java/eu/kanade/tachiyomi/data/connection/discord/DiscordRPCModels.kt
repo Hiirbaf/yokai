@@ -173,7 +173,7 @@ enum class DiscordScreen(
     HISTORY(R.string.app_name, R.string.scrolling, R.string.recents, historyImageUrl),
     BROWSE(R.string.app_name, R.string.browsing, R.string.browse, browseImageUrl),
     MORE(R.string.app_name, R.string.messing, R.string.settings, moreImageUrl),
-    WEBVIEW(R.string.app_name, R.string.browsing, "WebView", webviewImageUrl),
+    WEBVIEW(R.string.app_name, R.string.browsing, R.string.action_web_view, webviewImageUrl),
     COMIC(R.string.app_name, R.string.comic, R.string.reading, comicImageUrl),
 }
 
