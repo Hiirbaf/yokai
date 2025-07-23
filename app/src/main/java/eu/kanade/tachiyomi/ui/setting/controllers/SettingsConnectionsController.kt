@@ -31,6 +31,7 @@ import tachiyomi.core.common.util.lang.withUIContext
 import tachiyomi.i18n.MR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
 
 class SettingsConnectionsController : SettingsComposeController() {
 
