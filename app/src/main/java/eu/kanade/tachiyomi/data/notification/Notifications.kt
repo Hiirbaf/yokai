@@ -12,6 +12,7 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.notificationManager
+import eu.kanade.tachiyomi.data.connection.discord.RICH_PRESENCE_TAG
 
 /**
  * Class to manage the basic information of all the notifications used in the app.
@@ -89,6 +90,12 @@ object Notifications {
      */
     const val CHANNEL_INCOGNITO_MODE = "incognito_mode_channel"
     const val ID_INCOGNITO_MODE = -701
+
+    /**
+     * Notification channel used for Discord RPC
+     */
+    const val CHANNEL_DISCORD_RPC = "${RICH_PRESENCE_TAG}_channel"
+    const val ID_DISCORD_RPC = -1701
 
     private val deprecatedChannels = listOf(
         "backup_restore_channel",
