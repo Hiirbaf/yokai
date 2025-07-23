@@ -1,38 +1,72 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.os.Bundle
+import androidx.preference.PreferenceScreen
 import androidx.preference.Preference
-import androidx.preference.PreferenceViewHolder
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
+import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.ui.setting.connections.ConnectionsLoginDialog
+import eu.kanade.tachiyomi.ui.setting.connections.ConnectionsLogoutDialog
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
+import eu.kanade.tachiyomi.ui.base.controller.SettingsController
+import uy.kohesive.injekt.injectLazy
 
-class DiscordConnectionPreference @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-) : Preference(context, attrs) {
+class SettingsConnectionsController : SettingsController() {
 
-    var onLoginClick: (() -> Unit)? = null
-    var onSettingsClick: (() -> Unit)? = null
+    private val connectionsManager: ConnectionsManager by injectLazy()
 
-    init {
-        layoutResource = R.layout.preference_discord_connection
-    }
+    override fun setupPreferenceScreen(screen: PreferenceScreen) = with(screen) {
+        titleRes = R.string.pref_category_connections
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder) {
-        super.onBindViewHolder(holder)
+        val category = PreferenceCategory(context).apply {
+            title = context.getString(R.string.special_services)
+        }
+        addPreference(category)
 
-        val titleView = holder.findViewById(R.id.discord_title) as? TextView
-        val loginButton = holder.findViewById(R.id.discord_login) as? Button
-        val settingsButton = holder.findViewById(R.id.discord_settings) as? Button
+        val discordConnection = connectionsManager.discord
 
-        titleView?.text = title
+        // Preferencia de login/logout dinámica
+        category.addPreference(
+            Preference(context).apply {
+                title = context.getString(discordConnection.nameRes())
+                summary = if (discordConnection.isLogged) {
+                    context.getString(R.string.logout)
+                } else {
+                    context.getString(R.string.login)
+                }
 
-        loginButton?.setOnClickListener { onLoginClick?.invoke() }
-        settingsButton?.setOnClickListener { onSettingsClick?.invoke() }
+                setOnPreferenceClickListener {
+                    if (discordConnection.isLogged) {
+                        // Mostrar diálogo de logout
+                        ConnectionsLogoutDialog(discordConnection).show(
+                            router.activity.supportFragmentManager,
+                            "logout_dialog"
+                        )
+                    } else {
+                        // Mostrar diálogo de login
+                        ConnectionsLoginDialog(discordConnection).show(
+                            router.activity.supportFragmentManager,
+                            "login_dialog"
+                        )
+                    }
+                    true
+                }
+            }
+        )
+
+        category.addPreference(
+            Preference(context).apply {
+                summary = context.getString(R.string.connections_discord_info)
+                isSelectable = false
+            }
+        )
+
+        category.addPreference(
+            Preference(context).apply {
+                summary = context.getString(R.string.connections_info)
+                isSelectable = false
+            }
+        )
     }
 }
