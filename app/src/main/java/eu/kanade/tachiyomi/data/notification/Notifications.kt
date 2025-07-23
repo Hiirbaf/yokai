@@ -240,6 +240,13 @@ object Notifications {
                 setShowBadge(false)
                 group = GROUP_APP_UPDATES
             },
+            NotificationChannel(
+                CHANNEL_DISCORD_RPC,
+                context.getString(MR.strings.pref_discord_rpc),
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                setShowBadge(false)
+            },
         )
         context.notificationManager.createNotificationChannels(channels)
     }
