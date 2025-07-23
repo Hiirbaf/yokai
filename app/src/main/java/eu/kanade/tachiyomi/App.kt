@@ -217,11 +217,11 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        
+        DiscordRPCService.start(applicationContext)
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        
+        DiscordRPCService.stop(applicationContext)
     }
 
     override fun attachBaseContext(base: Context) {
