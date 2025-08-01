@@ -17,10 +17,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.presentation.category.visualName
-import eu.kanade.presentation.more.settings.Preference
-import eu.kanade.presentation.more.settings.widget.TriStateListDialog
+import yokai.presentation.component.preference.Preference
+import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
