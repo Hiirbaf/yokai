@@ -45,11 +45,11 @@ import eu.kanade.tachiyomi.data.connection.ConnectionsService
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.collections.immutable.persistentListOf
-import tachiyomi.core.common.util.lang.launchIO
-import tachiyomi.core.common.util.lang.withUIContext
+import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.withUIContext
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
-import tachiyomi.presentation.core.i18n.stringResource
+import eu.kanade.tachiyomi.appwidget.util.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
