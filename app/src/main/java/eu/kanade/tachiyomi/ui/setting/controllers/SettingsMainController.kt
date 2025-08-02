@@ -12,6 +12,7 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
+import yokai.presentation.settings.ComposableSettings
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.more.AboutController
