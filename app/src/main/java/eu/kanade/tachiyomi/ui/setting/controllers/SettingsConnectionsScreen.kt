@@ -37,12 +37,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import yokai.presentation.component.preference.Preference
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
+import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.collections.immutable.persistentListOf
