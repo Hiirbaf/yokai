@@ -22,6 +22,8 @@ import eu.kanade.presentation.components.ConnectionsLogoIcon
 import yokai.presentation.component.preference.LocalPreferenceHighlighted
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 
 @Composable
