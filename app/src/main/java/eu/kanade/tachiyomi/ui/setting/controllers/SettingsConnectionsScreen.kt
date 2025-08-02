@@ -57,14 +57,14 @@ import dev.icerock.moko.resources.StringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class SettingsConnectionsScreen : SettingsComposeController() {
-    override fun getComposableSettings(): ComposableSettings = ComposableSettings {
+object SettingsConnectionsScreen : Screen, ComposableSettings {
+
+    override fun getTitleRes(): StringResource = MR.strings.pref_category_connections
+
+    @Composable
+    override fun Content() {
         SettingsConnectionsContent()
     }
-
-    @ReadOnlyComposable
-    @Composable
-    override fun getTitleRes() = MR.strings.pref_category_connections
 }
 
     @Composable
