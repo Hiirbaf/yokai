@@ -58,7 +58,7 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
 
     @Composable
     override fun getPreferences(): List<Preference> {
-        val navigator = LocalNavigator.currentOrThrow
+        //val navigator = LocalNavigator.currentOrThrow
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
         val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
@@ -84,10 +84,10 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
         }
 
         return listOf(
-            Preference.PreferenceItem.TextPreference(
+            /*Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.discord_accounts),
                 onClick = { navigator.push(DiscordAccountsScreen) },
-            ),
+            ),*/
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
