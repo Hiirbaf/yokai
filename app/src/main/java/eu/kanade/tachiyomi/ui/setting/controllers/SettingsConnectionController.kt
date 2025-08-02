@@ -5,5 +5,6 @@ import yokai.presentation.settings.ComposableSettings
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsConnectionsScreen
 
 class SettingsConnectionController : SettingsComposeController() {
-    override fun getComposableSettings(): ComposableSettings = SettingsConnectionsScreen
-}
+    override fun getComposableSettings(): ComposableSettings = ComposableSettings {
+    SettingsConnectionsContent()
+    }
