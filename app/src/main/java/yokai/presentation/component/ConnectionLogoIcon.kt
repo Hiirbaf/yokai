@@ -22,8 +22,13 @@ fun ConnectionsLogoIcon(
     service: ConnectionsService,
     onClick: (() -> Unit)? = null,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     val modifier = if (onClick != null) {
-        Modifier.clickableNoIndication(onClick = onClick)
+        Modifier.clickableNoIndication(
+            interactionSource = interactionSource,
+            onClick = onClick
+        )
     } else {
         Modifier
     }
