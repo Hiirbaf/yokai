@@ -36,6 +36,11 @@ import yokai.presentation.settings.ComposableSettings
 
 object SettingsDiscordScreen : Screen, ComposableSettings {
 
+    @Composable
+    override fun Content() {
+        ComposableSettings.Content(this)
+    }
+
     @ReadOnlyComposable
     @Composable
     override fun getTitleRes() = MR.strings.pref_category_connections
