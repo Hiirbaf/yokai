@@ -81,6 +81,12 @@ class SettingsConnectionsScreen : SettingsComposeController() {
                     onDismissRequest = { dialog = null },
                 )
             }
+            is LogoutConnectionsDialog -> {
+                ConnectionsLogoutDialog(
+                    service = service,
+                    onDismissRequest = { dialog = null },
+                )
+            }
             is NavigateTo -> {
                 LaunchedEffect(Unit) {
                     LocalNavigator.currentOrThrow.push(this@run.screen)
