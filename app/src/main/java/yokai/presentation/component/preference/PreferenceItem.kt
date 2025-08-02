@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
