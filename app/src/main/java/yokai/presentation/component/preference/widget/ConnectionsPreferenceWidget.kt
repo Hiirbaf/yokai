@@ -20,7 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.kanade.presentation.components.ConnectionsLogoIcon
 import yokai.presentation.component.preference.LocalPreferenceHighlighted
-import yokai.R
+import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 
 @Composable
