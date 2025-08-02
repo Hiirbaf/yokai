@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import yokai.presentation.component.preference.Preference
@@ -55,7 +56,12 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
-object SettingsConnectionsScreen : ComposableSettings {
+object SettingsConnectionsScreen : Screen, ComposableSettings {
+
+    @Composable
+    override fun Content() {
+        super<ComposableSettings>.Content()
+    }
 
     @ReadOnlyComposable
     @Composable
