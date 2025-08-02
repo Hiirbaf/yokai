@@ -38,7 +38,7 @@ object SettingsDiscordScreen : Screen, ComposableSettings {
 
     @Composable
     override fun Content() {
-        ComposableSettings.Content(this)
+        super<ComposableSettings>.Content()
     }
 
     @ReadOnlyComposable
