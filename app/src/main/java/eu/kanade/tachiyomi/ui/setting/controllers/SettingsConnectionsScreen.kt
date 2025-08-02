@@ -2,73 +2,55 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.LaunchedEffect
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import yokai.presentation.component.preference.Preference
+import dev.icerock.moko.resources.compose.stringResource
+import yokai.presentation.YokaiScaffold
+import yokai.presentation.component.preference.PreferenceGroup
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
-import kotlinx.collections.immutable.persistentListOf
-import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withUIContext
-import yokai.i18n.MR
-import yokai.presentation.settings.ComposableSettings
-import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.StringResource
+import kotlinx.collections.immutable.persistentListOf
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.presentation.settings.ComposableSettings
+import yokai.presentation.settings.component.ConnectionsPreference
+import yokai.presentation.settings.component.InfoPreference
 
-object SettingsConnectionsScreen : Screen {
-    @Composable
-    fun Content() {
-        SettingsConnectionsContent()
+class SettingsConnectionsScreen : SettingsComposeController() {
+
+    override fun getComposableSettings(): ComposableSettings = object : ComposableSettings {
+        @Composable
+        override fun Content() {
+            SettingsConnectionsContent()
+        }
     }
-}
 
     @Composable
-    fun SettingsConnectionsContent() {
-        val context = LocalContext.current
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-        var dialog by remember { mutableStateOf<Any?>(null) }
+private fun SettingsConnectionsContent() {
+    val context = LocalContext.current
+    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+    val navigator = LocalNavigator.currentOrThrow
+    var dialog by remember { mutableStateOf<Any?>(null) }
 
     dialog?.run {
         when (this) {
@@ -79,37 +61,38 @@ object SettingsConnectionsScreen : Screen {
                     onDismissRequest = { dialog = null },
                 )
             }
+
             is LogoutConnectionsDialog -> {
                 ConnectionsLogoutDialog(
                     service = service,
                     onDismissRequest = { dialog = null },
                 )
             }
+
             is NavigateTo -> {
                 LaunchedEffect(Unit) {
-                    LocalNavigator.currentOrThrow.push(this@run.screen)
+                    navigator.push(this@run.screen)
                     dialog = null
                 }
             }
         }
     }
 
-    PreferenceScaffold(
+    YokaiScaffold(
         title = stringResource(MR.strings.pref_category_connections),
-    ) {
-        PreferenceGroup(title = stringResource(MR.strings.special_services)) {
-            ConnectionsPreference(
-                title = stringResource(connectionsManager.discord.nameRes()),
-                service = connectionsManager.discord,
-                login = {
-                    context.openDiscordLoginActivity()
-                },
-                openSettings = {
-                    dialog = NavigateTo(SettingsDiscordScreen)
-                },
-            )
-            InfoPreference(text = stringResource(MR.strings.connections_discord_info))
-            InfoPreference(text = stringResource(MR.strings.connections_info))
+        onNavigationIconClicked = { navigator.pop() },
+    ) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            PreferenceGroup(title = stringResource(MR.strings.special_services)) {
+                ConnectionsPreference(
+                    title = stringResource(connectionsManager.discord.nameRes()),
+                    service = connectionsManager.discord,
+                    login = { context.openDiscordLoginActivity() },
+                    openSettings = { dialog = NavigateTo(SettingsDiscordScreen) },
+                )
+                InfoPreference(text = stringResource(MR.strings.connections_discord_info))
+                InfoPreference(text = stringResource(MR.strings.connections_info))
+            }
         }
     }
 }
@@ -237,61 +220,55 @@ object SettingsConnectionsScreen : Screen {
             false
         }
     }
-}
 
-@Composable
-internal fun ConnectionsLogoutDialog(
-    service: ConnectionsService,
-    onDismissRequest: () -> Unit,
-) {
-    val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        },
-        confirmButton = {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onDismissRequest,
-                ) {
-                    Text(text = stringResource(MR.strings.action_cancel))
+    @Composable
+    private fun ConnectionsLogoutDialog(
+        service: ConnectionsService,
+        onDismissRequest: () -> Unit,
+    ) {
+        val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            title = {
+                Text(
+                    text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = onDismissRequest,
+                    ) {
+                        Text(text = stringResource(MR.strings.action_cancel))
+                    }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            service.logout()
+                            onDismissRequest()
+                            context.toast(MR.strings.logout_success)
+                            navigator.pop()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError,
+                        ),
+                    ) {
+                        Text(text = stringResource(MR.strings.logout))
+                    }
                 }
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        service.logout()
-                        onDismissRequest()
-                        context.toast(MR.strings.logout_success)
-                        navigator.pop()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                    ),
-                ) {
-                    Text(text = stringResource(MR.strings.logout))
-                }
-            }
-        },
+            },
+        )
+    }
+
+    private data class NavigateTo(val screen: cafe.adriel.voyager.core.screen.Screen)
+    private data class LoginConnectionsDialog(
+        val service: ConnectionsService,
+        @StringRes val uNameStringRes: Int,
     )
+    private data class LogoutConnectionsDialog(val service: ConnectionsService)
 }
-
-private data class NavigateTo(
-    val screen: Screen,
-)
-
-private data class LoginConnectionsDialog(
-    val service: ConnectionsService,
-    @StringRes val uNameStringRes: Int,
-)
-
-internal data class LogoutConnectionsDialog(
-    val service: ConnectionsService,
-)
