@@ -85,7 +85,7 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             titleRes = MR.strings.tracking
             onClick { navigateTo(SettingsTrackingController()) }
             onLongClick {
-                navigateTo(SettingsDiscordRpcController())
+                navigateTo(SettingsConnectionsScreen())
                 context.toast("Discord")
             }
         }
