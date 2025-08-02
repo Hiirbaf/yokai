@@ -56,57 +56,59 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
-object SettingsConnectionsScreen : ComposableSettings {
-
+class SettingsConnectionsScreen : SettingsComposeController() {
+    override fun getComposableSettings(): ComposableSettings = ComposableSettings {
+        SettingsConnectionsContent()
+    }
+}
 
     @ReadOnlyComposable
     @Composable
     override fun getTitleRes() = MR.strings.pref_category_connections
 
     @Composable
-    override fun getPreferences(): List<Preference> {
+    fun SettingsConnectionsContent() {
         val context = LocalContext.current
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-
         var dialog by remember { mutableStateOf<Any?>(null) }
-        dialog?.run {
-            when (this) {
-                is LoginConnectionsDialog -> {
-                    ConnectionsLoginDialog(
-                        service = service,
-                        uNameStringRes = uNameStringRes,
-                        onDismissRequest = { dialog = null },
-                    )
-                }
-                is NavigateTo -> {
-                    LaunchedEffect(Unit) {
-                        LocalNavigator.currentOrThrow.push(this@run.screen)
-                        dialog = null
-                    }
+
+    dialog?.run {
+        when (this) {
+            is LoginConnectionsDialog -> {
+                ConnectionsLoginDialog(
+                    service = service,
+                    uNameStringRes = uNameStringRes,
+                    onDismissRequest = { dialog = null },
+                )
+            }
+            is NavigateTo -> {
+                LaunchedEffect(Unit) {
+                    LocalNavigator.currentOrThrow.push(this@run.screen)
+                    dialog = null
                 }
             }
         }
-
-        return listOf(
-            Preference.PreferenceGroup(
-                title = stringResource(MR.strings.special_services),
-                preferenceItems = persistentListOf(
-                    Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(connectionsManager.discord.nameRes()),
-                        service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
-                        openSettings = {
-                            dialog = NavigateTo(SettingsDiscordScreen)
-                        },
-                    ),
-                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
-                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
-                ),
-            ),
-        )
     }
+
+    PreferenceScaffold(
+        title = stringResource(MR.strings.pref_category_connections),
+    ) {
+        PreferenceGroup(title = stringResource(MR.strings.special_services)) {
+            ConnectionsPreference(
+                title = stringResource(connectionsManager.discord.nameRes()),
+                service = connectionsManager.discord,
+                login = {
+                    context.openDiscordLoginActivity()
+                },
+                openSettings = {
+                    dialog = NavigateTo(SettingsDiscordScreen)
+                },
+            )
+            InfoPreference(text = stringResource(MR.strings.connections_discord_info))
+            InfoPreference(text = stringResource(MR.strings.connections_info))
+        }
+    }
+}
 
     @Composable
     private fun ConnectionsLoginDialog(
