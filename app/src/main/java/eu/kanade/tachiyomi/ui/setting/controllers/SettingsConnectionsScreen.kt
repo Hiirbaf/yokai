@@ -56,12 +56,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
-object SettingsConnectionsScreen : Screen, ComposableSettings {
+object SettingsConnectionsScreen : ComposableSettings {
 
-    @Composable
-    override fun Content() {
-        super<ComposableSettings>.Content()
-    }
 
     @ReadOnlyComposable
     @Composable
@@ -83,6 +79,12 @@ object SettingsConnectionsScreen : Screen, ComposableSettings {
                         onDismissRequest = { dialog = null },
                     )
                 }
+                is NavigateTo -> {
+                    LaunchedEffect(Unit) {
+                        LocalNavigator.currentOrThrow.push(this@run.screen)
+                        dialog = null
+                    }
+                }
             }
         }
 
@@ -96,7 +98,9 @@ object SettingsConnectionsScreen : Screen, ComposableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = { navigator.push(SettingsDiscordScreen) },
+                        openSettings = {
+                            dialog = NavigateTo(SettingsDiscordScreen)
+                        },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
@@ -273,6 +277,10 @@ internal fun ConnectionsLogoutDialog(
         },
     )
 }
+
+private data class NavigateTo(
+    val screen: Screen,
+)
 
 private data class LoginConnectionsDialog(
     val service: ConnectionsService,
