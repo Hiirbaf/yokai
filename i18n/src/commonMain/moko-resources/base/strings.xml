@@ -85,6 +85,8 @@
     <string name="logout">Log out</string>
     <string name="logout_success">You are now logged out</string>
     <string name="tracking_guide">Tracking guide</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_close">Close</string>
 
     <!-- Manga Type -->
     <string name="manga">Manga</string>
