@@ -49,7 +49,8 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withUIContext
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
-import eu.kanade.tachiyomi.appwidget.util.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import dev.icerock.moko.resources.StringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import androidx.compose.ui.res.stringResource as stringResourceInt
