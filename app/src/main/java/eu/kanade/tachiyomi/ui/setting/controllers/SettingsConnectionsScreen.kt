@@ -56,17 +56,16 @@ import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import androidx.compose.ui.res.stringResource as stringResourceInt
 
 class SettingsConnectionsScreen : SettingsComposeController() {
     override fun getComposableSettings(): ComposableSettings = ComposableSettings {
         SettingsConnectionsContent()
     }
-}
 
     @ReadOnlyComposable
     @Composable
     override fun getTitleRes() = MR.strings.pref_category_connections
+}
 
     @Composable
     fun SettingsConnectionsContent() {
@@ -157,7 +156,7 @@ class SettingsConnectionsScreen : SettingsComposeController() {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResourceInt(uNameStringRes)) },
+                        label = { Text(text = stringResource(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
