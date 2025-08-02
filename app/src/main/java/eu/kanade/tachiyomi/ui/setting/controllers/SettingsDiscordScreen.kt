@@ -33,7 +33,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
 
-object SettingsDiscordScreen : ComposableSettings {
+object SettingsDiscordScreen : Screen, ComposableSettings {
 
     @ReadOnlyComposable
     @Composable
