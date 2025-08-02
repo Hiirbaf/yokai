@@ -1,4 +1,4 @@
-package eu.kanade.presentation.more.settings.screen
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
