@@ -40,57 +40,47 @@ import yokai.presentation.settings.component.InfoPreference
 
 object SettingsConnectionsScreen : SearchableSettings {
 
+    @ReadOnlyComposable
     @Composable
-private fun SettingsConnectionsContent() {
-    val context = LocalContext.current
-    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-    val navigator = LocalNavigator.currentOrThrow
-    var dialog by remember { mutableStateOf<Any?>(null) }
+    override fun getTitleRes() = MR.strings.pref_category_connections
 
-    dialog?.run {
-        when (this) {
-            is LoginConnectionsDialog -> {
-                ConnectionsLoginDialog(
-                    service = service,
-                    uNameStringRes = uNameStringRes,
-                    onDismissRequest = { dialog = null },
-                )
-            }
+    @Composable
+    override fun getPreferences(): List<Preference> {
+        val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
+        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
-            is LogoutConnectionsDialog -> {
-                ConnectionsLogoutDialog(
-                    service = service,
-                    onDismissRequest = { dialog = null },
-                )
-            }
-
-            is NavigateTo -> {
-                LaunchedEffect(Unit) {
-                    navigator.push(this@run.screen)
-                    dialog = null
+        var dialog by remember { mutableStateOf<Any?>(null) }
+        dialog?.run {
+            when (this) {
+                is LoginConnectionsDialog -> {
+                    ConnectionsLoginDialog(
+                        service = service,
+                        uNameStringRes = uNameStringRes,
+                        onDismissRequest = { dialog = null },
+                    )
                 }
             }
         }
-    }
 
-    YokaiScaffold(
-        title = stringResource(MR.strings.pref_category_connections),
-        onNavigationIconClicked = { navigator.pop() },
-    ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            PreferenceGroup(title = stringResource(MR.strings.special_services)) {
-                ConnectionsPreference(
-                    title = stringResource(connectionsManager.discord.nameRes()),
-                    service = connectionsManager.discord,
-                    login = { context.openDiscordLoginActivity() },
-                    openSettings = { dialog = NavigateTo(SettingsDiscordScreen) },
-                )
-                InfoPreference(text = stringResource(MR.strings.connections_discord_info))
-                InfoPreference(text = stringResource(MR.strings.connections_info))
-            }
-        }
+        return listOf(
+            Preference.PreferenceGroup(
+                title = stringResource(MR.strings.special_services),
+                preferenceItems = persistentListOf(
+                    Preference.PreferenceItem.ConnectionsPreference(
+                        title = stringResource(connectionsManager.discord.nameRes()),
+                        service = connectionsManager.discord,
+                        login = {
+                            context.openDiscordLoginActivity()
+                        },
+                        openSettings = { navigator.push(SettingsDiscordScreen) },
+                    ),
+                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
+                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
+                ),
+            ),
+        )
     }
-}
 
     @Composable
     private fun ConnectionsLoginDialog(
@@ -131,7 +121,7 @@ private fun SettingsConnectionsContent() {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResource(uNameStringRes)) },
+                        label = { Text(text = stringResourceInt(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
@@ -215,55 +205,57 @@ private fun SettingsConnectionsContent() {
             false
         }
     }
-
-    @Composable
-    private fun ConnectionsLogoutDialog(
-        service: ConnectionsService,
-        onDismissRequest: () -> Unit,
-    ) {
-        val context = LocalContext.current
-        val navigator = LocalNavigator.currentOrThrow
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Text(
-                    text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            },
-            confirmButton = {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    OutlinedButton(
-                        modifier = Modifier.weight(1f),
-                        onClick = onDismissRequest,
-                    ) {
-                        Text(text = stringResource(MR.strings.action_cancel))
-                    }
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            service.logout()
-                            onDismissRequest()
-                            context.toast(MR.strings.logout_success)
-                            navigator.pop()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError,
-                        ),
-                    ) {
-                        Text(text = stringResource(MR.strings.logout))
-                    }
-                }
-            },
-        )
-    }
-
-    private data class NavigateTo(val screen: cafe.adriel.voyager.core.screen.Screen)
-    private data class LoginConnectionsDialog(
-        val service: ConnectionsService,
-        @StringRes val uNameStringRes: Int,
-    )
-    private data class LogoutConnectionsDialog(val service: ConnectionsService)
 }
+
+@Composable
+internal fun ConnectionsLogoutDialog(
+    service: ConnectionsService,
+    onDismissRequest: () -> Unit,
+) {
+    val context = LocalContext.current
+    val navigator = LocalNavigator.currentOrThrow
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(
+                text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        confirmButton = {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDismissRequest,
+                ) {
+                    Text(text = stringResource(MR.strings.action_cancel))
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        service.logout()
+                        onDismissRequest()
+                        context.toast(MR.strings.logout_success)
+                        navigator.pop()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Text(text = stringResource(MR.strings.logout))
+                }
+            }
+        },
+    )
+}
+
+private data class LoginConnectionsDialog(
+    val service: ConnectionsService,
+    @StringRes val uNameStringRes: Int,
+)
+
+internal data class LogoutConnectionsDialog(
+    val service: ConnectionsService,
+)
