@@ -9,8 +9,8 @@ import yokai.presentation.component.preference.Preference
 import eu.kanade.tachiyomi.ui.more.PreferenceScaffold
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 
-interface SearchableSettings : Screen {
-
+interface SearchableSettings : ComposableSettings, Screen {
+    
     @Composable
     @ReadOnlyComposable
     fun getTitleRes(): StringResource
