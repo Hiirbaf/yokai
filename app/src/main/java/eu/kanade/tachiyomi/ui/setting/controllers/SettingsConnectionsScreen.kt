@@ -33,6 +33,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
+import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
 object SettingsConnectionsScreen : SearchableSettings {
