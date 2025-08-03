@@ -32,6 +32,7 @@ import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.fadeTransactionHandler
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsConnectionsScreen
 
 class SettingsMainController : SettingsLegacyController(), FloatingSearchInterface {
 
