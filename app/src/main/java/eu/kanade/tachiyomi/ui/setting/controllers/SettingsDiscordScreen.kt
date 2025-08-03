@@ -34,7 +34,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
 
-object SettingsDiscordScreen : Screen, ComposableSettings {
+object SettingsDiscordScreen : SearchableSettings {
 
     @Composable
     override fun Content() {
