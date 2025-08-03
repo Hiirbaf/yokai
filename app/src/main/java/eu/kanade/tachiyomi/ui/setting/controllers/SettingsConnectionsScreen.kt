@@ -38,14 +38,7 @@ import yokai.presentation.settings.ComposableSettings
 import yokai.presentation.settings.component.ConnectionsPreference
 import yokai.presentation.settings.component.InfoPreference
 
-class SettingsConnectionsScreen : SettingsComposeController() {
-
-    override fun getComposableSettings(): ComposableSettings = object : ComposableSettings {
-        @Composable
-        override fun Content() {
-            SettingsConnectionsContent()
-        }
-    }
+object SettingsConnectionsScreen : SearchableSettings {
 
     @Composable
 private fun SettingsConnectionsContent() {
