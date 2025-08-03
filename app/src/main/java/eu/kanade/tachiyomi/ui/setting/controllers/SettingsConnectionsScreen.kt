@@ -70,7 +70,8 @@ object SettingsConnectionsScreen : SearchableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = { navigator.push(SettingsDiscordScreen) },
+                        openSettings = { router.pushController(RouterTransaction.with(SettingsDiscordController()))
+                        }
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
