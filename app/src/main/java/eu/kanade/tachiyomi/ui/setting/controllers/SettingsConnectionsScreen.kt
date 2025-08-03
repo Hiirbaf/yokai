@@ -36,6 +36,7 @@ import yokai.presentation.settings.ComposableSettings
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import androidx.compose.ui.res.stringResource as stringResourceInt
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDiscordController
 
 object SettingsConnectionsScreen : SearchableSettings {
 
@@ -72,7 +73,7 @@ object SettingsConnectionsScreen : SearchableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = { router.pushController(RouterTransaction.with(SettingsDiscordController())) }
+                        openSettings = navigator.push(SettingsDiscordController())
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
