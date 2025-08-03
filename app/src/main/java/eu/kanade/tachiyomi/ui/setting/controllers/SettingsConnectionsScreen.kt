@@ -33,8 +33,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
-import yokai.presentation.settings.component.ConnectionsPreference
-import yokai.presentation.settings.component.InfoPreference
 
 object SettingsConnectionsScreen : SearchableSettings {
 
