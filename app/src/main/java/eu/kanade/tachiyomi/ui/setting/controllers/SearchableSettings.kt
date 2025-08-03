@@ -14,13 +14,13 @@ interface SearchableSettings : ComposableSettings, Screen {
     
     @Composable
     @ReadOnlyComposable
-    fun getTitleRes(): StringResource
+    override fun getTitleRes(): StringResource
 
     @Composable
-    fun getPreferences(): List<Preference>
+    override fun getPreferences(): List<Preference>
 
     @Composable
-    fun RowScope.AppBarAction() {
+    override fun RowScope.AppBarAction() {
     }
 
     @Composable
