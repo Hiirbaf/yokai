@@ -34,6 +34,7 @@ import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.presentation.settings.ComposableSettings
 import com.bluelinelabs.conductor.Router
+import eu.kanade.tachiyomi.util.compose.LocalRouter
 import com.bluelinelabs.conductor.RouterTransaction
 import androidx.compose.ui.res.stringResource as stringResourceInt
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDiscordController
@@ -74,7 +75,8 @@ object SettingsConnectionsScreen : SearchableSettings {
                             context.openDiscordLoginActivity()
                         },
                         openSettings = {
-                            navigator.push(SettingsDiscordController())
+    val router = LocalRouter.currentOrThrow
+    router.pushController(RouterTransaction.with(SettingsDiscordController()))
                         }
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
