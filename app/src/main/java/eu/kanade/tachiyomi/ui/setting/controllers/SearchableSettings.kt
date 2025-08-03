@@ -10,7 +10,7 @@ import eu.kanade.tachiyomi.ui.more.PreferenceScaffold
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import yokai.presentation.settings.ComposableSettings
 
-interface SearchableSettings : ComposableSettings, Screen {
+interface SearchableSettings : ComposableSettings {
     
     @Composable
     @ReadOnlyComposable
