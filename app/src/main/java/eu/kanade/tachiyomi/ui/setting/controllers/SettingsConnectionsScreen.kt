@@ -20,9 +20,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.YokaiScaffold
-import yokai.presentation.component.preference.PreferenceGroup
-import yokai.presentation.component.preference.ConnectionsPreference
-import yokai.presentation.component.preference.InfoPreference
+import yokai.presentation.component.preference.Preference
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
