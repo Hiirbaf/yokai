@@ -73,7 +73,9 @@ object SettingsConnectionsScreen : SearchableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = navigator.push(SettingsDiscordController())
+                        openSettings = {
+                            navigator.push(SettingsDiscordController())
+                        }
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
