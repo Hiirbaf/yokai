@@ -77,8 +77,10 @@ object SettingsConnectionsScreen : ComposableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = { router.pushController(SettingsDataController().withFadeTransaction())
-                        },
+                        openSettings = {
+    val router = LocalRouter.currentOrThrow
+    router.pushController(SettingsDataController())
+                        }
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
