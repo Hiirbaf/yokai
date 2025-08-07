@@ -92,7 +92,7 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
         preference {
             iconRes = Icons.Outlined.Link
             iconTint = tintColor
-            titleRes = MR.strings.connections
+            titleRes = MR.strings.pref_category_connections
             onClick { navigateTo(SettingsConnectionsController()) }
         }
         preferenceLongClickable {
