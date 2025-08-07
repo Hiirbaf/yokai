@@ -41,54 +41,81 @@ object SettingsConnectionsScreen : ComposableSettings {
     override fun getTitleRes() = MR.strings.pref_category_connections
 
     @Composable
-    override fun getPreferences(): List<Preference> {
-        val context = LocalContext.current
-        val router = LocalRouter.currentOrThrow
-        val navigator = LocalNavigator.currentOrThrow
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-
-        var dialog by remember { mutableStateOf<Any?>(null) }
-        dialog?.let {
-            when (it) {
-                is LoginConnectionsDialog -> {
-                    ConnectionsLoginDialog(
-                        service = it.service,
-                        uNameStringRes = it.uNameStringRes,
-                        onDismissRequest = { dialog = null },
-                    )
-                }
-                is LogoutConnectionsDialog -> {
-                    ConnectionsLogoutDialog(
-                        service = it.service,
-                        onDismissRequest = { dialog = null },
-                    )
-                }
-            }
+    override fun RowScope.AppBarAction() {
+        val uriHandler = LocalUriHandler.current
+        IconButton(onClick = { uriHandler.openUri("https://tachiyomi.org/help/guides/tracking/") }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                contentDescription = stringResource(MR.strings.tracking_guide),
+            )
         }
-
-        return listOf(
-            Preference.PreferenceGroup(
-                title = stringResource(MR.strings.special_services),
-                preferenceItems = persistentListOf(
-                    Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(connectionsManager.discord.nameRes()),
-                        service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
-                        logout = {
-                            dialog = LogoutConnectionsDialog(connectionsManager.discord)
-                        },
-                        openSettings = {
-                            router.pushController(RouterTransaction.with(SettingsDiscordController()))
-                        },
-                    ),
-                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
-                    Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
-                ),
-            ),
-        )
     }
+
+    @Composable
+override fun getPreferences(): List<Preference> {
+    val context = LocalContext.current
+    val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
+    val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+    val service = connectionsManager.discord
+
+    val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
+    val useChapterTitlesPref = connectionsPreferences.useChapterTitles()
+    val discordRPCStatus = connectionsPreferences.discordRPCStatus()
+
+    val enableDRPC by enableDRPCPref.collectAsState()
+
+    var dialog by remember { mutableStateOf<Any?>(null) }
+    dialog?.run {
+        when (this) {
+            is LogoutConnectionsDialog -> ConnectionsLogoutDialog(
+                service = service,
+                onDismissRequest = {
+                    dialog = null
+                    enableDRPCPref.set(false)
+                },
+            )
+
+            is LoginConnectionsDialog -> ConnectionsLoginDialog(
+                service = service,
+                uNameStringRes = uNameStringRes,
+                onDismissRequest = { dialog = null },
+            )
+        }
+    }
+
+    return listOf(
+        Preference.PreferenceItem.TextPreference(
+            title = stringResource(MR.strings.login),
+            onClick = { context.openDiscordLoginActivity() },
+        ),
+        Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
+
+        Preference.PreferenceItem.SwitchPreference(
+            preference = enableDRPCPref,
+            title = stringResource(MR.strings.pref_enable_discord_rpc),
+        ),
+        Preference.PreferenceItem.SwitchPreference(
+            preference = useChapterTitlesPref,
+            enabled = enableDRPC,
+            title = stringResource(MR.strings.show_chapters_titles_title),
+            subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
+        ),
+        Preference.PreferenceItem.ListPreference(
+            preference = discordRPCStatus,
+            title = stringResource(MR.strings.pref_discord_status),
+            entries = persistentMapOf(
+                -1 to stringResource(MR.strings.pref_discord_dnd),
+                0 to stringResource(MR.strings.pref_discord_idle),
+                1 to stringResource(MR.strings.pref_discord_online),
+            ),
+            enabled = enableDRPC,
+        ),
+        Preference.PreferenceItem.TextPreference(
+            title = stringResource(MR.strings.logout),
+            onClick = { dialog = LogoutConnectionsDialog(service) },
+        ),
+    )
+}
 
     @Composable
     private fun ConnectionsLoginDialog(
@@ -129,7 +156,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResource(uNameStringRes)) },
+                        label = { Text(text = stringResourceInt(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
@@ -144,24 +171,13 @@ object SettingsConnectionsScreen : ComposableSettings {
                         trailingIcon = {
                             IconButton(onClick = { hidePassword = !hidePassword }) {
                                 Icon(
-                                    imageVector = if (hidePassword) {
-                                        Icons.Filled.Visibility
-                                    } else {
-                                        Icons.Filled.VisibilityOff
-                                    },
+                                    imageVector = if (hidePassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                                     contentDescription = null,
                                 )
                             }
                         },
-                        visualTransformation = if (hidePassword) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done,
-                        ),
+                        visualTransformation = if (hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                         singleLine = true,
                         isError = inputError && password.text.isEmpty(),
                     )
@@ -179,12 +195,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                         scope.launchIO {
                             inputError = false
                             processing = true
-                            val result = checkLogin(
-                                context = context,
-                                service = service,
-                                username = username.text,
-                                password = password.text,
-                            )
+                            val result = checkLogin(context, service, username.text, password.text)
                             if (result) onDismissRequest()
                             processing = false
                         }
@@ -195,6 +206,23 @@ object SettingsConnectionsScreen : ComposableSettings {
                 }
             },
         )
+    }
+
+    private suspend fun checkLogin(
+        context: Context,
+        service: ConnectionsService,
+        username: String,
+        password: String,
+    ): Boolean {
+        return try {
+            service.login(username, password)
+            withUIContext { context.toast(MR.strings.login_success) }
+            true
+        } catch (e: Throwable) {
+            service.logout()
+            withUIContext { context.toast(e.message.toString()) }
+            false
+        }
     }
 
     @Composable
@@ -239,23 +267,6 @@ object SettingsConnectionsScreen : ComposableSettings {
                 }
             },
         )
-    }
-
-    private suspend fun checkLogin(
-        context: Context,
-        service: ConnectionsService,
-        username: String,
-        password: String,
-    ): Boolean {
-        return try {
-            service.login(username, password)
-            withUIContext { context.toast(MR.strings.login_success) }
-            true
-        } catch (e: Throwable) {
-            service.logout()
-            withUIContext { context.toast(e.message.toString()) }
-            false
-        }
     }
 
     private data class LoginConnectionsDialog(
