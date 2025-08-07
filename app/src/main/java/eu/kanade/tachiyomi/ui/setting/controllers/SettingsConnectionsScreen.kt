@@ -75,9 +75,8 @@ object SettingsConnectionsScreen : ComposableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = {
-    println("Abrir ajustes de Discord (desactivado por ahora)")
-                        }
+                        openSettings = { router.pushController(SettingsDataController().withFadeTransaction())
+                        },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
