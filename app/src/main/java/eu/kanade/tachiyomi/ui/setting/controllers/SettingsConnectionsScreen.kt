@@ -49,7 +49,8 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        val navigator = LocalNavigator.currentOrThrow
+        //val navigator = LocalNavigator.currentOrThrow
+        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
