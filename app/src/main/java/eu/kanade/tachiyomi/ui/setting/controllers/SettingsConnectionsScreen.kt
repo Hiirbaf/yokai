@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.bluelinelabs.conductor.RouterTransaction
 import dev.icerock.moko.resources.compose.stringResource
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import eu.kanade.tachiyomi.data.connection.ConnectionsService
 import eu.kanade.tachiyomi.util.compose.LocalRouter
@@ -157,7 +160,7 @@ override fun getPreferences(): List<Preference> {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResourceInt(uNameStringRes)) },
+                        label = { Text(text = stringResource(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
