@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.compose.material.icons.outlined.Link
 import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.Controller
@@ -81,15 +82,17 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             titleRes = MR.strings.browse
             onClick { navigateTo(SettingsBrowseController()) }
         }
-        preferenceLongClickable {
+        preference {
             iconRes = R.drawable.ic_sync_24dp
             iconTint = tintColor
             titleRes = MR.strings.tracking
             onClick { navigateTo(SettingsTrackingController()) }
-            onLongClick {
-                navigateTo(SettingsConnectionsController())
-                context.toast("Discord")
-            }
+        }
+        preference {
+            iconRes = Icons.Outlined.Link
+            iconTint = tintColor
+            titleRes = MR.strings.connections
+            onClick { navigateTo(SettingsConnectionsController()) }
         }
         preferenceLongClickable {
             iconRes = R.drawable.ic_storage_24dp
