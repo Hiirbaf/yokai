@@ -90,7 +90,7 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             onClick { navigateTo(SettingsTrackingController()) }
         }
         preference {
-            iconRes = Icons.Outlined.Link
+            icon = Icons.Outlined.Link
             iconTint = tintColor
             titleRes = MR.strings.pref_category_connections
             onClick { navigateTo(SettingsConnectionsController()) }
