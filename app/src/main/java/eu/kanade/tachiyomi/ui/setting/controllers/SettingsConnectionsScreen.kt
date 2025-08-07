@@ -31,12 +31,14 @@ import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
+import androidx.compose.ui.res.stringResource as stringResourceInt
 
 object SettingsConnectionsScreen : ComposableSettings {
 
@@ -160,7 +162,7 @@ override fun getPreferences(): List<Preference> {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResource(uNameStringRes)) },
+                        label = { Text(text = stringResourceInt(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
