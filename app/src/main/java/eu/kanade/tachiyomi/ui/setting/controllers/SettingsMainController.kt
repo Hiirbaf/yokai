@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Link
 import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
