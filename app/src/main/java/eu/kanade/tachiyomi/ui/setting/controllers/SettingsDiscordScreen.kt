@@ -18,14 +18,14 @@ import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.presentation.category.visualName
+//import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
-import eu.kanade.presentation.more.settings.widget.TriStateListDialog
+import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
-import tachiyomi.domain.category.interactor.GetCategories
+//import tachiyomi.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
 import tachiyomi.presentation.core.util.collectAsState
@@ -86,17 +86,17 @@ object SettingsDiscordScreen : ComposableSettings {
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.SwitchPreference(
-                        preference = enableDRPCPref,
+                        pref = enableDRPCPref,
                         title = stringResource(MR.strings.pref_enable_discord_rpc),
                     ),
                     Preference.PreferenceItem.SwitchPreference(
-                        preference = useChapterTitlesPref,
+                        pref = useChapterTitlesPref,
                         enabled = enableDRPC,
                         title = stringResource(MR.strings.show_chapters_titles_title),
                         subtitle = stringResource(MR.strings.show_chapters_titles_subtitle),
                     ),
                     Preference.PreferenceItem.ListPreference(
-                        preference = discordRPCStatus,
+                        pref = discordRPCStatus,
                         title = stringResource(MR.strings.pref_discord_status),
                         entries = persistentMapOf(
                             -1 to stringResource(MR.strings.pref_discord_dnd),
