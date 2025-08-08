@@ -27,6 +27,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
 //import tachiyomi.domain.category.interactor.GetCategories
 import yokai.i18n.MR
+import com.bluelinelabs.conductor.Router
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
@@ -34,6 +35,13 @@ import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
 
 object SettingsDiscordScreen : ComposableSettings {
+
+    private lateinit var router: Router
+
+    fun withRouter(router: Router): SettingsConnectionsScreen {
+        this.router = router
+        return this
+    }
 
     @ReadOnlyComposable
     @Composable
@@ -52,7 +60,7 @@ object SettingsDiscordScreen : ComposableSettings {
 
     @Composable
     override fun getPreferences(): List<Preference> {
-        val navigator = LocalNavigator.currentOrThrow
+        //val navigator = LocalNavigator.currentOrThrow
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
         val enableDRPCPref = connectionsPreferences.enableDiscordRPC()
