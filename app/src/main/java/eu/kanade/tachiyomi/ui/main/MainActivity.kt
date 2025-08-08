@@ -155,6 +155,7 @@ import android.R as AR
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.data.connection.discord.DiscordRPCService
 import eu.kanade.tachiyomi.data.connection.discord.DiscordScreen
+import kotlinx.coroutines.flow.drop
 
 @SuppressLint("ResourceType")
 open class MainActivity : BaseActivity<MainActivityBinding>() {
