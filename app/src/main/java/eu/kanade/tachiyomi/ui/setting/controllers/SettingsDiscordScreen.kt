@@ -17,9 +17,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.presentation.category.visualName
-import eu.kanade.presentation.more.settings.Preference
+import yokai.presentation.component.preference.Preference
 import eu.kanade.presentation.more.settings.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
@@ -31,6 +31,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import tachiyomi.presentation.core.util.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.presentation.settings.ComposableSettings
 
 object SettingsDiscordScreen : ComposableSettings {
 
@@ -117,7 +118,7 @@ object SettingsDiscordScreen : ComposableSettings {
         )
     }
 
-    @Composable
+    /*@Composable
     private fun getRPCIncognitoGroup(
         connectionsPreferences: ConnectionsPreferences,
         enabled: Boolean,
@@ -170,5 +171,5 @@ object SettingsDiscordScreen : ComposableSettings {
             ),
             enabled = enabled,
         )
-    }
+    }*/
 }
