@@ -38,7 +38,7 @@ object SettingsDiscordScreen : ComposableSettings {
 
     private lateinit var router: Router
 
-    fun withRouter(router: Router): SettingsConnectionsScreen {
+    fun withRouter(router: Router): SettingsDiscordScreen {
         this.router = router
         return this
     }
