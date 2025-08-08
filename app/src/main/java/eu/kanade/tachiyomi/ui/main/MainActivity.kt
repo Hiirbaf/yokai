@@ -152,6 +152,9 @@ import yokai.presentation.extension.repo.ExtensionRepoController
 import yokai.presentation.onboarding.OnboardingController
 import yokai.util.lang.getString
 import android.R as AR
+import eu.kanade.domain.connections.service.ConnectionsPreferences
+import eu.kanade.tachiyomi.data.connection.discord.DiscordRPCService
+import eu.kanade.tachiyomi.data.connection.discord.DiscordScreen
 
 @SuppressLint("ResourceType")
 open class MainActivity : BaseActivity<MainActivityBinding>() {
