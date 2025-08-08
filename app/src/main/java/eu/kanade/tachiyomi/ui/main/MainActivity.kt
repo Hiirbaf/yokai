@@ -176,6 +176,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     private val getRecents: GetRecents by injectLazy()
 
+    private val connectionsPreferences: ConnectionsPreferences by injectLazy()
+
     private val hideBottomNav
         get() = router.backstackSize > 1 && router.backstack[1].controller !is DialogController
     private val hideAppBar
@@ -443,6 +445,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             true
         }
 
+        
+
         val container: ViewGroup = binding.controllerContainer
 
         val content: ViewGroup = binding.mainContent
@@ -462,6 +466,24 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 }
             }
         }
+
+        connectionsPreferences.enableDiscordRPC().changes()
+                        .drop(1)
+                        .onEach {
+                            if (it) {
+                                DiscordRPCService.start(this@MainActivity.applicationContext)
+                            } else {
+                                DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+                            }
+                        }.launchIn(this)
+
+                    connectionsPreferences.discordRPCStatus().changes()
+                        .drop(1)
+                        .onEach {
+                            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+                            DiscordRPCService.start(this@MainActivity.applicationContext)
+                            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.MORE)
+                        }.launchIn(this)
 
         combine(
             downloadManager.isDownloaderRunning,
