@@ -21,7 +21,7 @@ import yokai.domain.connections.service.ConnectionsPreferences
 //import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
-import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
@@ -107,10 +107,10 @@ object SettingsDiscordScreen : ComposableSettings {
                     ),
                 ),
             ),
-            getRPCIncognitoGroup(
+            /*getRPCIncognitoGroup(
                 connectionsPreferences = connectionsPreferences,
                 enabled = enableDRPC,
-            ),
+            ),*/
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.logout),
                 onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) },
