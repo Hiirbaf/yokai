@@ -476,7 +476,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             } else {
                                 DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
                             }
-                        }.launchIn(this)
+                        }.launchIn(lifecycleScope)
 
                     connectionsPreferences.discordRPCStatus().changes()
                         .drop(1)
@@ -484,7 +484,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
                             DiscordRPCService.start(this@MainActivity.applicationContext)
                             DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.MORE)
-                        }.launchIn(this)
+                        }.launchIn(lifecycleScope)
 
         combine(
             downloadManager.isDownloaderRunning,
