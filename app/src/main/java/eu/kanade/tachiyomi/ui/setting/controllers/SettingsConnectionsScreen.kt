@@ -43,6 +43,13 @@ import androidx.compose.ui.res.stringResource as stringResourceInt
 
 object SettingsConnectionsScreen : ComposableSettings {
 
+    private lateinit var router: Router
+
+    fun withRouter(router: Router): SettingsConnectionsScreen {
+        this.router = router
+        return this
+    }
+
     @ReadOnlyComposable
     @Composable
     override fun getTitleRes() = MR.strings.pref_category_connections
@@ -50,8 +57,6 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        //val navigator = LocalNavigator.currentOrThrow
-        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
@@ -78,9 +83,8 @@ object SettingsConnectionsScreen : ComposableSettings {
                             context.openDiscordLoginActivity()
                         },
                         openSettings = {
-    val router = LocalRouter.currentOrThrow
-    router.pushController(SettingsDataController())
-                        }
+                            router.pushController(SettingsDataController().withFadeTransaction())
+                        },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
@@ -88,6 +92,7 @@ object SettingsConnectionsScreen : ComposableSettings {
             ),
         )
     }
+}
 
     @Composable
     private fun ConnectionsLoginDialog(
