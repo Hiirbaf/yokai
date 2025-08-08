@@ -78,10 +78,10 @@ object SettingsDiscordScreen : ComposableSettings {
         }
 
         return listOf(
-            Preference.PreferenceItem.TextPreference(
+            /*Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.discord_accounts),
                 onClick = { navigator.push(DiscordAccountsScreen) },
-            ),
+            ),*/
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.connections_discord),
                 preferenceItems = persistentListOf(
