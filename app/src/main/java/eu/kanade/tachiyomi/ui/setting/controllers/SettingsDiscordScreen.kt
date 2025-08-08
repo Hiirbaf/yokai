@@ -28,7 +28,7 @@ import kotlinx.coroutines.runBlocking
 //import tachiyomi.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
-import tachiyomi.presentation.core.util.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
