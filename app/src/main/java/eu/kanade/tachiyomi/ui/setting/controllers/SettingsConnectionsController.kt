@@ -6,6 +6,6 @@ import eu.kanade.tachiyomi.ui.setting.controllers.SettingsConnectionsScreen
 
 class SettingsConnectionsController : SettingsComposeController() {
     override fun getComposableSettings(): ComposableSettings {
-        return SettingsConnectionsScreen(router)
+        return SettingsConnectionsScreen.withRouter(router)
     }
 }
