@@ -5,6 +5,7 @@ import yokai.presentation.settings.ComposableSettings
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDiscordScreen
 
 class SettingsDiscordController : SettingsComposeController() {
-    override fun getComposableSettings(): ComposableSettings =
-        SettingsDiscordScreen().withRouter(router)
+    override fun getComposableSettings(): ComposableSettings {
+        return SettingsDiscordScreen.withRouter(router)
+    }
 }
