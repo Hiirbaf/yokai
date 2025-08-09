@@ -589,7 +589,7 @@ open class LibraryController(
         super.onViewCreated(view)
 
         viewScope.launch {
-        DiscordRPCService.setScreen(checkNotNull(context), DiscordScreen.LIBRARY)
+    DiscordRPCService.setScreen(view.context, DiscordScreen.LIBRARY)
         }
         
         mAdapter = LibraryCategoryAdapter(this)
