@@ -587,7 +587,11 @@ open class LibraryController(
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
-        DiscordRPCService.setScreen(view.context, DiscordScreen.LIBRARY)
+
+        controllerScope.launch {
+        DiscordRPCService.setScreen(requireContext(), DiscordScreen.LIBRARY)
+        }
+        
         mAdapter = LibraryCategoryAdapter(this)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         setRecyclerLayout()
