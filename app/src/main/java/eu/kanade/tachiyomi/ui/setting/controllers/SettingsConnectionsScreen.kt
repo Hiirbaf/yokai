@@ -222,10 +222,10 @@ object SettingsConnectionsScreen : ComposableSettings {
 @Composable
 internal fun ConnectionsLogoutDialog(
     service: ConnectionsService,
+    router: Router,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -249,7 +249,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        navigator.pop()
+                        router.popCurrentController() // Usar Router en vez de navigator.pop()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
