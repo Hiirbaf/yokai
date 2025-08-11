@@ -72,17 +72,18 @@ object SettingsDiscordScreen : ComposableSettings {
 
         var dialog by remember { mutableStateOf<Any?>(null) }
         dialog?.run {
-            when (this) {
-                is LogoutConnectionsDialog -> {
-                    ConnectionsLogoutDialog(
-                        service = service,
-                        onDismissRequest = {
-                            dialog = null
-                            enableDRPCPref.set(false)
-                        },
-                    )
-                }
-            }
+    when (this) {
+        is LogoutConnectionsDialog -> {
+            ConnectionsLogoutDialog(
+                service = service,
+                router = SettingsDiscordScreen.router,
+                onDismissRequest = {
+                    dialog = null
+                    enableDRPCPref.set(false)
+                },
+            )
+        }
+    }
         }
 
         return listOf(
