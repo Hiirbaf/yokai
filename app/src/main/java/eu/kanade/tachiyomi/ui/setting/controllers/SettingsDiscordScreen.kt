@@ -116,10 +116,10 @@ object SettingsDiscordScreen : ComposableSettings {
                     ),
                 ),
             ),
-            /*getRPCIncognitoGroup(
+            getRPCIncognitoGroup(
                 connectionsPreferences = connectionsPreferences,
                 enabled = enableDRPC,
-            ),*/
+            ),
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.logout),
                 onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) },
