@@ -25,7 +25,7 @@ import eu.kanade.tachiyomi.data.connection.ConnectionsManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
-//import tachiyomi.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import com.bluelinelabs.conductor.Router
 import dev.icerock.moko.resources.compose.stringResource
@@ -116,10 +116,10 @@ object SettingsDiscordScreen : ComposableSettings {
                     ),
                 ),
             ),
-            getRPCIncognitoGroup(
+            /*getRPCIncognitoGroup(
                 connectionsPreferences = connectionsPreferences,
                 enabled = enableDRPC,
-            ),
+            ),*/
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.logout),
                 onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) },
