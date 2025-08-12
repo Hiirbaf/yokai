@@ -76,14 +76,14 @@ class DiscordLoginActivity : BaseActivity<DiscordLoginActivityBinding>() {
                         null
                     }
 
-                    val account = DiscordAccount(
+                    /*val account = DiscordAccount(
                         id = id,
                         username = username,
                         avatarUrl = avatarUrl,
                         token = token,
                         isActive = true,
                     )
-                    connectionsManager.discord.addAccount(account)
+                    connectionsManager.discord.addAccount(account)*/
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
