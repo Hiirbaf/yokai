@@ -7,7 +7,7 @@ import android.webkit.WebViewClient
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connection.ConnectionsManager
-import eu.kanade.tachiyomi.data.connections.discord.DiscordAccount
+//import eu.kanade.tachiyomi.data.connections.discord.DiscordAccount
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
