@@ -9,7 +9,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.compose.ui.util.fastAny
-import eu.kanade.domain.connections.service.ConnectionsPreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.presentation.util.formatChapterNumber
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
@@ -19,10 +19,10 @@ import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
-import tachiyomi.core.common.util.lang.launchIO
-import tachiyomi.core.common.util.lang.withIOContext
-import tachiyomi.domain.category.interactor.GetCategories
-import tachiyomi.domain.category.model.Category.Companion.UNCATEGORIZED_ID
+import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.withIOContext
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.models.Category.Companion.UNCATEGORIZED_ID
 import tachiyomi.domain.manga.interactor.GetManga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
