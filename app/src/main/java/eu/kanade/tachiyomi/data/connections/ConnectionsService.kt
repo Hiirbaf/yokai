@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.connection
+package eu.kanade.tachiyomi.data.connections
 
 import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
