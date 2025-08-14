@@ -119,51 +119,13 @@ class DiscordRPCService : Service() {
 
             if (rpc == null) return
 
-            val manga = Injekt.get<GetManga>().await(readerData.mangaId ?: 0L)
-            val sourceId = manga?.source ?: 0L
-            val isNovel = sourceId >= 10000L && sourceId <= 10100L
-
             val name = context.resources.getString(discordScreen.text)
 
-            val details = if (readerData.incognitoMode) {
-                if (discordScreen == DiscordScreen.EPUB_LOCAL_FEED) {
-                    // Use the EPUB-specific incognito title passed from EpubReaderViewModel
-                    readerData.mangaTitle ?: context.resources.getString(R.string.reading)
-                } else if (discordScreen == DiscordScreen.MANGA) {
-                    // Use the novel-specific incognito title passed from NovelReaderViewModel
-                    readerData.mangaTitle ?: context.resources.getString(R.string.reading)
-                } else {
-                    context.resources.getString(R.string.reading)
-                }
-            } else {
-                readerData.mangaTitle ?: context.resources.getString(discordScreen.details)
-            }
+            val details = readerData.mangaTitle ?: context.resources.getString(discordScreen.details)
 
-            val state = if (readerData.incognitoMode) {
-                if (discordScreen == DiscordScreen.EPUB_LOCAL_FEED) {
-                    // Use the EPUB-specific incognito subtitle passed from EpubReaderViewModel
-                    readerData.chapterTitle ?: context.resources.getString(R.string.epub_incognito_subtitle)
-                } else if (discordScreen == DiscordScreen.MANGA) {
-                    // Use the correct incognito subtitle depending on isNovel
-                    if (isNovel) {
-                        readerData.chapterTitle ?: context.resources.getString(R.string.novel_incognito_subtitle)
-                    } else {
-                        readerData.chapterTitle ?: context.resources.getString(R.string.comic)
-                    }
-                } else if (isNovel) {
-                    context.resources.getString(R.string.novel)
-                } else {
-                    context.resources.getString(R.string.comic)
-                }
-            } else {
-                readerData.chapterTitle ?: context.resources.getString(discordScreen.state)
-            }
+            val state = if (readerData.incognitoMode) context.resources.getString(R.string.comic) else readerData.chapterTitle ?: context.resources.getString(discordScreen.state)
 
-            val imageUrl = if (readerData.incognitoMode && discordScreen == DiscordScreen.MANGA) {
-                DiscordScreen.MANGA.imageUrl
-            } else {
-                readerData.thumbnailUrl ?: discordScreen.imageUrl
-            }
+            val imageUrl = readerData.thumbnailUrl ?: discordScreen.imageUrl
 
             rpc!!.updateRPC(
                 activity = Activity(
@@ -236,7 +198,6 @@ class DiscordRPCService : Service() {
                     context = context,
                     discordScreen = DiscordScreen.MANGA,
                     readerData = ReaderData(
-                        incognitoMode = discordIncognito,
                         mangaTitle = mangaTitle,
                         chapterTitle = chapterTitle,
                         thumbnailUrl = mangaThumbnail,
