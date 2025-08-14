@@ -10,7 +10,7 @@ import android.os.IBinder
 import android.os.Looper
 import androidx.compose.ui.util.fastAny
 import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.presentation.util.formatChapterNumber
+import eu.kanade.tachiyomi.ui.reader.formatChapterNumber
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
