@@ -175,7 +175,6 @@ enum class DiscordScreen(
     MORE(R.string.app_name, R.string.messing, R.string.settings, moreImageUrl),
     WEBVIEW(R.string.app_name, R.string.browsing, R.string.action_web_view, webviewImageUrl),
     MANGA(R.string.app_name, R.string.comic, R.string.reading, mangaImageUrl),
-    EPUB_LOCAL_FEED(R.string.app_name, R.string.browsing_epub_feed, R.string.label_epub_feed, epubLocalFeedImageUrl),
 }
 
 // Constants for standard Rich Presence image urls
@@ -187,4 +186,3 @@ private const val browseImageUrl = "emojis/1391945777517166804.webp?quality=loss
 private const val moreImageUrl = "emojis/1391947518224371772.webp?quality=lossless"
 private const val webviewImageUrl = "emojis/1391952048223817791.webp?quality=lossless"
 private const val mangaImageUrl = "emojis/1391953132329898124.webp?quality=lossless"
-private const val epubLocalFeedImageUrl = "emojis/1396447904264359997.webp?quality=lossless"
