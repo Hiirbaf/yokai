@@ -153,8 +153,8 @@ import yokai.presentation.onboarding.OnboardingController
 import yokai.util.lang.getString
 import android.R as AR
 import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.tachiyomi.data.connection.discord.DiscordRPCService
-import eu.kanade.tachiyomi.data.connection.discord.DiscordScreen
+import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
+import eu.kanade.tachiyomi.data.connections.discord.DiscordScreen
 import kotlinx.coroutines.flow.drop
 
 @SuppressLint("ResourceType")
