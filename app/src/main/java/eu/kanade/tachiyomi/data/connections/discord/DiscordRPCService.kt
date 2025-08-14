@@ -23,7 +23,7 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.category.models.Category.Companion.UNCATEGORIZED_ID
-import tachiyomi.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.GetManga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
