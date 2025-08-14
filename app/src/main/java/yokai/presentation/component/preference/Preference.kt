@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import eu.kanade.tachiyomi.data.connection.ConnectionsService
+import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
