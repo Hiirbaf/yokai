@@ -5,7 +5,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
-import tachiyomi.core.common.util.system.logcat
+//import tachiyomi.core.common.util.system.logcat
 import yokai.i18n.MR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
