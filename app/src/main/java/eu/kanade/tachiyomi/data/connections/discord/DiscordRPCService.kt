@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.connection.discord
+package eu.kanade.tachiyomi.data.connections.discord
 
 import android.app.Service
 import android.content.Context
@@ -9,19 +9,21 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.compose.ui.util.fastAny
-import yokai.domain.connections.service.ConnectionsPreferences
+import eu.kanade.domain.connections.service.ConnectionsPreferences
+import eu.kanade.presentation.util.formatChapterNumber
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.connection.ConnectionsManager
+import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
-import eu.kanade.tachiyomi.util.system.launchIO
-import eu.kanade.tachiyomi.util.system.withIOContext
-import yokai.domain.category.interactor.GetCategories
-import yokai.domain.category.models.Category.Companion.UNCATEGORIZED_ID
+import tachiyomi.core.common.util.lang.launchIO
+import tachiyomi.core.common.util.lang.withIOContext
+import tachiyomi.domain.category.interactor.GetCategories
+import tachiyomi.domain.category.model.Category.Companion.UNCATEGORIZED_ID
+import tachiyomi.domain.manga.interactor.GetManga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -105,7 +107,7 @@ class DiscordRPCService : Service() {
 
         internal var lastUsedScreen = DiscordScreen.APP
             set(value) {
-                field = if (value == DiscordScreen.COMIC || value == DiscordScreen.WEBVIEW) field else value
+                field = if (value == DiscordScreen.MANGA || value == DiscordScreen.WEBVIEW) field else value
             }
 
         internal suspend fun setScreen(
@@ -117,13 +119,51 @@ class DiscordRPCService : Service() {
 
             if (rpc == null) return
 
+            val manga = Injekt.get<GetManga>().await(readerData.mangaId ?: 0L)
+            val sourceId = manga?.source ?: 0L
+            val isNovel = sourceId >= 10000L && sourceId <= 10100L
+
             val name = context.resources.getString(discordScreen.text)
 
-            val details = readerData.mangaTitle ?: context.resources.getString(discordScreen.details)
+            val details = if (readerData.incognitoMode) {
+                if (discordScreen == DiscordScreen.EPUB_LOCAL_FEED) {
+                    // Use the EPUB-specific incognito title passed from EpubReaderViewModel
+                    readerData.mangaTitle ?: context.resources.getString(R.string.reading)
+                } else if (discordScreen == DiscordScreen.MANGA) {
+                    // Use the novel-specific incognito title passed from NovelReaderViewModel
+                    readerData.mangaTitle ?: context.resources.getString(R.string.reading)
+                } else {
+                    context.resources.getString(R.string.reading)
+                }
+            } else {
+                readerData.mangaTitle ?: context.resources.getString(discordScreen.details)
+            }
 
-            val state = readerData.chapterTitle ?: context.resources.getString(discordScreen.state)
+            val state = if (readerData.incognitoMode) {
+                if (discordScreen == DiscordScreen.EPUB_LOCAL_FEED) {
+                    // Use the EPUB-specific incognito subtitle passed from EpubReaderViewModel
+                    readerData.chapterTitle ?: context.resources.getString(R.string.epub_incognito_subtitle)
+                } else if (discordScreen == DiscordScreen.MANGA) {
+                    // Use the correct incognito subtitle depending on isNovel
+                    if (isNovel) {
+                        readerData.chapterTitle ?: context.resources.getString(R.string.novel_incognito_subtitle)
+                    } else {
+                        readerData.chapterTitle ?: context.resources.getString(R.string.comic)
+                    }
+                } else if (isNovel) {
+                    context.resources.getString(R.string.novel)
+                } else {
+                    context.resources.getString(R.string.comic)
+                }
+            } else {
+                readerData.chapterTitle ?: context.resources.getString(discordScreen.state)
+            }
 
-            val imageUrl = readerData.thumbnailUrl ?: discordScreen.imageUrl
+            val imageUrl = if (readerData.incognitoMode && discordScreen == DiscordScreen.MANGA) {
+                DiscordScreen.MANGA.imageUrl
+            } else {
+                readerData.thumbnailUrl ?: discordScreen.imageUrl
+            }
 
             rpc!!.updateRPC(
                 activity = Activity(
@@ -146,7 +186,7 @@ class DiscordRPCService : Service() {
             if (rpc == null || readerData.thumbnailUrl == null || readerData.mangaId == null) return
 
             val categoryIds = Injekt.get<GetCategories>()
-                .awaitByMangaId(readerData.mangaId)
+                .await(readerData.mangaId)
                 .map { it.id.toString() }
                 .run { ifEmpty { plus(UNCATEGORIZED_ID.toString()) } }
 
@@ -165,7 +205,12 @@ class DiscordRPCService : Service() {
                 when {
                     discordIncognito -> null
                     connectionsPreferences.useChapterTitles().get() -> it
-                    else -> null
+                    else -> readerData.chapterNumber.let {
+                        context.resources.getString(
+                            R.string.display_mode_chapter,
+                            formatChapterNumber(it.first.toDouble()),
+                        ) + "/${it.second}"
+                    }
                 }
             }
 
@@ -189,8 +234,9 @@ class DiscordRPCService : Service() {
 
                 setScreen(
                     context = context,
-                    discordScreen = DiscordScreen.COMIC,
+                    discordScreen = DiscordScreen.MANGA,
                     readerData = ReaderData(
+                        incognitoMode = discordIncognito,
                         mangaTitle = mangaTitle,
                         chapterTitle = chapterTitle,
                         thumbnailUrl = mangaThumbnail,
