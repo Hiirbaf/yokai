@@ -12,7 +12,7 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.notificationManager
-import eu.kanade.tachiyomi.data.connection.discord.RICH_PRESENCE_TAG
+import eu.kanade.tachiyomi.data.connections.discord.RICH_PRESENCE_TAG
 
 /**
  * Class to manage the basic information of all the notifications used in the app.
