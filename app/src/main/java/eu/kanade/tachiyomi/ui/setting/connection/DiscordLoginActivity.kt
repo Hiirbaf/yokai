@@ -6,7 +6,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.connection.ConnectionsManager
+import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.databinding.DiscordLoginActivityBinding
 //import eu.kanade.tachiyomi.data.connections.discord.DiscordAccount
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
