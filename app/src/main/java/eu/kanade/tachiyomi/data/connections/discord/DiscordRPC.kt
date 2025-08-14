@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.connection.discord
+package eu.kanade.tachiyomi.data.connections.discord
 
 /**
  * DiscordRPC is a class that implements Discord Rich Presence functionality using WebSockets.
