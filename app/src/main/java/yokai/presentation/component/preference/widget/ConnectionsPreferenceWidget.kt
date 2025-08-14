@@ -23,7 +23,7 @@ import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.data.connection.ConnectionsService
+import eu.kanade.tachiyomi.data.connections.ConnectionsService
 
 @Composable
 fun ConnectionsPreferenceWidget(
