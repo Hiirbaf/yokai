@@ -179,8 +179,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     private val getRecents: GetRecents by injectLazy()
 
-    private val connectionsPreferences: ConnectionsPreferences by injectLazy()
-
     private val hideBottomNav
         get() = router.backstackSize > 1 && router.backstack[1].controller !is DialogController
     private val hideAppBar
