@@ -7,7 +7,7 @@ import android.webkit.WebViewClient
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.databinding.DiscordLoginActivityBinding
+//import eu.kanade.tachiyomi.databinding.DiscordLoginActivityBinding
 //import eu.kanade.tachiyomi.data.connections.discord.DiscordAccount
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.util.system.toast
@@ -15,7 +15,7 @@ import yokai.i18n.MR
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 
-class DiscordLoginActivity : BaseActivity<DiscordLoginActivityBinding>() {
+class DiscordLoginActivity : BaseActivity() {
 
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
