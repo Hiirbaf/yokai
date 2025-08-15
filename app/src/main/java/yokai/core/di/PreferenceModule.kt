@@ -10,6 +10,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.network.NetworkPreferences
 import org.koin.dsl.module
+import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.domain.backup.BackupPreferences
 import yokai.domain.base.BasePreferences
 import yokai.domain.download.DownloadPreferences
@@ -24,6 +25,8 @@ fun preferenceModule(application: Application) = module {
     single<PreferenceStore> { AndroidPreferenceStore(application) }
 
     single { BasePreferences(get()) }
+
+    single { ConnectionsPreferences(get()) }
 
     single { SourcePreferences(get()) }
 
@@ -64,5 +67,4 @@ fun preferenceModule(application: Application) = module {
         )
     }
     
-    single { yokai.domain.connections.service.ConnectionsPreferences(get()) }
 }
