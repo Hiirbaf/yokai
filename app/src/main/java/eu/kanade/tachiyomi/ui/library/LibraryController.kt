@@ -61,6 +61,8 @@ import eu.davidea.flexibleadapter.items.IHeader
 import eu.davidea.flexibleadapter.items.ISectionable
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
+import eu.kanade.tachiyomi.data.connections.discord.DiscordScreen
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -585,6 +587,11 @@ open class LibraryController(
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
+
+        viewScope.launch {
+    DiscordRPCService.setScreen(view.context, DiscordScreen.LIBRARY)
+        }
+        
         mAdapter = LibraryCategoryAdapter(this)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         setRecyclerLayout()

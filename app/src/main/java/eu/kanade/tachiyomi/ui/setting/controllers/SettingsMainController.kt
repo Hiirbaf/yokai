@@ -4,6 +4,8 @@ import android.app.ActivityManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Link
 import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.Controller
@@ -12,6 +14,7 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
+import yokai.presentation.settings.ComposableSettings
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.more.AboutController
@@ -31,6 +34,7 @@ import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.fadeTransactionHandler
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsConnectionsScreen
 
 class SettingsMainController : SettingsLegacyController(), FloatingSearchInterface {
 
@@ -84,6 +88,12 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             iconTint = tintColor
             titleRes = MR.strings.tracking
             onClick { navigateTo(SettingsTrackingController()) }
+        }
+        preference {
+            iconRes = R.drawable.ic_link_24dp
+            iconTint = tintColor
+            titleRes = MR.strings.pref_category_connections
+            onClick { navigateTo(SettingsConnectionsController()) }
         }
         preferenceLongClickable {
             iconRes = R.drawable.ic_storage_24dp

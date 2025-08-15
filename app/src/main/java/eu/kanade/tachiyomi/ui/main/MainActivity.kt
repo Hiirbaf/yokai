@@ -152,11 +152,17 @@ import yokai.presentation.extension.repo.ExtensionRepoController
 import yokai.presentation.onboarding.OnboardingController
 import yokai.util.lang.getString
 import android.R as AR
+import yokai.domain.connections.service.ConnectionsPreferences
+import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
+import eu.kanade.tachiyomi.data.connections.discord.DiscordScreen
+import kotlinx.coroutines.flow.drop
 
 @SuppressLint("ResourceType")
 open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     protected lateinit var router: Router
+
+    private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
     protected val searchDrawable by lazy { contextCompatDrawable(R.drawable.ic_search_24dp) }
     protected val backDrawable by lazy { contextCompatDrawable(R.drawable.ic_arrow_back_24dp) }
@@ -439,6 +445,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
             true
         }
+
+        
 
         val container: ViewGroup = binding.controllerContainer
 
@@ -754,6 +762,33 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     }
             }
         }
+        // Escuchar y manejar Discord RPC al iniciar la app
+lifecycleScope.launchUI {
+    // Comprobación inicial al abrir la app
+    if (connectionsPreferences.enableDiscordRPC().get()) {
+        DiscordRPCService.start(this@MainActivity.applicationContext)
+    }
+
+    connectionsPreferences.enableDiscordRPC().changes()
+        .drop(1)
+        .onEach {
+            if (it) {
+                DiscordRPCService.start(this@MainActivity.applicationContext)
+            } else {
+                DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+            }
+        }
+        .launchIn(this)
+
+    connectionsPreferences.discordRPCStatus().changes()
+        .drop(1)
+        .onEach {
+            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+            DiscordRPCService.start(this@MainActivity.applicationContext)
+            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+        }
+        .launchIn(this)
+}
     }
 
     fun reEnableBackPressedCallBack() {

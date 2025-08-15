@@ -14,6 +14,8 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.track.TrackPreferences
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import yokai.domain.connections.service.ConnectionsPreferences
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -25,6 +27,7 @@ import yokai.presentation.component.preference.widget.SliderPreferenceWidget
 import yokai.presentation.component.preference.widget.SwitchPreferenceWidget
 import yokai.presentation.component.preference.widget.TextPreferenceWidget
 import yokai.presentation.component.preference.widget.TrackingPreferenceWidget
+import yokai.presentation.component.preference.widget.ConnectionsPreferenceWidget
 
 val LocalPreferenceHighlighted = compositionLocalOf(structuralEqualityPolicy()) { false }
 val LocalPreferenceMinHeight = compositionLocalOf(structuralEqualityPolicy()) { 56.dp }
@@ -163,6 +166,18 @@ internal fun PreferenceItem(
                         tracker = this,
                         checked = uName.isNotEmpty(),
                         onClick = { if (isLogged) item.logout() else item.login() },
+                    )
+                }
+            }
+            is Preference.PreferenceItem.ConnectionsPreference -> {
+                val uName by Injekt.get<PreferenceStore>()
+                    .getString(ConnectionsPreferences.connectionsUsername(item.service.id))
+                    .collectAsState()
+                item.service.run {
+                    ConnectionsPreferenceWidget(
+                        service = this,
+                        checked = uName.isNotEmpty(),
+                        onClick = { if (isLogged) item.openSettings() else item.login() },
                     )
                 }
             }

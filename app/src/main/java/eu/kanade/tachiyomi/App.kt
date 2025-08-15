@@ -43,6 +43,7 @@ import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.data.coil.MangaCoverKeyer
 import eu.kanade.tachiyomi.data.coil.MangaKeyer
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
+import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -214,6 +215,14 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         if (!AuthenticatorUtil.isAuthenticating && preferences.lockAfter().get() >= 0) {
             SecureActivityDelegate.locked = true
         }
+    }
+
+    override fun onStart(owner: LifecycleOwner) {
+        DiscordRPCService.start(applicationContext)
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        DiscordRPCService.stop(applicationContext)
     }
 
     override fun attachBaseContext(base: Context) {
