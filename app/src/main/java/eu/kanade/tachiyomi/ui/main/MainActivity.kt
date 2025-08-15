@@ -162,6 +162,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     protected lateinit var router: Router
 
+    private val connectionsPreferences: ConnectionsPreferences by injectLazy()
+
     protected val searchDrawable by lazy { contextCompatDrawable(R.drawable.ic_search_24dp) }
     protected val backDrawable by lazy { contextCompatDrawable(R.drawable.ic_arrow_back_24dp) }
     private var gestureDetector: GestureDetector? = null
