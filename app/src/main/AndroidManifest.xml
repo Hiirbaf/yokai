@@ -192,7 +192,7 @@
         </provider>
 
         <activity android:label="Discord Login"
-            android:name=".ui.setting.connection.DiscordLoginActivity"
+            android:name=".ui.setting.connections.DiscordLoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             tools:ignore="AppLinkUrlError">
