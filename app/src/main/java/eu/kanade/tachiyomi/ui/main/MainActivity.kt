@@ -468,27 +468,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        // AM (DISCORD) -->
-                    connectionsPreferences.enableDiscordRPC().changes()
-                        .drop(1)
-                        .onEach {
-                            if (it) {
-                                DiscordRPCService.start(this@MainActivity.applicationContext)
-                            } else {
-                                DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
-                            }
-                        }.launchIn(lifecycleScope)
-
-                    connectionsPreferences.discordRPCStatus().changes()
-                        .drop(1)
-                        .onEach {
-                            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
-                            DiscordRPCService.start(this@MainActivity.applicationContext)
-                            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
-                        }.launchIn(lifecycleScope)
-                    }
-                    // <-- AM (DISCORD)
-
         combine(
             downloadManager.isDownloaderRunning,
             downloadManager.queueState,
