@@ -482,14 +482,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     connectionsPreferences.discordRPCStatus().changes()
                         .drop(1)
                         .onEach {
-                            with(DiscordRPCService) {
-                                discordScope.launchIO {
-                                    stop(this@MainActivity.applicationContext, 0L)
-                                    start(this@MainActivity.applicationContext)
-                                    setScreen(this@MainActivity, DiscordScreen.LIBRARY)
-                                }
-                            }
-                        }
+                            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+                            DiscordRPCService.start(this@MainActivity.applicationContext)
+                            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+                        }.launchIn(lifecycleScope)
+                    }
                     // <-- AM (DISCORD)
 
         combine(
