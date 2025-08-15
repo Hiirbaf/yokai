@@ -204,7 +204,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".data.connection.discord.DiscordRPCService"
+            android:name=".data.connections.discord.DiscordRPCService"
             android:foregroundServiceType="dataSync"
             android:enabled="true"
             android:exported="false">
