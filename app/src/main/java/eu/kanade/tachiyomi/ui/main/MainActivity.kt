@@ -477,7 +477,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             } else {
                                 DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
                             }
-                        }.launchIn(this)
+                        }.launchIn(lifecycleScope)
 
                     connectionsPreferences.discordRPCStatus().changes()
                         .drop(1)
