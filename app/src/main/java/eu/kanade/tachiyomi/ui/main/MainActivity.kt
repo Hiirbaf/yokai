@@ -468,7 +468,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        connectionsPreferences.enableDiscordRPC().changes()
+        // AM (DISCORD) -->
+                    connectionsPreferences.enableDiscordRPC().changes()
                         .drop(1)
                         .onEach {
                             if (it) {
@@ -476,15 +477,20 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             } else {
                                 DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
                             }
-                        }.launchIn(lifecycleScope)
+                        }.launchIn(this)
 
                     connectionsPreferences.discordRPCStatus().changes()
                         .drop(1)
                         .onEach {
-                            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
-                            DiscordRPCService.start(this@MainActivity.applicationContext)
-                            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.MORE)
-                        }.launchIn(lifecycleScope)
+                            with(DiscordRPCService) {
+                                discordScope.launchIO {
+                                    stop(this@MainActivity.applicationContext, 0L)
+                                    start(this@MainActivity.applicationContext)
+                                    setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+                                }
+                            }
+                        }
+                    // <-- AM (DISCORD)
 
         combine(
             downloadManager.isDownloaderRunning,
