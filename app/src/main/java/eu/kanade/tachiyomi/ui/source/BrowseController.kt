@@ -678,18 +678,32 @@ class BrowseController :
         val searchView = activityBinding?.searchToolbar?.searchView
 
         // Change hint to show global search.
-        activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(MR.strings.global_search)
+        activityBinding?.searchToolbar?.searchQueryHint =
+        view?.context?.getString(MR.strings.search_sources)
 
-        // Create query listener which opens the global search view.
-        setOnQueryTextChangeListener(searchView, true) {
-            if (!it.isNullOrBlank()) performGlobalSearch(it)
-            true
+    // 👇 filtramos fuentes en lugar de abrir GlobalSearchController
+    setOnQueryTextChangeListener(searchView, true) {
+        val query = it.orEmpty()
+        filterSources(query)
+        true
+    }
+}
+
+/**
+ * Filtra la lista de fuentes según el texto ingresado
+ */
+private fun filterSources(query: String) {
+    val items = presenter.sourceItems
+    val filtered = if (query.isBlank()) {
+        items
+    } else {
+        items.filter { sourceItem ->
+            (sourceItem as? SourceItem)?.source?.name
+                ?.contains(query, ignoreCase = true) == true
         }
     }
-
-    private fun performGlobalSearch(query: String) {
-        router.pushController(GlobalSearchController(query).withFadeTransaction())
-    }
+    setSources(filtered, presenter.lastUsedItem)
+}
 
     /**
      * Called when an option menu item has been selected by the user.
