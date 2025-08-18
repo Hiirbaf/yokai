@@ -100,6 +100,8 @@ class BrowseController :
     /**
      * Adapter containing sources.
      */
+    private var sourceQuery: String = ""
+        
     private var adapter: SourceAdapter? = null
 
     var extQuery = ""
@@ -683,10 +685,22 @@ class BrowseController :
 
     // 👇 filtramos fuentes en lugar de abrir GlobalSearchController
     setOnQueryTextChangeListener(searchView, true) {
-        val query = it.orEmpty()
-        filterSources(query)
+        sourceQuery = it.orEmpty()
+        drawSources()
         true
     }
+
+private fun drawSources() {
+    val items = presenter.sourceItems
+    val filtered = if (sourceQuery.isBlank()) {
+        items
+    } else {
+        items.filter { sourceItem ->
+            (sourceItem as? SourceItem)?.source?.name
+                ?.contains(sourceQuery, ignoreCase = true) == true
+        }
+    }
+    setSources(filtered, presenter.lastUsedItem)
 }
 
 /**
