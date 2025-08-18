@@ -740,17 +740,6 @@ fun setSources(sources: List<IFlexible<*>>, lastUsed: SourceItem?) {
     }
 
     /**
-     * Called to update adapter containing sources.
-     */
-    fun setSources(sources: List<IFlexible<*>>, lastUsed: SourceItem?) {
-        adapter?.updateDataSet(sources, false)
-        setLastUsedSource(lastUsed)
-        if (isControllerVisible) {
-            activityBinding?.appBar?.lockYPos = false
-        }
-    }
-
-    /**
      * Called to set the last used catalogue at the top of the view.
      */
     fun setLastUsedSource(item: SourceItem?) {
