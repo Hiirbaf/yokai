@@ -679,7 +679,7 @@ class BrowseController :
 
         // Change hint to show global search.
         activityBinding?.searchToolbar?.searchQueryHint =
-        view?.context?.getString(MR.strings.search_sources)
+        view?.context?.getString(MR.strings.search_extensions)
 
     // 👇 filtramos fuentes en lugar de abrir GlobalSearchController
     setOnQueryTextChangeListener(searchView, true) {
