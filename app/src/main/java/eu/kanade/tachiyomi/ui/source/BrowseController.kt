@@ -683,7 +683,7 @@ class BrowseController :
     val searchView = searchItem.actionView as SearchView
 
     // Texto de hint para el buscador
-    searchView.queryHint = view?.context?.getString(MR.strings.search_sources)
+    searchView.queryHint = view?.context?.getString(MR.strings.search_extensions)
 
     // Listener para búsqueda en vivo
     setOnQueryTextChangeListener(searchView) {
