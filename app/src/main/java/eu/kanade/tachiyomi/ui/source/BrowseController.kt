@@ -675,16 +675,20 @@ class BrowseController :
      * @param inflater used to load the menu xml.
      */
      override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    // Inflamos el menú principal del catálogo
     inflater.inflate(R.menu.catalogue_main, menu)
 
-    val searchView = activityBinding?.searchToolbar?.searchView
+    // Obtenemos el item de búsqueda y su SearchView
+    val searchItem = menu.findItem(R.id.action_search)
+    val searchView = searchItem.actionView as SearchView
 
-    activityBinding?.searchToolbar?.searchQueryHint =
-        view?.context?.getString(MR.strings.search_extensions)
+    // Texto de hint para el buscador
+    searchView.queryHint = view?.context?.getString(MR.strings.search_sources)
 
-    setOnQueryTextChangeListener(searchView, true) {
+    // Listener para búsqueda en vivo
+    setOnQueryTextChangeListener(searchView) {
         sourceQuery = it.orEmpty()
-        drawSources()
+        drawSources()   // 🔹 actualiza la lista en vivo
         true
     }
 }
