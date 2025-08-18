@@ -102,6 +102,10 @@ class BrowseController :
      */
     private var adapter: SourceAdapter? = null
 
+    // 🔹 query actual y lista completa
+    private var sourceQuery: String = ""
+    private var allSources: List<IFlexible<*>> = emptyList()
+
     var extQuery = ""
         private set
 
@@ -670,21 +674,14 @@ class BrowseController :
      * @param menu menu containing options.
      * @param inflater used to load the menu xml.
      */
-    // variable para guardar la query actual
-private var sourceQuery: String = ""
-
-// ...
-
-override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.catalogue_main, menu)
 
     val searchView = activityBinding?.searchToolbar?.searchView
 
-    // 👇 hint de búsqueda
     activityBinding?.searchToolbar?.searchQueryHint =
         view?.context?.getString(MR.strings.search_extensions)
 
-    // 👇 cada vez que cambia el texto, guardamos y redibujamos
     setOnQueryTextChangeListener(searchView, true) {
         sourceQuery = it.orEmpty()
         drawSources()
@@ -696,16 +693,27 @@ override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
  * Redibuja las fuentes según la query
  */
 private fun drawSources() {
-    val items = presenter.sourceItems
     val filtered = if (sourceQuery.isBlank()) {
-        items
+        allSources
     } else {
-        items.filter { sourceItem ->
+        allSources.filter { sourceItem ->
             (sourceItem as? SourceItem)?.source?.name
                 ?.contains(sourceQuery, ignoreCase = true) == true
         }
     }
-    setSources(filtered, presenter.lastUsedItem)
+    adapter?.updateDataSet(filtered, false)
+}
+
+/**
+ * Actualiza el dataset de fuentes
+ */
+fun setSources(sources: List<IFlexible<*>>, lastUsed: SourceItem?) {
+    allSources = sources      // 🔹 guardamos todas
+    drawSources()             // 🔹 dibujamos filtradas
+    setLastUsedSource(lastUsed)
+    if (isControllerVisible) {
+        activityBinding?.appBar?.lockYPos = false
+    }
 }
 
     /**
