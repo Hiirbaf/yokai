@@ -100,8 +100,6 @@ class BrowseController :
     /**
      * Adapter containing sources.
      */
-    private var sourceQuery: String = ""
-        
     private var adapter: SourceAdapter? = null
 
     var extQuery = ""
@@ -672,24 +670,31 @@ class BrowseController :
      * @param menu menu containing options.
      * @param inflater used to load the menu xml.
      */
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Inflate menu
-        inflater.inflate(R.menu.catalogue_main, menu)
+    // variable para guardar la query actual
+private var sourceQuery: String = ""
 
-        // Initialize search option.
-        val searchView = activityBinding?.searchToolbar?.searchView
+// ...
 
-        // Change hint to show global search.
-        activityBinding?.searchToolbar?.searchQueryHint =
-        view?.context?.getString(MR.strings.search_extensions)
+override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    inflater.inflate(R.menu.catalogue_main, menu)
 
-    // 👇 filtramos fuentes en lugar de abrir GlobalSearchController
+    val searchView = activityBinding?.searchToolbar?.searchView
+
+    // 👇 hint de búsqueda
+    activityBinding?.searchToolbar?.searchQueryHint =
+        view?.context?.getString(MR.strings.search_sources)
+
+    // 👇 cada vez que cambia el texto, guardamos y redibujamos
     setOnQueryTextChangeListener(searchView, true) {
         sourceQuery = it.orEmpty()
         drawSources()
         true
     }
+}
 
+/**
+ * Redibuja las fuentes según la query
+ */
 private fun drawSources() {
     val items = presenter.sourceItems
     val filtered = if (sourceQuery.isBlank()) {
@@ -698,22 +703,6 @@ private fun drawSources() {
         items.filter { sourceItem ->
             (sourceItem as? SourceItem)?.source?.name
                 ?.contains(sourceQuery, ignoreCase = true) == true
-        }
-    }
-    setSources(filtered, presenter.lastUsedItem)
-}
-
-/**
- * Filtra la lista de fuentes según el texto ingresado
- */
-private fun filterSources(query: String) {
-    val items = presenter.sourceItems
-    val filtered = if (query.isBlank()) {
-        items
-    } else {
-        items.filter { sourceItem ->
-            (sourceItem as? SourceItem)?.source?.name
-                ?.contains(query, ignoreCase = true) == true
         }
     }
     setSources(filtered, presenter.lastUsedItem)
