@@ -682,7 +682,7 @@ override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
     // 👇 hint de búsqueda
     activityBinding?.searchToolbar?.searchQueryHint =
-        view?.context?.getString(MR.strings.search_sources)
+        view?.context?.getString(MR.strings.search_extensions)
 
     // 👇 cada vez que cambia el texto, guardamos y redibujamos
     setOnQueryTextChangeListener(searchView, true) {
