@@ -40,8 +40,8 @@ fun AppBarTitle(
         title?.let {
             Text(
                 text = it,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                maxLines = Int.MAX_VALUE,
+                overflow = TextOverflow.Clip,
             )
         }
         subtitle?.let {
