@@ -40,9 +40,13 @@ fun AppBarTitle(
         title?.let {
             Text(
                 text = it,
-                maxLines = Int.MAX_VALUE,
-                overflow = TextOverflow.Clip,
-            )
+                maxLines = 1, // mantiene una sola línea
+                overflow = TextOverflow.Visible, // no poner "..."
+                modifier = Modifier.basicMarquee( // scroll horizontal automático
+                    iterations = Int.MAX_VALUE,
+                    repeatDelayMillis = 2000,
+                    ),
+                )
         }
         subtitle?.let {
             Text(
