@@ -6,9 +6,10 @@ import android.content.pm.PackageManager
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import co.touchlab.kermit.Logger
-import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 object WebViewUtil {
     const val MINIMUM_WEBVIEW_VERSION = 118
@@ -42,7 +43,12 @@ fun WebView.isOutdated(): Boolean {
 }
 
 @SuppressLint("SetJavaScriptEnabled")
-fun WebView.setDefaultSettings() {
+fun WebView.setupLikeSY(
+    context: Context,
+    url: String,
+    referer: String? = null
+) {
+    // Configuración básica
     with(settings) {
         javaScriptEnabled = true
         domStorageEnabled = true
@@ -53,14 +59,30 @@ fun WebView.setDefaultSettings() {
         displayZoomControls = false
         cacheMode = WebSettings.LOAD_DEFAULT
 
-        // 🔽 Forzar un UA tipo Chrome Android real
+        // UA idéntico a TachiyomiSY
         userAgentString =
-            "Mozilla/5.0 (Linux; Android 10) " +
+            "Mozilla/5.0 (Linux; Android 10; K) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) " +
-            "Chrome/118.0.5993.80 Mobile Safari/537.36"
+            "Chrome/135.0.0.0 Mobile Safari/537.36"
     }
 
+    // Cookies de terceros
     CookieManager.getInstance().acceptThirdPartyCookies(this)
+
+    // WebViewClient para manejar redirecciones dentro del WebView
+    webViewClient = object : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?) = false
+    }
+
+    // Headers extra opcionales
+    val extraHeaders = mutableMapOf<String, String>()
+    referer?.let { extraHeaders["Referer"] = it }
+
+    // Cargar URL con headers
+    loadUrl(url, extraHeaders)
+
+    // Log debug
+    co.touchlab.kermit.Logger.i { "WebView cargando $url con UA: ${settings.userAgentString}" }
 }
 
 private fun WebView.getWebViewMajorVersion(): Int {
