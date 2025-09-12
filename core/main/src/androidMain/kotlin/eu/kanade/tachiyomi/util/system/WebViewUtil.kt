@@ -42,7 +42,7 @@ fun WebView.isOutdated(): Boolean {
 }
 
 @SuppressLint("SetJavaScriptEnabled")
-fun WebView.setDefaultSettings(context: Context) {
+fun WebView.setDefaultSettings() {
     with(settings) {
         javaScriptEnabled = true
         domStorageEnabled = true
@@ -53,9 +53,9 @@ fun WebView.setDefaultSettings(context: Context) {
         displayZoomControls = false
         cacheMode = WebSettings.LOAD_DEFAULT
 
-        // 👇 Spoof del User-Agent como en TachiyomiSY
-        userAgentString = WebViewUtil.getInferredUserAgent(context)
-    }
+        // 🔽 Esto fuerza el User-Agent del propio WebView
+        userAgentString = getDefaultUserAgentString()
+}
 
     // Aceptar cookies de terceros como SY
     CookieManager.getInstance().acceptThirdPartyCookies(this)
