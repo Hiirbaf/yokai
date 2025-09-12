@@ -53,11 +53,13 @@ fun WebView.setDefaultSettings() {
         displayZoomControls = false
         cacheMode = WebSettings.LOAD_DEFAULT
 
-        // 🔽 Esto fuerza el User-Agent del propio WebView
-        userAgentString = getDefaultUserAgentString()
-}
+        // 🔽 Forzar un UA tipo Chrome Android real
+        userAgentString =
+            "Mozilla/5.0 (Linux; Android 10) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/118.0.5993.80 Mobile Safari/537.36"
+    }
 
-    // Aceptar cookies de terceros como SY
     CookieManager.getInstance().acceptThirdPartyCookies(this)
 }
 
