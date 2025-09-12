@@ -8,7 +8,6 @@ import android.widget.Toast
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.WebViewUtil
 import eu.kanade.tachiyomi.util.system.launchUI
-import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import eu.kanade.tachiyomi.util.system.toast
 import java.util.Locale
 import java.util.concurrent.CountDownLatch
@@ -82,8 +81,13 @@ abstract class WebViewInterceptor(
 
     fun createWebView(request: Request): WebView {
         return WebView(context).apply {
-            setDefaultSettings()
-            // Avoid sending empty User-Agent, Chromium WebView will reset to default if empty
+            // Antes:
+            // setDefaultSettings()
+
+            // Ahora:
+            setupLikeSY(context, request.url.toString())
+
+            // Evitar enviar UA vacío
             settings.userAgentString = request.header("User-Agent") ?: defaultUserAgentProvider()
         }
     }
