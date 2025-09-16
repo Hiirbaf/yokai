@@ -6,7 +6,7 @@ fast_adapter = "5.7.0"
 moko = "0.24.5"
 okhttp = "5.0.0-alpha.16"
 shizuku = "13.1.5"
-androidxSqlite = "2.6.0"
+androidxSqlite = "2.5.2"
 # FIXME: Stay at 2.0.2 until 2.1.1 released because dialect is borked
 # REF: https://github.com/sqldelight/sqldelight/issues/5758
 sqldelight = "2.0.2"
