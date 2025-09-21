@@ -230,34 +230,19 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         SourcePresenter.onLowMemory()
     }
 
-    private var spoofingInProgress = false
-
     override fun getPackageName(): String {
-        if (spoofingInProgress) return super.getPackageName()
-        return try {
-            spoofingInProgress = true
-            val looper = Looper.getMainLooper()
-            val stackTrace = looper?.thread?.stackTrace ?: return super.getPackageName()
-
+        try {
+            val stackTrace = Looper.getMainLooper().thread.stackTrace
             val isChromiumCall = stackTrace.any { trace ->
-                val cls = trace.className.lowercase()
-                val method = trace.methodName.lowercase()
-                (cls == "org.chromium.base.buildinfo" || cls == "org.chromium.base.apkinfo") &&
-                    (method == "getall" || method == "getpackagename" || method == "<init>")
+                trace.className.lowercase() in setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo") &&
+                    trace.methodName.lowercase() in setOf("getall", "getpackagename", "<init>")
             }
 
-            if (isChromiumCall) {
-                WebViewUtil.spoofedPackageName(applicationContext)
-            } else {
-                super.getPackageName()
-            }
-        } catch (e: Exception) {
-            // Loguea el error, pero no rompas la app
-            Logger.e(e) { "Error en getPackageName, devolviendo default" }
-            super.getPackageName()
-        } finally {
-            spoofingInProgress = false
+            if (isChromiumCall) return WebViewUtil.spoofedPackageName(applicationContext)
+        } catch (_: Exception) {
         }
+
+        return super.getPackageName()
     }
 
     protected open fun setupNotificationChannels() {
