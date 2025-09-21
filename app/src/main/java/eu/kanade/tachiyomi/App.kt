@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Looper
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
@@ -53,6 +54,7 @@ import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
 import eu.kanade.tachiyomi.ui.source.SourcePresenter
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
+import eu.kanade.tachiyomi.util.system.WebViewUtil
 import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
