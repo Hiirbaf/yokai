@@ -242,13 +242,19 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             val isChromiumCall = stackTrace.any { trace ->
                 val cls = trace.className.lowercase()
                 val method = trace.methodName.lowercase()
-                cls in setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo") &&
-                    method in setOf("getall", "getpackagename", "<init>")
+                (cls == "org.chromium.base.buildinfo" || cls == "org.chromium.base.apkinfo") &&
+                    (method == "getall" || method == "getpackagename" || method == "<init>")
             }
 
-            if (isChromiumCall) WebViewUtil.spoofedPackageName(this) else super.getPackageName()
-        } catch (_: Exception) {
-        super.getPackageName()
+            if (isChromiumCall) {
+                WebViewUtil.spoofedPackageName(applicationContext)
+            } else {
+                super.getPackageName()
+            }
+        } catch (e: Exception) {
+            // Loguea el error, pero no rompas la app
+            Logger.e(e) { "Error en getPackageName, devolviendo default" }
+            super.getPackageName()
         } finally {
             spoofingInProgress = false
         }
