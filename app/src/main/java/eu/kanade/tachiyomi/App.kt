@@ -230,20 +230,28 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         SourcePresenter.onLowMemory()
     }
 
+    private var spoofingInProgress = false
+
     override fun getPackageName(): String {
-        try {
-            // Override the value passed as X-Requested-With in WebView requests
-            val stackTrace = Looper.getMainLooper().thread.stackTrace
+        if (spoofingInProgress) return super.getPackageName()
+        return try {
+            spoofingInProgress = true
+            val looper = Looper.getMainLooper()
+            val stackTrace = looper?.thread?.stackTrace ?: return super.getPackageName()
+
             val isChromiumCall = stackTrace.any { trace ->
-                trace.className.lowercase() in setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo") &&
-                    trace.methodName.lowercase() in setOf("getall", "getpackagename", "<init>")
+                val cls = trace.className.lowercase()
+                val method = trace.methodName.lowercase()
+                cls in setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo") &&
+                    method in setOf("getall", "getpackagename", "<init>")
             }
 
-            if (isChromiumCall) return WebViewUtil.spoofedPackageName(applicationContext)
+            if (isChromiumCall) WebViewUtil.spoofedPackageName(this) else super.getPackageName()
         } catch (_: Exception) {
+        super.getPackageName()
+        } finally {
+            spoofingInProgress = false
         }
-
-        return super.getPackageName()
     }
 
     protected open fun setupNotificationChannels() {
