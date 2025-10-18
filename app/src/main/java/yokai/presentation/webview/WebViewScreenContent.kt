@@ -18,6 +18,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +45,8 @@ import kotlinx.coroutines.launch
 import yokai.i18n.MR
 import yokai.presentation.component.AppBar
 import yokai.presentation.component.AppBarActions
+import yokai.presentation.component.AppBarTitle
+import yokai.presentation.component.UpIcon
 import yokai.presentation.component.WarningBanner
 
 @Composable
