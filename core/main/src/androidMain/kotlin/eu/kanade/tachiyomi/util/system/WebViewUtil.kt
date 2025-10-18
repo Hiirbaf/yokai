@@ -6,29 +6,26 @@ import android.content.pm.PackageManager
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import co.touchlab.kermit.Logger
 import kotlinx.coroutines.suspendCancellableCoroutine
+import logcat.LogPriority
+import tachiyomi.core.common.util.system.logcat
 import kotlin.coroutines.resume
 
 object WebViewUtil {
+    private const val CHROME_PACKAGE = "com.android.chrome"
+    private const val SYSTEM_SETTINGS_PACKAGE = "com.android.settings"
+
     const val MINIMUM_WEBVIEW_VERSION = 118
 
-    fun supportsWebView(context: Context): Boolean {
-        try {
-            // May throw android.webkit.WebViewFactory$MissingWebViewPackageException if WebView
-            // is not installed
-            CookieManager.getInstance()
-        } catch (e: Throwable) {
-            Logger.e(e) { "Unable to manage cookie for WebView" }
-            return false
-        }
-
-        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_WEBVIEW)
-    }
-
     /**
-     * Devuelve un User-Agent modificado para parecerse al de Chrome móvil.
+     * Uses the WebView's user agent string to create something similar to what Chrome on Android
+     * would return.
+     *
+     * Example of WebView user agent string:
+     *   Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36
+     *
+     * Example of Chrome on Android:
+     *   Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.3
      */
     fun getInferredUserAgent(context: Context): String {
         return WebView(context)
@@ -36,53 +33,63 @@ object WebViewUtil {
             .replace("; Android .*?\\)".toRegex(), "; Android 10; K)")
             .replace("Version/.* Chrome/".toRegex(), "Chrome/")
     }
+
+    fun getVersion(context: Context): String {
+        val webView = WebView.getCurrentWebViewPackage() ?: return "how did you get here?"
+        val pm = context.packageManager
+        val label = webView.applicationInfo!!.loadLabel(pm)
+        val version = webView.versionName
+        return "$label $version"
+    }
+
+    fun supportsWebView(context: Context): Boolean {
+        try {
+            // May throw android.webkit.WebViewFactory$MissingWebViewPackageException if WebView
+            // is not installed
+            CookieManager.getInstance()
+        } catch (e: Throwable) {
+            logcat(LogPriority.ERROR, e)
+            return false
+        }
+
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_WEBVIEW)
+    }
+
+    fun spoofedPackageName(context: Context): String {
+        return try {
+            context.packageManager.getPackageInfo(CHROME_PACKAGE, PackageManager.GET_META_DATA)
+
+            CHROME_PACKAGE
+        } catch (_: PackageManager.NameNotFoundException) {
+            SYSTEM_SETTINGS_PACKAGE
+        }
+    }
 }
 
 fun WebView.isOutdated(): Boolean {
     return getWebViewMajorVersion() < WebViewUtil.MINIMUM_WEBVIEW_VERSION
 }
 
+suspend fun WebView.getHtml(): String = suspendCancellableCoroutine {
+    evaluateJavascript("document.documentElement.outerHTML") { html -> it.resume(html) }
+}
+
 @SuppressLint("SetJavaScriptEnabled")
-fun WebView.setupLikeSY(
-    context: Context,
-    url: String,
-    referer: String? = null
-) {
-    // Configuración básica
+fun WebView.setDefaultSettings() {
     with(settings) {
         javaScriptEnabled = true
         domStorageEnabled = true
-        databaseEnabled = true
         useWideViewPort = true
         loadWithOverviewMode = true
-        builtInZoomControls = true
-        displayZoomControls = false
         cacheMode = WebSettings.LOAD_DEFAULT
 
-        // UA idéntico a TachiyomiSY
-        userAgentString =
-            "Mozilla/5.0 (Linux; Android 10; K) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) " +
-            "Chrome/135.0.0.0 Mobile Safari/537.36"
+        // Allow zooming
+        setSupportZoom(true)
+        builtInZoomControls = true
+        displayZoomControls = false
     }
 
-    // Cookies de terceros
     CookieManager.getInstance().acceptThirdPartyCookies(this)
-
-    // WebViewClient para manejar redirecciones dentro del WebView
-    webViewClient = object : WebViewClient() {
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?) = false
-    }
-
-    // Headers extra opcionales
-    val extraHeaders = mutableMapOf<String, String>()
-    referer?.let { extraHeaders["Referer"] = it }
-
-    // Cargar URL con headers
-    loadUrl(url, extraHeaders)
-
-    // Log debug
-    co.touchlab.kermit.Logger.i { "WebView cargando $url con UA: ${settings.userAgentString}" }
 }
 
 private fun WebView.getWebViewMajorVersion(): Int {
@@ -94,7 +101,7 @@ private fun WebView.getWebViewMajorVersion(): Int {
     }
 }
 
-// Basado en https://stackoverflow.com/a/29218966
+// Based on https://stackoverflow.com/a/29218966
 private fun WebView.getDefaultUserAgentString(): String {
     val originalUA: String = settings.userAgentString
 
@@ -102,12 +109,8 @@ private fun WebView.getDefaultUserAgentString(): String {
     settings.userAgentString = null
     val defaultUserAgentString = settings.userAgentString
 
-    // Revertir al original
+    // Revert to original UA string
     settings.userAgentString = originalUA
 
     return defaultUserAgentString
-}
-
-suspend fun WebView.getHtml(): String = suspendCancellableCoroutine {
-    evaluateJavascript("document.documentElement.outerHTML") { html -> it.resume(html) }
 }
