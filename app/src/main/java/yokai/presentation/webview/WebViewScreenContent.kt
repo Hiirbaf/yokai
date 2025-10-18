@@ -9,18 +9,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.kevinnzou.web.AccompanistWebViewClient
@@ -40,7 +36,6 @@ import com.kevinnzou.web.rememberWebViewNavigator
 import com.kevinnzou.web.rememberWebViewState
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.system.getHtml
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import kotlinx.collections.immutable.persistentListOf
@@ -48,8 +43,6 @@ import kotlinx.coroutines.launch
 import yokai.i18n.MR
 import yokai.presentation.component.AppBar
 import yokai.presentation.component.AppBarActions
-import yokai.presentation.component.AppBarTitle
-import yokai.presentation.component.UpIcon
 import yokai.presentation.component.WarningBanner
 
 @Composable
@@ -58,7 +51,6 @@ fun WebViewScreenContent(
     initialTitle: String?,
     url: String,
     onShare: (String) -> Unit,
-    onOpenInApp: (String) -> Unit,
     onOpenInBrowser: (String) -> Unit,
     onClearCookies: (String) -> Unit,
     headers: Map<String, String> = emptyMap(),
@@ -67,7 +59,6 @@ fun WebViewScreenContent(
     val state = rememberWebViewState(url = url, additionalHttpHeaders = headers)
     val navigator = rememberWebViewNavigator()
     val uriHandler = LocalUriHandler.current
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     var currentUrl by remember { mutableStateOf(url) }
@@ -126,27 +117,20 @@ fun WebViewScreenContent(
         }
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             Box {
                 Column {
-                    TopAppBar(
-                        title = {
-                            AppBarTitle(
-                                title = state.pageTitle ?: initialTitle,
-                                subtitle = currentUrl,
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = onNavigateUp) {
-                                UpIcon(navigationIcon = Icons.Outlined.Close)
-                            }
-                        },
+                    AppBar(
+                        title = state.pageTitle ?: initialTitle,
+                        subtitle = currentUrl,
+                        navigateUp = onNavigateUp,
+                        navigationIcon = Icons.Outlined.Close,
                         actions = {
                             AppBarActions(
                                 persistentListOf(
                                     AppBar.Action(
-                                        title = stringResource(MR.strings.action_webview_back),
+                                        title = stringResource(MR.strings.webview_back),
                                         icon = Icons.AutoMirrored.Outlined.ArrowBack,
                                         onClick = {
                                             if (navigator.canGoBack) {
@@ -174,13 +158,7 @@ fun WebViewScreenContent(
                                         onClick = { onShare(currentUrl) },
                                     ),
                                     AppBar.OverflowAction(
-                                        title = stringResource(MR.strings.open_in_app),
-                                        onClick = { onOpenInApp(currentUrl) },
-                                        isVisible = navigator.canGoBack &&
-                                            context.extensionIntentForText(currentUrl) != null,
-                                    ),
-                                    AppBar.OverflowAction(
-                                        title = stringResource(MR.strings.open_in_browser),
+                                        title = stringResource(MR.strings.action_open_in_browser),
                                         onClick = { onOpenInBrowser(currentUrl) },
                                     ),
                                     AppBar.OverflowAction(
@@ -230,8 +208,7 @@ fun WebViewScreenContent(
             state = state,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)
-                .imePadding(),
+                .padding(contentPadding),
             navigator = navigator,
             onCreated = { webView ->
                 webView.setDefaultSettings()
