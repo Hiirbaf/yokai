@@ -121,7 +121,7 @@ fun WebViewScreenContent(
         topBar = {
             Box {
                 Column {
-                    AppBar(
+                    TopAppBar(
                         title = state.pageTitle ?: initialTitle,
                         subtitle = currentUrl,
                         navigateUp = onNavigateUp,
@@ -130,7 +130,7 @@ fun WebViewScreenContent(
                             AppBarActions(
                                 persistentListOf(
                                     AppBar.Action(
-                                        title = stringResource(MR.strings.webview_back),
+                                        title = stringResource(MR.strings.action_webview_back),
                                         icon = Icons.AutoMirrored.Outlined.ArrowBack,
                                         onClick = {
                                             if (navigator.canGoBack) {
@@ -158,7 +158,7 @@ fun WebViewScreenContent(
                                         onClick = { onShare(currentUrl) },
                                     ),
                                     AppBar.OverflowAction(
-                                        title = stringResource(MR.strings.action_open_in_browser),
+                                        title = stringResource(MR.strings.open_in_app),
                                         onClick = { onOpenInBrowser(currentUrl) },
                                     ),
                                     AppBar.OverflowAction(
