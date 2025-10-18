@@ -6,9 +6,8 @@ import android.content.pm.PackageManager
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.suspendCancellableCoroutine
-import logcat.LogPriority
-import tachiyomi.core.common.util.system.logcat
 import kotlin.coroutines.resume
 
 object WebViewUtil {
@@ -48,7 +47,7 @@ object WebViewUtil {
             // is not installed
             CookieManager.getInstance()
         } catch (e: Throwable) {
-            logcat(LogPriority.ERROR, e)
+            Logger.e(e) { "Unable to manage cookie for WebView" }
             return false
         }
 
