@@ -32,7 +32,6 @@ class WebViewScreen(
             headers = screenModel.headers,
             onUrlChange = { assistUrl = it },
             onShare = { screenModel.shareWebpage(context, it) },
-            onOpenInApp = { screenModel.openInApp(context, it) },
             onOpenInBrowser = { screenModel.openInBrowser(context, it) },
             onClearCookies = screenModel::clearCookies,
         )
