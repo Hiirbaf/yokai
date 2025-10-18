@@ -123,10 +123,17 @@ fun WebViewScreenContent(
             Box {
                 Column {
                     TopAppBar(
-                        title = state.pageTitle ?: initialTitle,
-                        subtitle = currentUrl,
-                        navigateUp = onNavigateUp,
-                        navigationIcon = Icons.Outlined.Close,
+                        title = {
+                            AppBarTitle(
+                                title = state.pageTitle ?: initialTitle,
+                                subtitle = currentUrl,
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = onNavigateUp) {
+                                UpIcon(navigationIcon = Icons.Outlined.Close)
+                            }
+                        },
                         actions = {
                             AppBarActions(
                                 persistentListOf(
