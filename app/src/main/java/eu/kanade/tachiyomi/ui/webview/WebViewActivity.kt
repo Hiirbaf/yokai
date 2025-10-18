@@ -57,7 +57,6 @@ open class WebViewActivity : BaseWebViewActivity() {
                 headers = headers,
                 onUrlChange = { assistUrl = it },
                 onShare = this::shareWebpage,
-                onOpenInApp = this::openUrlInApp,
                 onOpenInBrowser = this::openInBrowser,
                 onClearCookies = this::clearCookies,
             )
