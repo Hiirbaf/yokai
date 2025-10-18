@@ -5,6 +5,7 @@ import android.os.Build
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
+import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.WebViewUtil
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
@@ -13,7 +14,6 @@ import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import tachiyomi.core.common.util.lang.launchUI
 import yokai.i18n.MR
 import java.util.Locale
 import java.util.concurrent.CountDownLatch
