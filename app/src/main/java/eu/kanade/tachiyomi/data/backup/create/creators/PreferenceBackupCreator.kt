@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.data.backup.models.IntPreferenceValue
 import eu.kanade.tachiyomi.data.backup.models.LongPreferenceValue
 import eu.kanade.tachiyomi.data.backup.models.StringPreferenceValue
 import eu.kanade.tachiyomi.data.backup.models.StringSetPreferenceValue
+import eu.kanade.tachiyomi.domain.extension.repo.ExtensionRepoManager
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.preferenceKey
@@ -22,10 +23,16 @@ import uy.kohesive.injekt.api.get
 class PreferenceBackupCreator(
     private val sourceManager: SourceManager = Injekt.get(),
     private val preferenceStore: PreferenceStore = Injekt.get(),
+    private val extensionRepoManager: ExtensionRepoManager = Injekt.get(),
 ) {
     fun createApp(includePrivatePreferences: Boolean): List<BackupPreference> {
-        return preferenceStore.getAll().toBackupPreferences()
+        val prefs = preferenceStore.getAll()
+            .toBackupPreferences()
             .withPrivatePreferences(includePrivatePreferences)
+
+        // Agregar registro de repositorios de extensiones
+        val repos = createExtensionRepos()
+        return prefs + repos
     }
 
     fun createSource(includePrivatePreferences: Boolean): List<BackupSourcePreferences> {
@@ -40,6 +47,20 @@ class PreferenceBackupCreator(
             }
     }
 
+    /**
+     * Convierte los repositorios en un BackupPreference(StringSet)
+     */
+    private fun createExtensionRepos(): BackupPreference {
+        val urls: Set<String> = extensionRepoManager.getRepos()
+            .map { it.baseUrl }
+            .toSet()
+
+        return BackupPreference(
+            key = "extension_repos",
+            value = StringSetPreferenceValue(urls),
+        )
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun Map<String, *>.toBackupPreferences(): List<BackupPreference> {
         return this.filterKeys { !Preference.isAppState(it) }
@@ -49,7 +70,7 @@ class PreferenceBackupCreator(
                     val stringValue = (LibrarySort.valueOf(value) ?: LibrarySort.Title).serialize()
                     return@mapNotNull BackupPreference(key, StringPreferenceValue(stringValue))
                 }
-                // end j2k fork differences
+
                 when (value) {
                     is Int -> BackupPreference(key, IntPreferenceValue(value))
                     is Long -> BackupPreference(key, LongPreferenceValue(value))
@@ -65,9 +86,5 @@ class PreferenceBackupCreator(
     }
 
     private fun List<BackupPreference>.withPrivatePreferences(include: Boolean) =
-        if (include) {
-            this
-        } else {
-            this.filter { !Preference.isPrivate(it.key) }
-        }
+        if (include) this else this.filter { !Preference.isPrivate(it.key) }
 }
