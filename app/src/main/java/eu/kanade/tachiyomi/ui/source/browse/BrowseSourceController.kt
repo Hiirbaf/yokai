@@ -297,11 +297,6 @@ open class BrowseSourceController(bundle: Bundle) :
             recycler,
             true,
             afterInsets = { insets ->
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                    binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        bottomMargin = insets.getInsets(systemBars() or ime()).bottom + 16.dpToPx
-                    }
-                }
                 val bigToolbarHeight = fullAppBarHeight ?: 0
                 binding.progress.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     topMargin = (bigToolbarHeight + insets.getInsets(systemBars()).top) / 2
@@ -310,19 +305,6 @@ open class BrowseSourceController(bundle: Bundle) :
                     top = (bigToolbarHeight + insets.getInsets(systemBars()).top),
                     bottom = insets.getInsets(systemBars()).bottom,
                 )
-            },
-        )
-        binding.fab.applyBottomAnimatedInsets(16.dpToPx)
-
-        recycler.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (dy <= 0 && !binding.fab.isExtended) {
-                        binding.fab.extend()
-                    } else if (dy > 0 && binding.fab.isExtended) {
-                        binding.fab.shrink()
-                    }
-                }
             },
         )
 
