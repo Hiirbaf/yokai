@@ -362,32 +362,20 @@ open class BrowseSourceController(bundle: Bundle) :
         updateDisplayMenuItem(menu)
     }
 
-    private fun updatePopLatestIcons() {
-        val allDefault = presenter.filtersMatchDefault() && presenter.query.isBlank()
-
-        binding.latestGroup.isChecked = presenter.useLatest && allDefault
-        binding.popularGroup.isChecked = !presenter.useLatest && allDefault
-        binding.filterGroup.isChecked = !allDefault
-
-        listOf(activityBinding?.toolbar?.menu, activityBinding?.searchToolbar?.menu).forEach {
-            updatePopularLatestIcon(it)
+    private fun updatePopularLatestIcon(menu: Menu?) {
+        menu?.findItem(R.id.action_popular_latest)?.apply {
+            val icon = if (!presenter.useLatest) {
+                R.drawable.ic_new_releases_24dp
+            } else {
+                R.drawable.ic_heart_24dp
+            }
+            setIcon(icon)
+            title = activity?.getString(if (!presenter.useLatest) {
+                MR.strings.latest
+            } else {
+                MR.strings.popular
+            })
         }
-    }
-
-    private fun resetPagerForNavButtons() {
-        val adapter = adapter ?: return
-
-        showProgressBar()
-        adapter.clear()
-
-        val searchItem = activityBinding?.searchToolbar?.searchItem
-        searchItem?.collapseActionView()
-
-        presenter.appliedFilters = FilterList()
-        presenter.sourceFilters = presenter.source.getFilterList()
-        presenter.filtersChanged = false
-
-        presenter.restartPager("")
     }
 
     private fun updateDisplayMenuItem(menu: Menu?, isListMode: Boolean? = null) {
@@ -817,7 +805,29 @@ open class BrowseSourceController(bundle: Bundle) :
         presenter.restartPager("")
     }
 
+    private fun resetPagerForNavButtons() {
+        val adapter = adapter ?: return
+
+        showProgressBar()
+        adapter.clear()
+
+        val searchItem = activityBinding?.searchToolbar?.searchItem
+        searchItem?.collapseActionView()
+
+        presenter.appliedFilters = FilterList()
+        presenter.sourceFilters = presenter.source.getFilterList()
+        presenter.filtersChanged = false
+
+        presenter.restartPager("")
+    }
+
     private fun updatePopLatestIcons() {
+        val allDefault = presenter.filtersMatchDefault() && presenter.query.isBlank()
+
+        binding.latestGroup.isChecked = presenter.useLatest && allDefault
+        binding.popularGroup.isChecked = !presenter.useLatest && allDefault
+        binding.filterGroup.isChecked = !allDefault
+
         listOf(activityBinding?.toolbar?.menu, activityBinding?.searchToolbar?.menu).forEach {
             updatePopularLatestIcon(it)
         }
