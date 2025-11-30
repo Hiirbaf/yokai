@@ -8,7 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Contenedor principal -->
     <FrameLayout
         android:id="@+id/catalogue_view"
         android:layout_width="match_parent"
@@ -23,10 +22,8 @@
             android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible"/>
-
     </FrameLayout>
 
-    <!-- 🔥 Nueva barra inferior tipo Código 1 (sin comportamiento que crashea) -->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/floatingBrowseBar"
         android:layout_width="wrap_content"
@@ -37,6 +34,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/popularGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?attr/materialButtonOutlinedStyle"
             android:checkable="true"
             android:text="@string/popular"
@@ -44,6 +43,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/latestGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?attr/materialButtonOutlinedStyle"
             android:checkable="true"
             android:text="@string/latest"
@@ -51,6 +52,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/filterGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?attr/materialButtonOutlinedStyle"
             android:checkable="true"
             android:text="@string/filter"
@@ -58,7 +61,6 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <!-- Vista vacía -->
     <eu.kanade.tachiyomi.widget.EmptyView
         android:id="@+id/empty_view"
         tools:paddingTop="300dp"
