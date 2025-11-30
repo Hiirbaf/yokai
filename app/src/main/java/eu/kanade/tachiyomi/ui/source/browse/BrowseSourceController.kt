@@ -190,6 +190,7 @@ open class BrowseSourceController(bundle: Bundle) :
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
 
+        binding.floatingBrowseBar.applyBottomAnimatedInsets()
         // Initialize adapter, scroll listener and recycler views
         adapter = FlexibleAdapter(null, this, false)
         setupRecycler(view)
