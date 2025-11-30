@@ -194,8 +194,39 @@ open class BrowseSourceController(bundle: Bundle) :
         adapter = FlexibleAdapter(null, this, false)
         setupRecycler(view)
 
-        binding.fab.isVisible = presenter.sourceFilters.isNotEmpty()
-        binding.fab.setOnClickListener { showFilters() }
+        // --- 🔥 BARRA INFERIOR: CONFIGURACIÓN ---
+        val supportsLatest = (presenter.source as? CatalogueSource)?.supportsLatest == true
+
+        binding.floatingBrowseBar.isVisible =
+            presenter.sourceFilters.isNotEmpty() || supportsLatest
+
+        binding.filterGroup.isVisible = presenter.sourceFilters.isNotEmpty()
+        binding.latestGroup.isVisible = supportsLatest
+        binding.popularGroup.isVisible = supportsLatest
+
+        updatePopLatestIcons()
+
+        binding.latestGroup.setOnClickListener {
+            if (!presenter.useLatest || !presenter.filtersMatchDefault() || presenter.query.isNotBlank()) {
+                presenter.useLatest = true
+                resetPagerForNavButtons()
+            }
+            updatePopLatestIcons()
+        }
+
+        binding.popularGroup.setOnClickListener {
+            if (presenter.useLatest || !presenter.filtersMatchDefault() || presenter.query.isNotBlank()) {
+                presenter.useLatest = false
+                resetPagerForNavButtons()
+            }
+            updatePopLatestIcons()
+        }
+
+        binding.filterGroup.setOnClickListener {
+            showFilters()
+            binding.filterGroup.isChecked = !presenter.filtersMatchDefault() || presenter.query.isNotBlank()
+        }
+        // --- 🔥 FIN BARRA INFERIOR ---
 
         activityBinding?.appBar?.y = 0f
         activityBinding?.appBar?.updateAppBarAfterY(recycler)
@@ -331,20 +362,32 @@ open class BrowseSourceController(bundle: Bundle) :
         updateDisplayMenuItem(menu)
     }
 
-    private fun updatePopularLatestIcon(menu: Menu?) {
-        menu?.findItem(R.id.action_popular_latest)?.apply {
-            val icon = if (!presenter.useLatest) {
-                R.drawable.ic_new_releases_24dp
-            } else {
-                R.drawable.ic_heart_24dp
-            }
-            setIcon(icon)
-            title = activity?.getString(if (!presenter.useLatest) {
-                MR.strings.latest
-            } else {
-                MR.strings.popular
-            })
+    private fun updatePopLatestIcons() {
+        val allDefault = presenter.filtersMatchDefault() && presenter.query.isBlank()
+
+        binding.latestGroup.isChecked = presenter.useLatest && allDefault
+        binding.popularGroup.isChecked = !presenter.useLatest && allDefault
+        binding.filterGroup.isChecked = !allDefault
+
+        listOf(activityBinding?.toolbar?.menu, activityBinding?.searchToolbar?.menu).forEach {
+            updatePopularLatestIcon(it)
         }
+    }
+
+    private fun resetPagerForNavButtons() {
+        val adapter = adapter ?: return
+
+        showProgressBar()
+        adapter.clear()
+
+        val searchItem = activityBinding?.searchToolbar?.searchItem
+        searchItem?.collapseActionView()
+
+        presenter.appliedFilters = FilterList()
+        presenter.sourceFilters = presenter.source.getFilterList()
+        presenter.filtersChanged = false
+
+        presenter.restartPager("")
     }
 
     private fun updateDisplayMenuItem(menu: Menu?, isListMode: Boolean? = null) {
