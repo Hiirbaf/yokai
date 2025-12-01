@@ -119,6 +119,14 @@ open class BrowseSourceController(bundle: Bundle) :
         },
     )
 
+    enum class BrowseMode {
+        POPULAR,
+        LATEST,
+        FILTER
+    }
+
+    private var mode: BrowseMode = BrowseMode.POPULAR
+
     private val getManga: GetManga by injectLazy()
 
     /**
@@ -284,7 +292,7 @@ open class BrowseSourceController(bundle: Bundle) :
     private fun openFilterSheet() {
         // la misma lógica que usabas en binding.fab.setOnClickListener
         // por ejemplo:
-        val filters = presenter.getFilterList()
+        val filters = presenter.openFiltersSheet()
         FiltersBottomSheet(this, filters).show()
     }
 
@@ -492,7 +500,7 @@ open class BrowseSourceController(bundle: Bundle) :
             },
             onResetClicked = {
                 presenter.appliedFilters = FilterList()
-                val newFilters = presenter.source.getFilterList()
+                val newFilters = presenter.source.openFiltersSheet()
                 presenter.sourceFilters = newFilters
                 filterSheet?.setFilters(presenter.filterItems)
             },
@@ -558,7 +566,7 @@ open class BrowseSourceController(bundle: Bundle) :
      * @param genreName the name of the genre
      */
     fun searchWithGenre(genreName: String, useContains: Boolean = false) {
-        presenter.sourceFilters = presenter.source.getFilterList()
+        presenter.sourceFilters = presenter.source.openFiltersSheet()
 
         var filterList: FilterList? = null
 
@@ -815,7 +823,7 @@ open class BrowseSourceController(bundle: Bundle) :
         searchItem?.collapseActionView()
 
         presenter.appliedFilters = FilterList()
-        val newFilters = presenter.source.getFilterList()
+        val newFilters = presenter.source.openFiltersSheet()
         presenter.sourceFilters = newFilters
         presenter.filtersChanged = false
 
@@ -832,7 +840,7 @@ open class BrowseSourceController(bundle: Bundle) :
         searchItem?.collapseActionView()
 
         presenter.appliedFilters = FilterList()
-        presenter.sourceFilters = presenter.source.getFilterList()
+        presenter.sourceFilters = presenter.source.openFiltersSheet()
         presenter.filtersChanged = false
 
         presenter.restartPager("")
