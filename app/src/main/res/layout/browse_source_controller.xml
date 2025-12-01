@@ -3,16 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/source_layout"
     android:background="?background"
     android:layout_width="match_parent"
+    android:id="@+id/source_layout"
     android:layout_height="match_parent">
 
-    <!-- Contenedor principal -->
     <FrameLayout
-        android:id="@+id/catalogue_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/catalogue_view"
         tools:context="eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -20,55 +20,30 @@
             android:indeterminate="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:visibility="gone"
             tools:visibility="visible"/>
+
     </FrameLayout>
 
-    <!-- Vista vacía -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab"
+        style="@style/Theme.Widget.FAB"
+        android:text="@string/filter"
+        android:visibility="gone"
+        app:icon="@drawable/ic_filter_list_24dp"/>
+
     <eu.kanade.tachiyomi.widget.EmptyView
         android:id="@+id/empty_view"
         tools:paddingTop="300dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:gravity="center"
-        android:visibility="gone"/>
-
-    <!-- Barra inferior estilo Código 1 (sin behavior antiguo) -->
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/floatingBrowseBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        app:singleSelection="true">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/popularGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/materialButtonOutlinedStyle"
-            android:checkable="true"
-            android:text="@string/popular"
-            app:icon="@drawable/ic_heart_24dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/latestGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/materialButtonOutlinedStyle"
-            android:checkable="true"
-            android:text="@string/latest"
-            app:icon="@drawable/ic_new_releases_24dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/filterGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/materialButtonOutlinedStyle"
-            android:checkable="true"
-            android:text="@string/filter"
-            app:icon="@drawable/ic_filter_list_24dp"/>
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/extension_uninstall_button"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
