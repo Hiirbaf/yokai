@@ -281,6 +281,13 @@ open class BrowseSourceController(bundle: Bundle) :
         super.onDestroyView(view)
     }
 
+    private fun openFilterSheet() {
+        // la misma lógica que usabas en binding.fab.setOnClickListener
+        // por ejemplo:
+        val filters = presenter.getFilterList()
+        FiltersBottomSheet(this, filters).show()
+    }
+
     private fun setupRecycler(view: View) {
         var oldPosition = RecyclerView.NO_POSITION
         var oldOffset = 0f
