@@ -207,6 +207,10 @@ open class BrowseSourceController(bundle: Bundle) :
                 R.id.filterGroup -> {
                     openFilterSheet()
                 }
+            }
+        }
+
+        // ⚠️ IMPORTANTE: ESTO VA FUERA DEL LISTENER
         val initialButton = when (presenter.mode) {
             BrowseMode.POPULAR -> R.id.popularGroup
             BrowseMode.LATEST -> R.id.latestGroup
@@ -214,8 +218,6 @@ open class BrowseSourceController(bundle: Bundle) :
         }
 
         binding.floatingBrowseBar.check(initialButton)
-            }
-        }
         // Initialize adapter, scroll listener and recycler views
         adapter = FlexibleAdapter(null, this, false)
         setupRecycler(view)
