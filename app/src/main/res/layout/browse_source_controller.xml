@@ -39,13 +39,9 @@
         android:id="@+id/floatingBrowseBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        <!-- Posición final igual a versión 1 -->
         android:layout_gravity="bottom|center_horizontal"
         android:padding="8dp"
         android:layout_marginBottom="16dp"
-
-        <!-- Ocultar en scroll (como el FAB original) -->
         app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior"
 
         app:singleSelection="true">
