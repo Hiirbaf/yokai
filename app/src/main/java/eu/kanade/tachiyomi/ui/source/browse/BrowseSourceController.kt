@@ -191,6 +191,31 @@ open class BrowseSourceController(bundle: Bundle) :
         super.onViewCreated(view)
 
         binding.floatingBrowseBar.applyBottomAnimatedInsets()
+
+        binding.floatingBrowseBar.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            when (checkedId) {
+                R.id.popularGroup -> {
+                    presenter.mode = BrowseMode.POPULAR
+                    presenter.restartPager()
+                }
+                R.id.latestGroup -> {
+                    presenter.mode = BrowseMode.LATEST
+                    presenter.restartPager()
+                }
+                R.id.filterGroup -> {
+                    openFilterSheet()
+                }
+        val initialButton = when (presenter.mode) {
+            BrowseMode.POPULAR -> R.id.popularGroup
+            BrowseMode.LATEST -> R.id.latestGroup
+            else -> R.id.popularGroup
+        }
+
+        binding.floatingBrowseBar.check(initialButton)
+            }
+        }
         // Initialize adapter, scroll listener and recycler views
         adapter = FlexibleAdapter(null, this, false)
         setupRecycler(view)
