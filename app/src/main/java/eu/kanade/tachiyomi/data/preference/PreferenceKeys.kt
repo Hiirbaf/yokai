@@ -233,4 +233,9 @@ object PreferenceKeys {
     const val hideChapterTitles = "hide_chapter_titles"
 
     const val chaptersDescAsDefault = "chapters_desc_as_default"
+
+    const val sourceLanguage = "source_language"
+    const val targetLanguage = "target_language"
+    const val translationMethod = "translation_method"
+    const val autoTranslate = "auto_translate"
 }
