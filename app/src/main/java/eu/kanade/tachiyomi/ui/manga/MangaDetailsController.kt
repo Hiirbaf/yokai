@@ -245,6 +245,15 @@ class MangaDetailsController :
 
         setTabletMode(view)
         setRecycler(view)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.fab) { fab, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            fab.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+            bottomMargin = systemBars.bottom + 16.dpToPx
+            }
+
+            insets
+        }
         setPaletteColor()
         adapter?.fastScroller = binding.fastScroller
         binding.fastScroller.addOnScrollStateChangeListener {
