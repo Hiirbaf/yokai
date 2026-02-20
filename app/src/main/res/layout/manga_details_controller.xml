@@ -84,7 +84,7 @@
         android:text="@string/read"
         android:visibility="gone"
         app:icon="@drawable/ic_play_arrow_24dp"
-        app:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
