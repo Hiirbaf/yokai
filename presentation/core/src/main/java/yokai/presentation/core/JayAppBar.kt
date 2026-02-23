@@ -64,23 +64,30 @@ fun JayExpandedTopAppBar(
     textFieldState: TextFieldState? = null,
     searchResult: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
-    val titleTextFontSizePx: Float
-    LocalDensity.current.run {
-        titleTextFontSizePx = titleTextStyle.fontSize.toPx()
-    }
+    val density = LocalDensity.current
+    val titleTextFontSizePx: Float = with(density) { titleTextStyle.fontSize.toPx() }
+    val insetPaddingForSearchPx: Float = SearchBarDefaults.windowInsets.getTop(density).toFloat()
 
-    val appBarContainerColor = {
+    val appBarContainerColor = l@{
+        if (textFieldState != null) return@l colors.containerColor
         if ((scrollBehavior?.overlappedFraction() ?: 0f) > 0.01f) colors.scrolledContainerColor else colors.containerColor
     }
 
+    val bottomCollapsedFractionOrZero = { scrollBehavior?.bottomCollapsedFraction(titleTextFontSizePx) ?: 0f }
+
     val titleAlpha = {
-        scrollBehavior?.bottomCollapsedFraction()?.let {
-            TitleAlphaEasing.transform(it)
-        } ?: 0f
+        val bottomFraction = bottomCollapsedFractionOrZero()
+        TitleAlphaEasing.transform(
+            if (bottomFraction >= 1f) {
+                1f - (scrollBehavior?.topCollapsedFraction(titleTextFontSizePx) ?: 0f)
+            } else {
+                bottomFraction
+            },
+        )
     }
 
     val bottomTitleAlpha = {
-        1f - (scrollBehavior?.bottomCollapsedFraction(titleTextFontSizePx) ?: 0f)
+        1f - bottomCollapsedFractionOrZero()
     }
 
     Column(
@@ -106,7 +113,11 @@ fun JayExpandedTopAppBar(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     navigationIcon?.let {
-                        Box(Modifier.padding(start = 4.dp)) {
+                        Box(
+                            Modifier
+                                .padding(start = 4.dp)
+                                .then(if (bottomCollapsedFractionOrZero() >= 1f) Modifier.alpha(titleAlpha()) else Modifier)
+                        ) {
                             it()
                         }
                     }
@@ -176,9 +187,12 @@ fun JayExpandedTopAppBar(
                 ),
                 modifier =
                     modifier
-                        .padding(8.dp)
+                        .padding(horizontal = 8.dp)
                         .then(scrollBehavior?.let { with(it) { Modifier.searchAppBarScrollBehavior() } } ?: Modifier)
-                        .onSizeChanged { scrollBehavior?.searchHeightPx = it.height.toFloat() }
+                        .onSizeChanged {
+                            scrollBehavior?.insetPaddingForSearchPx = insetPaddingForSearchPx
+                            scrollBehavior?.searchHeightPx = it.height.toFloat()
+                        }
                         .fillMaxWidth()
                         .semantics { isTraversalGroup = true },
                 inputField = {
@@ -196,7 +210,9 @@ fun JayExpandedTopAppBar(
                 },
                 expanded = if (searchResult != null) expanded else false,
                 onExpandedChange = { expanded = it },
-                windowInsets = WindowInsets(),  // By default, insets is set to pad for status bar, but that's unnecessary for this.
+                // By default, insets is set to pad for status bar, but that's unnecessary for this.
+                // Will be handled by Modifier.searchAppBarScrollBehavior instead.
+                windowInsets = WindowInsets(),
                 content = searchResult ?: {},
             )
         }
@@ -264,6 +280,7 @@ fun JayTopAppBar(
                     },
                     expanded = if (searchResult != null) expanded else false,
                     onExpandedChange = { expanded = it },
+                    windowInsets = WindowInsets(),  // Handled by Modifier.
                     content = searchResult ?: {},
                 )
             }
