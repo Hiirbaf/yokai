@@ -170,8 +170,12 @@ fun JayExpandedTopAppBar(
             var expanded by rememberSaveable { mutableStateOf(false) }
 
             SearchBar(
+                colors = SearchBarDefaults.colors(
+                    containerColor = colors.scrolledContainerColor,
+                ),
                 modifier =
                     modifier
+                        .padding(horizontal = 8.dp)
                         .then(scrollBehavior?.let { with(it) { Modifier.searchAppBarScrollBehavior() } } ?: Modifier)
                         .onSizeChanged { scrollBehavior?.searchHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
@@ -186,7 +190,7 @@ fun JayExpandedTopAppBar(
                         },
                         expanded = if (searchResult != null) expanded else false,
                         onExpandedChange = { expanded = it },
-                        placeholder = { Text("Search") }  // TODO
+                        placeholder = { Text("Search") },  // TODO
                     )
                 },
                 expanded = if (searchResult != null) expanded else false,
@@ -236,6 +240,7 @@ fun JayTopAppBar(
                 color = Color.Transparent,
                 modifier =
                     modifier
+                        .padding(horizontal = 8.dp)
                         .then(scrollBehavior?.let { with(it) { Modifier.appBarScrollBehavior() } } ?: Modifier)
                         .onSizeChanged { scrollBehavior?.scrollOffsetLimit = -it.height.toFloat() }
                         .fillMaxWidth()

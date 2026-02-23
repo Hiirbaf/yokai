@@ -42,7 +42,7 @@ class StoryBookScreen : Screen() {
                 ) {
                     items(100) {
                         TextPreferenceWidget(
-                            title = "Item #$it",
+                            title = "Item #${it + 1}",
                             onPreferenceClick = {},
                         )
                     }
