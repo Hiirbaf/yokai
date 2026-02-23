@@ -153,7 +153,7 @@ fun JayExpandedTopAppBar(
                 Box(
                     modifier =
                         Modifier
-                            .padding(start = 16.dp, top = 64.dp)
+                            .padding(start = 16.dp, top = 64.dp, bottom = 8.dp)
                             .weight(1f)
                             .alpha(bottomTitleAlpha())
                 ) {
@@ -169,13 +169,14 @@ fun JayExpandedTopAppBar(
         if (textFieldState != null) {
             var expanded by rememberSaveable { mutableStateOf(false) }
 
+            // FIXME: Inset is broken
             SearchBar(
                 colors = SearchBarDefaults.colors(
                     containerColor = colors.scrolledContainerColor,
                 ),
                 modifier =
                     modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(8.dp)
                         .then(scrollBehavior?.let { with(it) { Modifier.searchAppBarScrollBehavior() } } ?: Modifier)
                         .onSizeChanged { scrollBehavior?.searchHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
@@ -195,6 +196,7 @@ fun JayExpandedTopAppBar(
                 },
                 expanded = if (searchResult != null) expanded else false,
                 onExpandedChange = { expanded = it },
+                windowInsets = WindowInsets(),  // By default, insets is set to pad for status bar, but that's unnecessary for this.
                 content = searchResult ?: {},
             )
         }
