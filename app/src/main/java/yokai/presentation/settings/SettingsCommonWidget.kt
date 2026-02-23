@@ -1,12 +1,14 @@
 package yokai.presentation.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +40,8 @@ fun SettingsScaffold(
     appBarActions: @Composable RowScope.() -> Unit = {},
     appBarScrollBehavior: JayAppBarScrollBehavior? = null,
     snackbarHost: @Composable () -> Unit = {},
+    textFieldState: TextFieldState? = null,
+    searchResult: @Composable (ColumnScope.() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val onBackPress = LocalBackPress.currentOrThrow
@@ -50,6 +54,8 @@ fun SettingsScaffold(
         actions = appBarActions,
         scrollBehavior = appBarScrollBehavior,
         snackbarHost = snackbarHost,
+        textFieldState = textFieldState,
+        searchResult = searchResult,
     ) { innerPadding ->
         content(innerPadding)
 
@@ -63,6 +69,8 @@ fun SettingsScaffold(
     appBarType: AppBarType? = null,
     appBarActions: @Composable RowScope.() -> Unit = {},
     itemsProvider: @Composable () -> List<Preference>,
+    textFieldState: TextFieldState? = null,
+    searchResult: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     val preferences: PreferencesHelper by injectLazy()
     val useLargeAppBar by preferences.useLargeToolbar().collectAsState()
@@ -76,6 +84,8 @@ fun SettingsScaffold(
             canScroll = { listState.canScrollForward || listState.canScrollBackward },
             isAtTop = { listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0 },
         ) else null,
+        textFieldState = textFieldState,
+        searchResult = searchResult,
     ) { innerPadding ->
         PreferenceScreen(
             items = itemsProvider(),

@@ -67,7 +67,10 @@ import yokai.presentation.settings.screen.data.awaitRestoreBackup
 import yokai.presentation.settings.screen.data.storageLocationPicker
 import yokai.util.lang.getString
 
-object SettingsDataScreen : ComposableSettings {
+object SettingsDataScreen : ComposableSettings() {
+
+    private fun readResolve() = SettingsDataScreen
+
     @Composable
     override fun getTitleRes(): StringResource = MR.strings.data_and_storage
 

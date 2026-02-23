@@ -117,9 +117,9 @@ interface JayAppBarScrollBehavior {
  *
  * ┌────────────────────┐  -> -100f
  * │                    │  -> Search (Relative Offset Limit: -20f)
- * ├────────────────────┤
+ * ├────────────────────┤  -> -80f
  * │                    │  -> Top (Relative Offset Limit: -20f)
- * ├────────────────────┤
+ * ├────────────────────┤  -> -60f
  * │                    │  -> Bottom (Relative Offset Limit: -60f)
  * │                    │
  * │                    │
@@ -309,7 +309,7 @@ private class EnterAlwaysCollapsedAppBarScrollBehavior(
             _scrollOffset = if (isAtTop() || !isTopAndTotalPxValid) {
                 newOffset.fastCoerceIn(scrollOffsetLimit, 0f)
             } else {
-                newOffset.fastCoerceIn(-totalHeightPx, -bottomHeightPx)
+                newOffset.fastCoerceIn(-totalHeightPx, if (searchHeightPx > 0f) -(topHeightPx + bottomHeightPx) else -bottomHeightPx)
             }
         }
 
@@ -373,7 +373,7 @@ private class EnterAlwaysCollapsedAppBarScrollBehavior(
                     available.y > 0f &&
                         when {
                             !isTopAndTotalPxValid -> true
-                            searchHeightPx > 0f -> rawTopScrollOffset + searchHeightPx >= 0f
+                            searchHeightPx > 0f -> rawTopScrollOffset + topHeightPx >= 0f
                             else -> rawTopScrollOffset >= 0f
                         }
                 }

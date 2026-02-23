@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
@@ -49,6 +48,7 @@ import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
+import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import java.text.DateFormat
@@ -73,12 +73,12 @@ import yokai.util.Screen
 import yokai.util.lang.getString
 
 class AboutScreen : Screen() {
+
     @Composable
     override fun Content() {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
         val dialogHostState = LocalDialogHostState.currentOrThrow
-        val uriHandler = LocalUriHandler.current
 
         val preferences = remember { Injekt.get<PreferencesHelper>() }
 
@@ -130,7 +130,7 @@ class AboutScreen : Screen() {
                         TextPreferenceWidget(
                             title = stringResource(MR.strings.whats_new_this_release),
                             onPreferenceClick = {
-                                uriHandler.openUri(if (BuildConfig.DEBUG) SOURCE_URL else RELEASE_URL)
+                                context.openInBrowser(if (BuildConfig.DEBUG) SOURCE_URL else RELEASE_URL)
                             },
                         )
                     }
@@ -185,7 +185,7 @@ class AboutScreen : Screen() {
 
                             TextPreferenceWidget(
                                 title = stringResource(MR.strings.help_translate),
-                                onPreferenceClick = { uriHandler.openUri("https://hosted.weblate.org/engage/yokai/") },
+                                onPreferenceClick = { context.openInBrowser("https://hosted.weblate.org/engage/yokai/") },
                             )
                         }
                     }
@@ -193,7 +193,7 @@ class AboutScreen : Screen() {
                     item {
                         TextPreferenceWidget(
                             title = stringResource(MR.strings.helpful_translation_links),
-                            onPreferenceClick = { uriHandler.openUri("https://mihon.app/docs/contribute#helpful-links") },
+                            onPreferenceClick = { context.openInBrowser("https://mihon.app/docs/contribute#helpful-links") },
                         )
                     }
 

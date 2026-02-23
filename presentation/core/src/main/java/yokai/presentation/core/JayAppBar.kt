@@ -169,34 +169,30 @@ fun JayExpandedTopAppBar(
         if (textFieldState != null) {
             var expanded by rememberSaveable { mutableStateOf(false) }
 
-            Surface(
-                color = Color.Transparent,
+            SearchBar(
                 modifier =
                     modifier
                         .then(scrollBehavior?.let { with(it) { Modifier.searchAppBarScrollBehavior() } } ?: Modifier)
                         .onSizeChanged { scrollBehavior?.searchHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
                         .semantics { isTraversalGroup = true },
-            ) {
-                SearchBar(
-                    inputField = {
-                        SearchBarDefaults.InputField(
-                            query = textFieldState.text.toString(),
-                            onQueryChange = { textFieldState.edit { replace(0, length, it) } },
-                            onSearch = {
-                                // TODO
-                                expanded = false
-                            },
-                            expanded = if (searchResult != null) expanded else false,
-                            onExpandedChange = { expanded = it },
-                            placeholder = { Text("Search") }  // TODO
-                        )
-                    },
-                    expanded = if (searchResult != null) expanded else false,
-                    onExpandedChange = { expanded = it },
-                    content = searchResult ?: {},
-                )
-            }
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        query = textFieldState.text.toString(),
+                        onQueryChange = { textFieldState.edit { replace(0, length, it) } },
+                        onSearch = {
+                            // TODO
+                            expanded = false
+                        },
+                        expanded = if (searchResult != null) expanded else false,
+                        onExpandedChange = { expanded = it },
+                        placeholder = { Text("Search") }  // TODO
+                    )
+                },
+                expanded = if (searchResult != null) expanded else false,
+                onExpandedChange = { expanded = it },
+                content = searchResult ?: {},
+            )
         }
     }
 }

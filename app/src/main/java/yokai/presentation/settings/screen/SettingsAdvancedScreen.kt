@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import cafe.adriel.voyager.navigator.LocalNavigator
 import co.touchlab.kermit.Logger
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
@@ -59,9 +60,13 @@ import yokai.domain.base.BasePreferences
 import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
+import yokai.presentation.settings.screen.advanced.StoryBookScreen
 import yokai.presentation.settings.screen.advanced.awaitCheckForBetaPrompt
 
-object SettingsAdvancedScreen : ComposableSettings {
+object SettingsAdvancedScreen : ComposableSettings() {
+
+    private fun readResolve() = SettingsAdvancedScreen
+
     @Composable
     override fun getTitleRes(): StringResource = MR.strings.advanced
 
@@ -93,6 +98,7 @@ object SettingsAdvancedScreen : ComposableSettings {
             add(getNetworkGroup(networkPreferences))
             add(getExtensionGroup(basePreferences))
             add(getLibraryGroup(basePreferences))
+            add(getDeveloperGroup())
         }.toPersistentList()
     }
 
@@ -383,6 +389,23 @@ object SettingsAdvancedScreen : ComposableSettings {
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.library),
+            preferenceItems = children,
+        )
+    }
+
+    @Composable
+    private fun getDeveloperGroup(): Preference.PreferenceGroup {
+        val navigator = LocalNavigator.currentOrThrow
+
+        val children = buildList {
+            add(Preference.PreferenceItem.TextPreference(
+                title = "Storybook",
+                onClick = { navigator.push(StoryBookScreen()) },
+            ))
+        }.toPersistentList()
+
+        return Preference.PreferenceGroup(
+            title = "Danger Zone!",
             preferenceItems = children,
         )
     }
