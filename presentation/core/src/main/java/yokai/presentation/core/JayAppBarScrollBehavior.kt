@@ -132,6 +132,10 @@ interface JayAppBarScrollBehavior {
  * │                    │
  * │                    │
  * └────────────────────┘  -> 0f
+ *
+ * SearchBar is visually placed at the bottom but interally placed at the very top, this is to mimic Jay's
+ * [eu.kanade.tachiyomi.ui.base.ExpandedAppBarLayout] where if SearchBar is present it'll replace Top for the "always
+ * enter when scroll no matter what" part.
  */
 internal val JayAppBarScrollBehavior.rawTopScrollOffset: Float
     get() = scrollOffset + bottomHeightPx
