@@ -89,11 +89,11 @@ interface JayAppBarScrollBehavior {
     var searchHeightPx: Float
         get() = 0f
         set(value) { throw NotImplementedError() }
+    val totalHeightPx: Float
+        get() = topHeightPx + bottomHeightPx + searchHeightPx
     var insetPaddingForSearchPx: Float
         get() = 0f
         set(value) {}
-    val totalHeightPx: Float
-        get() = topHeightPx + bottomHeightPx + searchHeightPx + insetPaddingForSearchPx
 
     fun Modifier.smallAppBarScrollBehavior(): Modifier = appBarScrollBehavior()
     fun Modifier.largeAppBarScrollBehavior(): Modifier = appBarScrollBehavior()
@@ -203,6 +203,8 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
                 else -> topCollapsedFraction()
             }
         }
+        // FIXME: SearchBar don't want to fully settle cuz collapsed fraction is not accurate after introducing offset
+        // for inset padding, I can't debug it cuz IDEA/Android Studio is being stupid.
         if (collapsedFraction < 0.01f || collapsedFraction == 1f) {
             return Velocity.Zero
         }
@@ -243,25 +245,20 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
         // Snap if animation specs were provided.
         if (snapAnimationSpec != null) {
             if (actualScrollOffset < 0 && actualScrollOffset > actualScrollOffsetLimit) {
-                val targetScrollOffset = if (collapsedFraction < 0.5f) {
-                    when {
-                        !isTopAndTotalPxValid -> 0f
-                        searchHeightPx > 0f -> -(topHeightPx + bottomHeightPx) + insetPaddingForSearchPx
-                        else -> -bottomHeightPx
-                    }
-                } else {
-                    when {
-                        !isTopAndTotalPxValid -> scrollOffsetLimit
-                        searchHeightPx > 0f -> -totalHeightPx
-                        else -> -(topHeightPx + bottomHeightPx)
-                    }
-                }
-
-                AnimationState(initialValue = scrollOffset).animateTo(
-                    targetValue = targetScrollOffset,
+                AnimationState(initialValue = actualScrollOffset).animateTo(
+                    if (collapsedFraction < 0.5f) {
+                        0f
+                    } else {
+                        actualScrollOffsetLimit
+                    },
                     animationSpec = snapAnimationSpec
                 ) {
-                    scrollOffset = value
+                    scrollOffset = value - when {
+                        !isTopAndTotalPxValid -> abs(scrollOffsetLimit)
+                        searchHeightPx > 0f -> bottomHeightPx + topHeightPx
+                        else -> bottomHeightPx
+                    }
+                    if (searchHeightPx > 0f && collapsedFraction < 0.5f) scrollOffset += insetPaddingForSearchPx
                 }
             }
         }
@@ -321,7 +318,6 @@ private class EnterAlwaysCollapsedAppBarScrollBehavior(
         get() = _insetPaddingForSearchPx
         set(value) {
             _insetPaddingForSearchPx = value
-            _scrollOffsetLimit = -totalHeightPx
         }
 
     /**
