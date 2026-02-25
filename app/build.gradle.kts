@@ -228,7 +228,7 @@ dependencies {
     implementation(libs.flexible.adapter.ui)
     implementation(libs.viewstatepageradapter)
     implementation(libs.slice)
-    implementation(libs.markwon)
+    implementation(libs.bundles.markwon)
 
     implementation(libs.photoview)
     implementation(libs.directionalviewpager)

@@ -46,7 +46,19 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.inlineparser.BackticksInlineProcessor
+import io.noties.markwon.inlineparser.EntityInlineProcessor
+import io.noties.markwon.inlineparser.MarkwonInlineParser
+import org.commonmark.internal.inline.AsteriskDelimiterProcessor
+import org.commonmark.internal.inline.UnderscoreDelimiterProcessor
+import org.commonmark.node.BlockQuote
+import org.commonmark.node.Heading
+import org.commonmark.node.ListBlock
+import org.commonmark.node.ListItem
+import org.commonmark.node.Paragraph
+import org.commonmark.parser.Parser
 import yokai.i18n.MR
 import yokai.util.coil.loadManga
 import yokai.util.lang.getString
@@ -71,7 +83,29 @@ class MangaHeaderHolder(
         null
     }
 
-    private val markwon by lazy { Markwon.create(itemView.context) }
+    private val markwon by lazy {
+        Markwon.builder(itemView.context)
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureParser(builder: Parser.Builder) {
+                    builder.enabledBlockTypes(setOf(
+                        Heading::class.java,
+                        ListBlock::class.java,
+                        ListItem::class.java,
+                        Paragraph::class.java,
+                        BlockQuote::class.java,
+                    ))
+
+                    builder.inlineParserFactory(MarkwonInlineParser.factoryBuilderNoDefaults()
+                        .addInlineProcessor(BackticksInlineProcessor())
+                        .addInlineProcessor(EntityInlineProcessor())
+                        .addDelimiterProcessor(AsteriskDelimiterProcessor())
+                        .addDelimiterProcessor(UnderscoreDelimiterProcessor())
+                        .build()
+                    )
+                }
+            })
+            .build()
+    }
 
     private var showReadingButton = true
     private var showMoreButton = true
