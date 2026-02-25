@@ -63,11 +63,11 @@ class SettingsAppearanceController : SettingsLegacyController() {
 
             // FIXME: Don't use dropdown, use something similar to Theme
             dropDownPreference {
+                bindTo(basePreferences.appIcon())
                 title = "Change App Icon".addBetaTag(context)
                 summary = "This feature is still very experimental!"
 
                 val values = BasePreferences.AppIcons.entries.toList()
-                defaultValue = BasePreferences.AppIcons.DEFAULT.name
                 entries = values.map { it.displayName }.toTypedArray()
                 entryValues = values.map { it.name }.toTypedArray()
 
