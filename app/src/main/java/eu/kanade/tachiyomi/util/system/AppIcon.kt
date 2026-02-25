@@ -24,7 +24,7 @@ fun Context.setAppIcon(basePreferences: BasePreferences, selectedIcon: BasePrefe
                 PackageManager.DONT_KILL_APP
             )
 
-            selectedIsEnabled = selectedIcon == icon
+            if (!selectedIsEnabled) selectedIsEnabled = selectedIcon == icon
         } catch (e: Exception) {
             Logger.e(e) { "Failed to set state for ${icon.displayName}" }
         }
