@@ -69,7 +69,7 @@ fun JayExpandedTopAppBar(
     val insetPaddingForSearchPx: Float = SearchBarDefaults.windowInsets.getTop(density).toFloat()
 
     val appBarContainerColor = l@{
-        if (textFieldState != null) return@l colors.containerColor
+        if (textFieldState != null) return@l Color.Transparent
         if ((scrollBehavior?.overlappedFraction() ?: 0f) > 0.01f) colors.scrolledContainerColor else colors.containerColor
     }
 

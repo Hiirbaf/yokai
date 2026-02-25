@@ -146,6 +146,12 @@ internal fun JayAppBarScrollBehavior.overallTopScrollOffset(): Float
 internal fun JayAppBarScrollBehavior.searchScrollOffset(): Float
     = (rawTopScrollOffset + topHeightPx).fastCoerceIn(-(searchHeightPx + insetPaddingForSearchPx), 0f)
 
+internal fun JayAppBarScrollBehavior.settlingSearchScrollOffset(): Float
+    = (rawTopScrollOffset + topHeightPx - insetPaddingForSearchPx).fastCoerceIn(-(searchHeightPx + insetPaddingForSearchPx), 0f)
+
+internal fun JayAppBarScrollBehavior.insetPaddingScrollOffset(): Float
+    = (rawTopScrollOffset + topHeightPx - insetPaddingForSearchPx).fastCoerceIn(-insetPaddingForSearchPx, 0f)
+
 internal fun JayAppBarScrollBehavior.topScrollOffset(): Float
     = rawTopScrollOffset.fastCoerceIn(-topHeightPx, 0f)
 
@@ -153,7 +159,10 @@ internal fun JayAppBarScrollBehavior.bottomScrollOffset(): Float
     = scrollOffset.fastCoerceIn(-bottomHeightPx, 0f)
 
 internal fun JayAppBarScrollBehavior.searchCollapsedFraction(): Float
-    = searchScrollOffset() / -(searchHeightPx + insetPaddingForSearchPx)
+    = settlingSearchScrollOffset() / -(searchHeightPx + insetPaddingForSearchPx)
+
+internal fun JayAppBarScrollBehavior.insetPaddingCollapsedFraction(): Float
+    = insetPaddingScrollOffset() / -insetPaddingForSearchPx
 
 internal fun JayAppBarScrollBehavior.topCollapsedFraction(offset: Float = 0f): Float
     = topScrollOffset() / (-topHeightPx + offset)
@@ -192,10 +201,6 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
         flingAnimationSpec: DecayAnimationSpec<Float>?,
         snapAnimationSpec: AnimationSpec<Float>?,
     ): Velocity {
-        // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
-        // and just return Zero Velocity.
-        // Note that we don't check for 0f due to float precision with the collapsedFraction
-        // calculation.
         val collapsedFraction by lazy {
             when {
                 !isTopAndTotalPxValid -> collapsedFraction
@@ -203,9 +208,21 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
                 else -> topCollapsedFraction()
             }
         }
-        // FIXME: SearchBar don't want to fully settle cuz collapsed fraction is not accurate after introducing offset
-        // for inset padding, I can't debug it cuz IDEA/Android Studio is being stupid.
-        if (collapsedFraction < 0.01f || collapsedFraction == 1f) {
+
+        /* Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
+         * and just return Zero Velocity.
+         * Note that we don't check for 0f due to float precision with the collapsedFraction
+         * calculation.
+         */
+        val isFullyExpanded = if (searchHeightPx > 0f && insetPaddingForSearchPx > 0f) {
+            (collapsedFraction + insetPaddingCollapsedFraction()) / 2
+        } else {
+            collapsedFraction
+        } < 0.01f
+
+        val isFullyCollapsed = collapsedFraction == 1f
+
+        if (isFullyExpanded || isFullyCollapsed) {
             return Velocity.Zero
         }
         var remainingVelocity = velocity
@@ -238,7 +255,7 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
         val actualScrollOffset by lazy {
             when {
                 !isTopAndTotalPxValid -> scrollOffset
-                searchHeightPx > 0f -> searchScrollOffset()
+                searchHeightPx > 0f -> searchScrollOffset() + if (insetPaddingForSearchPx > 0f) insetPaddingScrollOffset() else 0f
                 else -> topScrollOffset()
             }
         }
@@ -255,10 +272,9 @@ interface SettlingAppBarScrollBehavior : JayAppBarScrollBehavior {
                 ) {
                     scrollOffset = value - when {
                         !isTopAndTotalPxValid -> abs(scrollOffsetLimit)
-                        searchHeightPx > 0f -> bottomHeightPx + topHeightPx
+                        searchHeightPx > 0f -> bottomHeightPx + topHeightPx - insetPaddingForSearchPx
                         else -> bottomHeightPx
                     }
-                    if (searchHeightPx > 0f && collapsedFraction < 0.5f) scrollOffset += insetPaddingForSearchPx
                 }
             }
         }
