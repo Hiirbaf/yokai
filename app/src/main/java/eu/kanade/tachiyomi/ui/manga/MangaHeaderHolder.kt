@@ -40,6 +40,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.nameBasedOnEnabledLanguages
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
+import eu.kanade.tachiyomi.ui.manga.TableHtmlTagHandler
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.lang.toNormalized
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -71,7 +72,11 @@ class MangaHeaderHolder(
         null
     }
 
-    private val markwon by lazy { Markwon.create(itemView.context) }
+    private val markwon by lazy { Markwon.builder(itemView.context)
+            .useHtml(true)
+            .useHtmlTagHandler(TableHtmlTagHandler())
+            .build()
+    }
 
     private var showReadingButton = true
     private var showMoreButton = true
