@@ -57,6 +57,8 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
 
     enum class AppIcons(val displayName: String, val id: String, val icon: Int) {
         DEFAULT("Default", "${BuildConfig.APPLICATION_ID}.MainActivityDefault", R.mipmap.ic_launcher_round),
+        BLUE("Blue", "${BuildConfig.APPLICATION_ID}.MainActivityBlue", R.mipmap.ic_launcher_round_blue),
+        ORANGE("Orange", "${BuildConfig.APPLICATION_ID}.MainActivityOrange", R.mipmap.ic_launcher_round_orange),
         GRAY("Gray", "${BuildConfig.APPLICATION_ID}.MainActivityGray", R.mipmap.ic_launcher_round_gray),
         CLASSIC("Classic", "${BuildConfig.APPLICATION_ID}.MainActivityClassic", R.mipmap.ic_launcher_round_classic),
     }
