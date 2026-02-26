@@ -15,7 +15,6 @@ kermit = "2.0.5"
 koin = "4.0.4"
 leakcanary = "2.14"
 voyager = "1.1.0-beta03"
-markwon = "4.6.2"
 
 [libraries]
 aboutlibraries = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
@@ -58,8 +57,7 @@ leakcanary-plumber = { module = "com.squareup.leakcanary:plumber-android", versi
 libarchive = { module = "me.zhanghai.android.libarchive:library", version = "1.1.5" }
 
 material = { module = "com.google.android.material:material", version = "1.14.0-alpha09" }
-markwon = { module = "io.noties.markwon:core", version.ref = "markwon" }
-markwon-inline = { module = "io.noties.markwon:inline-parser", version.ref = "markwon" }
+markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version = "v3.1.0" }
 java-nat-sort = { module = "com.github.gpanther:java-nat-sort", version = "natural-comparator-1.1" }
 jsoup = { module = "org.jsoup:jsoup", version = "1.21.2" }
@@ -121,7 +119,6 @@ db = [ "sqldelight-coroutines" ]
 db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 logging = [ "kermit" ]
-markwon = [ "markwon", "markwon-inline" ]
 # FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
 #sqlite = [ "sqlite", "sqlite-ktx" ]
 sqlite = [ "sqlite-ktx" ]
