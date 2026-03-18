@@ -6,9 +6,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="8dp">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+    <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/progress_bar"
         android:indeterminate="true"
+        app:indicatorSize="24dp"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center"/>
