@@ -154,6 +154,8 @@ dependencies {
     implementation(projects.presentation.core)
     implementation(projects.source.api)
 
+    implementation("com.github.dead8309:KizzyRPC:1.0.71")
+
     // Compose
     implementation(platform(compose.bom))
     implementation(compose.bundles.compose)
