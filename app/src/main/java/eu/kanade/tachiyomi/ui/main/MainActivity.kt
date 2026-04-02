@@ -785,7 +785,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             .onEach {
                 DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
                 DiscordRPCService.start(this@MainActivity.applicationContext)
-                DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+                // DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
             }
             .launchIn(this)
     }
@@ -989,6 +989,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         setExtensionsBadge()
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
+        lifecycleScope.launchUI {
+            DiscordRPCService.setScreen(this@MainActivity, DiscordRPCService.lastUsedScreen)
+        }
     }
 
     private fun showDLQueueTutorial() {
