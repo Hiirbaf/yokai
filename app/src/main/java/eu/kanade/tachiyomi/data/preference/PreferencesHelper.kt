@@ -164,6 +164,12 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun trackingsToAddOnline() = preferenceStore.getStringSet(Keys.trackingsToAddOnline, emptySet())
 
+    // ---- Discord Rich Presence ----
+
+    fun discordRpcEnabled() = preferenceStore.getBoolean(Keys.discordRpcEnabled, false)
+
+    fun discordRpcAppId() = preferenceStore.getString(Keys.discordRpcAppId, "")
+
     // TODO: SourcePref
     fun lastUsedCatalogueSource() = preferenceStore.getLong(Keys.lastUsedCatalogueSource, -1)
 
