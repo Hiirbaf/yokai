@@ -14,6 +14,10 @@ object PreferenceKeys {
 
     const val backToStart = "back_to_start"
 
+    const val discordRpcEnabled = "discord_rpc_enabled"
+
+    const val discordRpcAppId   = "discord_rpc_app_id"
+
     const val deniedA11FilePermission = "denied_a11_file_permission"
 
     const val enableTransitions = "pref_enable_transitions_key"
