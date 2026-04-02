@@ -763,33 +763,32 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
         // Escuchar y manejar Discord RPC al iniciar la app
-lifecycleScope.launchUI {
-    // Comprobación inicial al abrir la app
-    if (connectionsPreferences.enableDiscordRPC().get()) {
-        DiscordRPCService.start(this@MainActivity.applicationContext)
-    }
-
-    connectionsPreferences.enableDiscordRPC().changes()
-        .drop(1)
-        .onEach {
-            if (it) {
+        lifecycleScope.launchUI {
+            // Comprobación inicial al abrir la app
+            if (connectionsPreferences.enableDiscordRPC().get()) {
                 DiscordRPCService.start(this@MainActivity.applicationContext)
-            } else {
-                DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
             }
-        }
-        .launchIn(this)
 
-    connectionsPreferences.discordRPCStatus().changes()
-        .drop(1)
-        .onEach {
-            DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
-            DiscordRPCService.start(this@MainActivity.applicationContext)
-            DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+            connectionsPreferences.enableDiscordRPC().changes()
+                .drop(1)
+                .onEach {
+                    if (it) {
+                        DiscordRPCService.start(this@MainActivity.applicationContext)
+                    } else {
+                        DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+                    }
+                }
+                .launchIn(this)
+
+            connectionsPreferences.discordRPCStatus().changes()
+                .drop(1)
+                .onEach {
+                    DiscordRPCService.stop(this@MainActivity.applicationContext, 0L)
+                    DiscordRPCService.start(this@MainActivity.applicationContext)
+                    // DiscordRPCService.setScreen(this@MainActivity, DiscordScreen.LIBRARY)
+                }
+                .launchIn(this)
         }
-        .launchIn(this)
-}
-    }
 
     fun reEnableBackPressedCallBack() {
         val returnToStart = preferences.backReturnsToStart().get() && this !is SearchActivity
@@ -990,6 +989,9 @@ lifecycleScope.launchUI {
         setExtensionsBadge()
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
+        lifecycleScope.launchUI {
+            DiscordRPCService.setScreen(this@MainActivity, DiscordRPCService.lastUsedScreen)
+        }
     }
 
     private fun showDLQueueTutorial() {
