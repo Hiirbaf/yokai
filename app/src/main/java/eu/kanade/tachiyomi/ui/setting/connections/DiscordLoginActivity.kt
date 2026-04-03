@@ -8,6 +8,7 @@ import android.webkit.WebViewClient
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
+import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import androidx.appcompat.app.AppCompatActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
@@ -15,7 +16,7 @@ import uy.kohesive.injekt.injectLazy
 import java.io.File
 
 class DiscordLoginActivity : AppCompatActivity() {
-
+    
     private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
@@ -23,7 +24,6 @@ class DiscordLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.discord_login_activity)
-
         val webView = findViewById<WebView>(R.id.webview)
 
         webView.apply {
@@ -40,30 +40,22 @@ class DiscordLoginActivity : AppCompatActivity() {
                         """
                         (()=>{const i=document.createElement('iframe');document.body.append(i);
                         const t=JSON.parse(i.contentWindow.localStorage.token);i.remove();return t})()
-                        """.trimIndent()
+                        """.trimIndent(),
                     ) {
                         login(it.trim('"'))
                     }
                 }
             }
         }
-
         webView.loadUrl("https://discord.com/login")
     }
 
     private fun login(token: String) {
-        // Guardar token en ConnectionsPreferences
         connectionsPreferences.connectionsToken(connectionsManager.discord).set(token)
         connectionsPreferences.setConnectionsCredentials(connectionsManager.discord, "Discord", "Logged In")
-
-        // Toast y log
         toast(MR.strings.login_success)
-        Log.d("discord_login_yokai", "Logged in with token: $token")
-
-        // Limpiar cache de WebView
+        Log.d("discord_login_tachiyomisy", "Logged in with token: $token")
         applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
-
-        // Cerrar Activity
         finish()
     }
 }
