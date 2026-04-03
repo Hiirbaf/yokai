@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
@@ -17,6 +18,7 @@ import java.io.File
 
 class DiscordLoginActivity : AppCompatActivity() {
 
+    private val connectionsManager: ConnectionsManager by injectLazy()
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -41,14 +43,17 @@ class DiscordLoginActivity : AppCompatActivity() {
                     ) { token ->
                         val cleanToken = token.trim('"')
                         if (validateToken(cleanToken)) {
-                            // Guardar el token en las preferencias
-                            connectionsPreferences.connectionsToken("discord").set(cleanToken)
-                            Log.d("discord_login_yokai", "Token obtenido: $cleanToken")
+                            // Guardar el token usando ConnectionsService
+                            connectionsPreferences.connectionsToken(connectionsManager.discord).set(cleanToken)
+
+                            // Toast de éxito
                             Toast.makeText(this@DiscordLoginActivity, "Login exitoso", Toast.LENGTH_SHORT).show()
+
                             setResult(RESULT_OK)
                         } else {
                             Toast.makeText(this@DiscordLoginActivity, "No se pudo obtener token", Toast.LENGTH_SHORT).show()
                         }
+
                         // Limpiar cache y cerrar
                         applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
                         finish()
