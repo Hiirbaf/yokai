@@ -16,8 +16,7 @@ import uy.kohesive.injekt.injectLazy
 import java.io.File
 
 class DiscordLoginActivity : AppCompatActivity() {
-    
-    private val connectionsManager: ConnectionsManager by injectLazy()
+
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -26,11 +25,9 @@ class DiscordLoginActivity : AppCompatActivity() {
         setContentView(R.layout.discord_login_activity)
         val webView = findViewById<WebView>(R.id.webview)
 
-        webView.apply {
-            settings.javaScriptEnabled = true
-            settings.databaseEnabled = true
-            settings.domStorageEnabled = true
-        }
+        webView.settings.javaScriptEnabled = true
+        webView.settings.databaseEnabled = true
+        webView.settings.domStorageEnabled = true
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -38,15 +35,23 @@ class DiscordLoginActivity : AppCompatActivity() {
                     webView.stopLoading()
                     webView.evaluateJavascript(
                         """
-                        (function() {
-                            const wreq = (webpackChunkdiscord_app.push([[''], {}, e => { m = []; for (let c in e.c) m.push(e.c[c])}]), m)
-                            webpackChunkdiscord_app.pop()
-                            const token = wreq.find(m => m?.exports?.default?.getToken !== void 0).exports.default.getToken(); 
-                            return token;
-                        })()
+                        (()=>{const i=document.createElement('iframe');document.body.append(i);
+                        const t=JSON.parse(i.contentWindow.localStorage.token);i.remove();return t})()
                         """.trimIndent(),
-                    ) {
-                        login(it.trim('"'))
+                    ) { token ->
+                        val cleanToken = token.trim('"')
+                        if (validateToken(cleanToken)) {
+                            // Guardar el token en las preferencias
+                            connectionsPreferences.connectionsToken("discord").set(cleanToken)
+                            Log.d("discord_login_yokai", "Token obtenido: $cleanToken")
+                            Toast.makeText(this@DiscordLoginActivity, "Login exitoso", Toast.LENGTH_SHORT).show()
+                            setResult(RESULT_OK)
+                        } else {
+                            Toast.makeText(this@DiscordLoginActivity, "No se pudo obtener token", Toast.LENGTH_SHORT).show()
+                        }
+                        // Limpiar cache y cerrar
+                        applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
+                        finish()
                     }
                 }
             }
@@ -54,12 +59,6 @@ class DiscordLoginActivity : AppCompatActivity() {
         webView.loadUrl("https://discord.com/login")
     }
 
-    private fun login(token: String) {
-        connectionsPreferences.connectionsToken(connectionsManager.discord).set(token)
-        connectionsPreferences.setConnectionsCredentials(connectionsManager.discord, "Discord", "Logged In")
-        toast(MR.strings.login_success)
-        Log.d("discord_login_tachiyomisy", "Logged in with token: $token")
-        applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
-        finish()
-    }
+    private fun validateToken(token: String): Boolean =
+        Regex("""^[\w-]{24}\.[\w-]{6}\.[\w-]{27}\w+?$""").matches(token)
 }
