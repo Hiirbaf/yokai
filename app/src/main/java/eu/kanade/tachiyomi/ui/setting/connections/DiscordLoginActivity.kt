@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import yokai.domain.connections.service.ConnectionsPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
-import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import androidx.appcompat.app.AppCompatActivity
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.i18n.MR
@@ -25,11 +23,14 @@ class DiscordLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.discord_login_activity)
+
         val webView = findViewById<WebView>(R.id.webview)
 
-        webView.settings.javaScriptEnabled = true
-        webView.settings.databaseEnabled = true
-        webView.settings.domStorageEnabled = true
+        webView.apply {
+            settings.javaScriptEnabled = true
+            settings.databaseEnabled = true
+            settings.domStorageEnabled = true
+        }
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -39,31 +40,30 @@ class DiscordLoginActivity : AppCompatActivity() {
                         """
                         (()=>{const i=document.createElement('iframe');document.body.append(i);
                         const t=JSON.parse(i.contentWindow.localStorage.token);i.remove();return t})()
-                        """.trimIndent(),
-                    ) { token ->
-                        val cleanToken = token.trim('"')
-                        if (validateToken(cleanToken)) {
-                            // Guardar el token usando ConnectionsService
-                            connectionsPreferences.connectionsToken(connectionsManager.discord).set(cleanToken)
-
-                            // Toast de éxito
-                            Toast.makeText(this@DiscordLoginActivity, "Login exitoso", Toast.LENGTH_SHORT).show()
-
-                            setResult(RESULT_OK)
-                        } else {
-                            Toast.makeText(this@DiscordLoginActivity, "No se pudo obtener token", Toast.LENGTH_SHORT).show()
-                        }
-
-                        // Limpiar cache y cerrar
-                        applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
-                        finish()
+                        """.trimIndent()
+                    ) {
+                        login(it.trim('"'))
                     }
                 }
             }
         }
+
         webView.loadUrl("https://discord.com/login")
     }
 
-    private fun validateToken(token: String): Boolean =
-        Regex("""^[\w-]{24}\.[\w-]{6}\.[\w-]{27}\w+?$""").matches(token)
+    private fun login(token: String) {
+        // Guardar token en ConnectionsPreferences
+        connectionsPreferences.connectionsToken(connectionsManager.discord).set(token)
+        connectionsPreferences.setConnectionsCredentials(connectionsManager.discord, "Discord", "Logged In")
+
+        // Toast y log
+        toast(MR.strings.login_success)
+        Log.d("discord_login_yokai", "Logged in with token: $token")
+
+        // Limpiar cache de WebView
+        applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
+
+        // Cerrar Activity
+        finish()
+    }
 }
