@@ -584,8 +584,8 @@ open class LibraryController(
 
     override fun createBinding(inflater: LayoutInflater) = LibraryControllerBinding.inflate(inflater)
 
-    override fun onResume() {
-        super.onResume()
+    override fun onAttach(view: View) {
+        super.onAttach(view)
         viewScope.launch {
             DiscordRPCService.setScreen(activity ?: return@launch, DiscordScreen.LIBRARY)
         }
