@@ -351,7 +351,7 @@ fun WebViewScreenContent(
                 state = currentWindow.state,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(contentPadding),
+                    .padding(contentPadding)
                     .imePadding(),
                 navigator = navigator,
                 onCreated = { webView ->
