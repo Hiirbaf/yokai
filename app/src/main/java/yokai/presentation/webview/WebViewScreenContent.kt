@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Message
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,12 +29,14 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.stack.mutableStateStackOf
 import com.kevinnzou.web.AccompanistWebChromeClient
@@ -41,10 +44,11 @@ import com.kevinnzou.web.AccompanistWebViewClient
 import com.kevinnzou.web.LoadingState
 import com.kevinnzou.web.WebContent
 import com.kevinnzou.web.WebView
+import com.kevinnzou.web.WebViewNavigator
 import com.kevinnzou.web.WebViewState
-import com.kevinnzou.web.rememberWebViewNavigator
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.BuildConfig
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.system.getHtml
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
@@ -57,13 +61,13 @@ import yokai.presentation.component.AppBarTitle
 import yokai.presentation.component.UpIcon
 import yokai.presentation.component.WarningBanner
 
-class WebViewWindow(webContent: WebContent) {
+class WebViewWindow(webContent: WebContent, val navigator: WebViewNavigator) {
     var state by mutableStateOf(WebViewState(webContent))
     var popupMessage: Message? = null
         private set
     var webView: WebView? = null
 
-    constructor(popupMessage: Message) : this(WebContent.NavigatorOnly) {
+    constructor(popupMessage: Message, navigator: WebViewNavigator) : this(WebContent.NavigatorOnly, navigator) {
         this.popupMessage = popupMessage
     }
 }
@@ -80,27 +84,20 @@ fun WebViewScreenContent(
     headers: Map<String, String> = emptyMap(),
     onUrlChange: (String) -> Unit = {},
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val windowStack = remember {
         mutableStateStackOf(
             WebViewWindow(
                 WebContent.Url(url = url, additionalHttpHeaders = headers),
+                WebViewNavigator(coroutineScope),
             ),
         )
     }
 
     val currentWindow = windowStack.lastItemOrNull!!
+    val navigator = currentWindow.navigator
 
-    val popState: (() -> Unit) = remember {
-        {
-            if (windowStack.size == 1) {
-                onNavigateUp()
-            } else {
-                windowStack.pop()
-            }
-        }
-    }
-
-    val navigator = rememberWebViewNavigator()
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -142,21 +139,20 @@ fun WebViewScreenContent(
                 view: WebView?,
                 request: WebResourceRequest?,
             ): Boolean {
-                request?.let {
-                    // Don't attempt to open blobs as webpages
-                    if (it.url.toString().startsWith("blob:http")) {
-                        return false
-                    }
+                val url = request?.url?.toString() ?: return false
 
-                    // Ignore intents urls
-                    if (it.url.toString().startsWith("intent://")) {
+                // Ignore intents urls
+                if (url.startsWith("intent://")) return true
+
+                // Only open valid web urls
+                if (url.startsWith("http") || url.startsWith("https")) {
+                    if (url != view?.url) {
+                        view?.loadUrl(url, headers)
                         return true
                     }
-
-                    // Continue with request, but with custom headers
-                    view?.loadUrl(it.url.toString(), headers)
                 }
-                return super.shouldOverrideUrlLoading(view, request)
+
+                return false
             }
         }
     }
@@ -171,7 +167,7 @@ fun WebViewScreenContent(
             ): Boolean {
                 // if it wasn't initiated by a user gesture, we should ignore it like a normal browser would
                 if (isUserGesture) {
-                    windowStack.push(WebViewWindow(resultMsg))
+                    windowStack.push(WebViewWindow(resultMsg, WebViewNavigator(coroutineScope)))
                     return true
                 }
                 return false
@@ -185,6 +181,18 @@ fun WebViewScreenContent(
         message.sendToTarget()
         return webView
     }
+
+    val popState = remember<() -> Unit> {
+        {
+            if (windowStack.size == 1) {
+                onNavigateUp()
+            } else {
+                windowStack.pop()
+            }
+        }
+    }
+
+    BackHandler(windowStack.size > 1, popState)
 
     Scaffold (
         topBar = {
@@ -247,7 +255,18 @@ fun WebViewScreenContent(
                                         title = stringResource(MR.strings.clear_cookies),
                                         onClick = { onClearCookies(currentUrl) },
                                     ),
-                                ),
+                                ).builder().apply {
+                                    if (windowStack.size > 1) {
+                                        add(
+                                            0,
+                                            AppBar.Action(
+                                                title = stringResource(MR.strings.action_webview_close_tab),
+                                                icon = ImageVector.vectorResource(R.drawable.ic_tab_close_24px),
+                                                onClick = popState,
+                                            ),
+                                        )
+                                    }
+                                }.build(),
                             )
                         },
                     )
@@ -321,7 +340,7 @@ fun WebViewScreenContent(
                         // The composable is being disposed but the WebView object is not.
                         // When the WebView element is recomposed, we will want the WebView to resume from its state
                         // before it was unmounted, we won't want it to reset back to its original target.
-                        window.state = WebViewState(WebContent.NavigatorOnly)
+                        window.state.content = WebContent.NavigatorOnly
                     }
                 },
                 client = webClient,
