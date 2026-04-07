@@ -51,7 +51,6 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
@@ -74,11 +73,13 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Preference.PreferenceItem.ConnectionsPreference(
                         service = connectionsManager.discord,
                         title = stringResource(connectionsManager.discord.nameRes()),
-                        login = { context.openDiscordLoginActivity() },
-                        openSettings = {
-                              navigator.push(SettingsDiscordScreen)
+                        login = {
+                            context.openDiscordLoginActivity()
                         },
-                    )
+                        openSettings = {
+                            router.pushController(SettingsDiscordController().withFadeTransaction())
+                        },
+                    ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
                 ),
@@ -214,10 +215,10 @@ object SettingsConnectionsScreen : ComposableSettings {
 @Composable
 internal fun ConnectionsLogoutDialog(
     service: ConnectionsService,
+    router: Router,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
-    val navigator = LocalNavigator.currentOrThrow
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -241,7 +242,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        navigator.pop()
+                        router.popCurrentController() // Usar Router en vez de navigator.pop()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
