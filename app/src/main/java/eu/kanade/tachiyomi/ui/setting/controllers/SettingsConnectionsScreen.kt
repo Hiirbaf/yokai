@@ -53,6 +53,7 @@ object SettingsConnectionsScreen : ComposableSettings {
         val context = LocalContext.current
         val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+        val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
         dialog?.run {
