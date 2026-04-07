@@ -29,6 +29,30 @@ import androidx.compose.ui.text.style.TextOverflow
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.collections.immutable.ImmutableList
 import yokai.i18n.MR
+import androidx.compose.foundation.layout.RowScope
+
+@Composable
+fun AppBar(
+    title: String,
+    navigateUp: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior? = null,
+) {
+    androidx.compose.material3.CenterAlignedTopAppBar(
+        title = {
+            AppBarTitle(title)
+        },
+        navigationIcon = {
+            if (navigateUp != null) {
+                IconButton(onClick = navigateUp) {
+                    UpIcon()
+                }
+            }
+        },
+        actions = actions,
+        scrollBehavior = scrollBehavior,
+    )
+}
 
 @Composable
 fun AppBarTitle(
