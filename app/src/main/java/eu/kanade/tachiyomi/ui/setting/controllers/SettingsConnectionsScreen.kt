@@ -2,35 +2,53 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.bluelinelabs.conductor.RouterTransaction
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
-import eu.kanade.tachiyomi.util.compose.LocalRouter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
-import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import uy.kohesive.injekt.Injekt
@@ -50,6 +68,7 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
@@ -75,9 +94,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                         login = {
                             context.openDiscordLoginActivity()
                         },
-                        openSettings = {
-                            router.pushController(SettingsDiscordController().withFadeTransaction())
-                        },
+                        openSettings = { navigator.push(SettingsDiscordScreen) },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
@@ -217,6 +234,7 @@ internal fun ConnectionsLogoutDialog(
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
+    val navigator = LocalNavigator.currentOrThrow
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -240,7 +258,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router.popCurrentController() // Usar Router en vez de navigator.pop()
+                        navigator.pop()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
