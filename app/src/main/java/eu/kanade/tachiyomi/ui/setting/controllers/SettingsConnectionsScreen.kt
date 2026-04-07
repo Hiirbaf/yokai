@@ -72,13 +72,13 @@ object SettingsConnectionsScreen : ComposableSettings {
                 title = stringResource(MR.strings.special_services),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(connectionsManager.discord.nameRes()),
                         service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
+                        title = stringResource(connectionsManager.discord.nameRes()),
+                        login = { context.openDiscordLoginActivity() },
+                        openSettings = {
+                              navigator.push(SettingsDiscordScreen)
                         },
-                        openSettings = { navigator.push(SettingsDiscordScreen) },
-                    ),
+                    )
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
                 ),
