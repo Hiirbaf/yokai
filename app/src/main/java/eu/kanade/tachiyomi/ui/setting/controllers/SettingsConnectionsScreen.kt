@@ -18,22 +18,28 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.withFadeTransaction
+import com.bluelinelabs.conductor.RouterTransaction
 import dev.icerock.moko.resources.compose.stringResource
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.util.compose.LocalRouter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
+import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import uy.kohesive.injekt.Injekt
-import yokai.domain.connections.service.ConnectionsPreferences
+import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
+import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
+import androidx.compose.ui.res.stringResource as stringResourceInt
 
 object SettingsConnectionsScreen : ComposableSettings {
 
@@ -44,23 +50,18 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-        val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
         dialog?.run {
             when (this) {
-                is LoginConnectionsDialog -> ConnectionsLoginDialog(
-                    service = service,
-                    uNameStringRes = uNameStringRes,
-                    onDismissRequest = { dialog = null }
-                )
-                is LogoutConnectionsDialog -> ConnectionsLogoutDialog(
-                    service = service,
-                    router = router,
-                    onDismissRequest = { dialog = null }
-                )
+                is LoginConnectionsDialog -> {
+                    ConnectionsLoginDialog(
+                        service = service,
+                        uNameStringRes = uNameStringRes,
+                        onDismissRequest = { dialog = null },
+                    )
+                }
             }
         }
 
@@ -69,21 +70,19 @@ object SettingsConnectionsScreen : ComposableSettings {
                 title = stringResource(MR.strings.special_services),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.ConnectionsPreference(
-                        service = connectionsManager.discord,
                         title = stringResource(connectionsManager.discord.nameRes()),
-                        login = { context.openDiscordLoginActivity() },
+                        service = connectionsManager.discord,
+                        login = {
+                            context.openDiscordLoginActivity()
+                        },
                         openSettings = {
                             router.pushController(SettingsDiscordController().withFadeTransaction())
-                        }
+                        },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
-                    Preference.PreferenceItem.TextPreference(
-                        title = stringResource(MR.strings.logout),
-                        onClick = { dialog = LogoutConnectionsDialog(connectionsManager.discord) }
-                    )
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -91,7 +90,7 @@ object SettingsConnectionsScreen : ComposableSettings {
     private fun ConnectionsLoginDialog(
         service: ConnectionsService,
         @StringRes uNameStringRes: Int,
-        onDismissRequest: () -> Unit
+        onDismissRequest: () -> Unit,
     ) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
@@ -108,14 +107,14 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Text(
                         text = stringResource(
                             MR.strings.login_title,
-                            stringResource(service.nameRes())
+                            stringResource(service.nameRes()),
                         ),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     IconButton(onClick = onDismissRequest) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
-                            contentDescription = stringResource(MR.strings.action_close)
+                            contentDescription = stringResource(MR.strings.action_close),
                         )
                     }
                 }
@@ -126,10 +125,10 @@ object SettingsConnectionsScreen : ComposableSettings {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResource(uNameStringRes)) },
+                        label = { Text(text = stringResourceInt(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
-                        isError = inputError && username.text.isEmpty()
+                        isError = inputError && username.text.isEmpty(),
                     )
 
                     var hidePassword by remember { mutableStateOf(true) }
@@ -141,15 +140,26 @@ object SettingsConnectionsScreen : ComposableSettings {
                         trailingIcon = {
                             IconButton(onClick = { hidePassword = !hidePassword }) {
                                 Icon(
-                                    imageVector = if (hidePassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                    contentDescription = null
+                                    imageVector = if (hidePassword) {
+                                        Icons.Filled.Visibility
+                                    } else {
+                                        Icons.Filled.VisibilityOff
+                                    },
+                                    contentDescription = null,
                                 )
                             }
                         },
-                        visualTransformation = if (hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        visualTransformation = if (hidePassword) {
+                            PasswordVisualTransformation()
+                        } else {
+                            VisualTransformation.None
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
                         singleLine = true,
-                        isError = inputError && password.text.isEmpty()
+                        isError = inputError && password.text.isEmpty(),
                     )
                 }
             },
@@ -165,16 +175,21 @@ object SettingsConnectionsScreen : ComposableSettings {
                         scope.launchIO {
                             inputError = false
                             processing = true
-                            val result = checkLogin(context, service, username.text, password.text)
+                            val result = checkLogin(
+                                context = context,
+                                service = service,
+                                username = username.text,
+                                password = password.text,
+                            )
                             if (result) onDismissRequest()
                             processing = false
                         }
-                    }
+                    },
                 ) {
                     val id = if (processing) MR.strings.loading else MR.strings.login
                     Text(text = stringResource(id))
                 }
-            }
+            },
         )
     }
 
@@ -182,15 +197,15 @@ object SettingsConnectionsScreen : ComposableSettings {
         context: Context,
         service: ConnectionsService,
         username: String,
-        password: String
+        password: String,
     ): Boolean {
         return try {
             service.login(username, password)
-            context.toast(MR.strings.login_success)
+            withUIContext { context.toast(MR.strings.login_success) }
             true
         } catch (e: Throwable) {
             service.logout()
-            context.toast(e.message.toString())
+            withUIContext { context.toast(e.message.toString()) }
             false
         }
     }
@@ -199,8 +214,7 @@ object SettingsConnectionsScreen : ComposableSettings {
 @Composable
 internal fun ConnectionsLogoutDialog(
     service: ConnectionsService,
-    router: Router,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
     AlertDialog(
@@ -209,12 +223,15 @@ internal fun ConnectionsLogoutDialog(
             Text(
                 text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         confirmButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                OutlinedButton(modifier = Modifier.weight(1f), onClick = onDismissRequest) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDismissRequest,
+                ) {
                     Text(text = stringResource(MR.strings.action_cancel))
                 }
                 Button(
@@ -223,26 +240,25 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router.popCurrentController()
+                        router.popCurrentController() // Usar Router en vez de navigator.pop()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
                 ) {
                     Text(text = stringResource(MR.strings.logout))
                 }
             }
-        }
+        },
     )
 }
 
-// Clases de datos solo con propiedades simples, sin `remember` dentro
-private class LoginConnectionsDialog(
+private data class LoginConnectionsDialog(
     val service: ConnectionsService,
-    @StringRes val uNameStringRes: Int
+    @StringRes val uNameStringRes: Int,
 )
 
 internal data class LogoutConnectionsDialog(
-    val service: ConnectionsService
+    val service: ConnectionsService,
 )
