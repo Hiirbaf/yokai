@@ -1,9 +1,9 @@
 package eu.kanade.tachiyomi.ui.source.browse
 
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.loadingindicator.LoadingIndicator
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -44,9 +44,13 @@ class ProgressItem : AbstractFlexibleItem<ProgressItem.Holder>() {
         return this === other
     }
 
+    override fun hashCode(): Int {
+        return -1
+    }
+
     class Holder(view: View, adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>) : FlexibleViewHolder(view, adapter) {
 
-        val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
+        val progressBar: LoadingIndicator = view.findViewById(R.id.progress_bar)
         val progressMessage: TextView = view.findViewById(R.id.progress_message)
     }
 }

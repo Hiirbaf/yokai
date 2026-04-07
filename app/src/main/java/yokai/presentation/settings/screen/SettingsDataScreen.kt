@@ -7,10 +7,13 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -38,6 +41,7 @@ import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.relativeTimeSpanString
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
+import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
@@ -51,6 +55,7 @@ import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import yokai.domain.storage.StoragePreferences
 import yokai.i18n.MR
+import yokai.presentation.component.ToolTipButton
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.storageLocationText
 import yokai.presentation.component.preference.widget.BasePreferenceWidget
@@ -62,9 +67,23 @@ import yokai.presentation.settings.screen.data.awaitRestoreBackup
 import yokai.presentation.settings.screen.data.storageLocationPicker
 import yokai.util.lang.getString
 
-object SettingsDataScreen : ComposableSettings {
+object SettingsDataScreen : ComposableSettings() {
+
+    private fun readResolve() = SettingsDataScreen
+
     @Composable
     override fun getTitleRes(): StringResource = MR.strings.data_and_storage
+
+    @Composable
+    override fun RowScope.AppBarAction() {
+        val context = LocalContext.current
+
+        ToolTipButton(
+            toolTipLabel = stringResource(MR.strings.help),
+            icon = Icons.AutoMirrored.Outlined.Help,
+            buttonClicked = { context.openInBrowser(BACKUPS_HELP_URL) },
+        )
+    }
 
     @Composable
     override fun getPreferences(): List<Preference> {
@@ -316,3 +335,5 @@ object SettingsDataScreen : ComposableSettings {
         )
     }
 }
+
+const val BACKUPS_HELP_URL = "https://mihon.app/docs/guides/backups"

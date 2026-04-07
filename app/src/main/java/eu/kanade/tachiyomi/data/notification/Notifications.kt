@@ -39,6 +39,7 @@ object Notifications {
     const val ID_DOWNLOAD_CHAPTER = -201
     const val ID_DOWNLOAD_CHAPTER_ERROR = -202
     const val ID_DOWNLOAD_SIZE_WARNING = -203
+    const val ID_DOWNLOAD_PAUSED = -204
 
     /**
      * Notification channel and ids used by the library updater.

@@ -19,6 +19,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.more.AboutController
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
+import eu.kanade.tachiyomi.ui.setting.controllers.legacy.SettingsAdvancedLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.legacy.SettingsDataLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.search.SettingsSearchController
 import eu.kanade.tachiyomi.ui.setting.iconRes
@@ -27,7 +28,6 @@ import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.onLongClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceLongClickable
-import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.view.activityBinding
@@ -99,10 +99,10 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             iconRes = R.drawable.ic_storage_24dp
             iconTint = tintColor
             titleRes = MR.strings.data_and_storage
-            onClick { navigateTo(SettingsDataLegacyController()) }
+            onClick { navigateTo(SettingsDataController()) }
             onLongClick {
-                navigateTo(SettingsDataController())
-                context.toast("You're entering beta version of 'Data and storage'")
+                navigateTo(SettingsDataLegacyController())
+                context.toast("You're entering legacy version of 'Data and storage'")
             }
         }
         preference {
@@ -111,11 +111,15 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
             titleRes = MR.strings.security
             onClick { navigateTo(SettingsSecurityController()) }
         }
-        preference {
+        preferenceLongClickable {
             iconRes = R.drawable.ic_code_24dp
             iconTint = tintColor
             titleRes = MR.strings.advanced
-            onClick { navigateTo(SettingsAdvancedController()) }
+            onClick { navigateTo(SettingsAdvancedLegacyController()) }
+            onLongClick {
+                navigateTo(SettingsAdvancedController())
+                context.toast("You're entering experimental version of 'Advanced'")
+            }
         }
         preference {
             iconRes = R.drawable.ic_info_outline_24dp

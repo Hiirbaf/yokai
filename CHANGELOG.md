@@ -15,11 +15,22 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Add the ability to save search queries
 - Add toggle to enable/disable hide source on swipe (@Hiirbaf)
 - Add the ability to mark duplicate read chapters as read (@AntsyLich)
+- Add option to zoom into full covers (@Hiirbaf)
+- Add APNG support for Android 9+ (@lalalasupa0)
+- Add markdown support to entry description (@luigidotmoe)
+  - Fix text disappeared when it's surrounded by `<>` (@lalalasupa0)
 
 ### Changes
 - Temporarily disable log file
 - Categories' header now show filtered count when you search the library when you have "Show number of items" enabled (@LeeSF03)
 - Chapter progress now saved everything the page is changed
+- Adjust sorting order to be more consistent (@Astyyyyy)
+- Improve Local Source when loading from `android/data` (@lalalasupa0)
+- Refresh available extensions list when an extension repo is added or removed
+- Replace filter FAB with Floating Toolbar when browsing source
+- Show FAB button to read/resume chapter when start/continue reading button is off-screen
+- LocalSource entries no longer auto-refresh when opened (@lalalasupa0)
+- Long tap chapters on Reader now mark it as read (@lalalasupa0)
 
 ### Fixes
 - Allow users to bypass onboarding's permission step if Shizuku is installed
@@ -30,6 +41,14 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Prevent potential "Comparison method violates its general contract!" crash
 - Fix staggered grid cover being squashed for local source (@AwkwardPeak7)
 - Fix GPU crash when setting cover from downloaded chapters (@Angrevol)
+- Fix crashes when handling certain sources' deep links (@Hiirbaf)
+- Properly filter sources by extension (@Hiirbaf)
+- Fix crashes caused by RecyclerView stable id (@MuhamadSyabitHidayattulloh)
+- Fix paused download notification is not shown (@MuhamadSyabitHidayattulloh)
+- Disable auto refresh entry from Local Source (@lalalasupa0)
+- Fix extension download stuck on pending state
+- Only solve Cloudflare with WebView if it's not geoblock (@AwkwardPeak7)
+- Fix cover from LocalSource sometimes didn't load (@lalalasupa0)
 
 ### Translation
 - Update translations from Weblate
@@ -53,12 +72,12 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency gradle to v8.12
 - Update user agent (@Hiirbaf)
 - Update serialization to v1.8.1
-- Update dependency io.github.fornewid:material-motion-compose-core to v1.2.1
+- Update dependency io.github.fornewid:material-motion-compose-core to v2.0.1
 - Update lifecycle to v2.9.0
-- Update dependency org.jsoup:jsoup to v1.20.1
+- Update dependency org.jsoup:jsoup to v1.21.2
 - Update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.4.0
 - Update dependency io.mockk:mockk to v1.14.2
-- Update dependency io.coil-kt.coil3:coil-bom to v3.2.0
+- Update dependency io.coil-kt.coil3:coil-bom to v3.4.0
 - Update dependency com.squareup.okio:okio to v3.12.0
 - Update dependency com.google.firebase:firebase-bom to v33.14.0
 - Update dependency com.google.accompanist:accompanist-themeadapter-material3 to v0.36.0
@@ -69,14 +88,14 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency androidx.sqlite:sqlite-ktx to v2.5.1
 - Update dependency androidx.sqlite:sqlite to v2.5.1
 - Update dependency androidx.recyclerview:recyclerview to v1.4.0
-- Update dependency androidx.core:core-ktx to v1.16.0
-- Update dependency androidx.compose:compose-bom to v2025.05.01
-- Update aboutlibraries to v11.6.3
+- Update dependency androidx.core:core-ktx to v1.17.0
+- Update dependency androidx.core:core-splashscreen to v1.2.0
+- Update dependency androidx.compose:compose-bom to v2026.02.00
+- Update aboutlibraries to v13.1.0
 - Update plugin kotlinter to v5.1.0
 - Update plugin gradle-versions to v0.52.0
 - Update okhttp monorepo to v5.0.0-alpha.16
-- Update moko to v0.24.5
-- Update kotlin monorepo to v2.1.21
+- Update moko to v0.25.1
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.10.2
 - Update dependency me.zhanghai.android.libarchive:library to v1.1.5
 - Update dependency io.insert-koin:koin-bom to v4.0.4
@@ -86,6 +105,21 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update plugin firebase-crashlytics to v3.0.3
 - Update null2264/actions digest to 363cb9c
 - Update dependency io.github.pdvrieze.xmlutil:core-android to v0.91.1
+- Improve X-Requested-With spoof to support newer WebView versions (@Hiirbaf)
+- Update agp to v8.12.2
+- Update activity to v1.11.0
+- Update lifecycle to v2.9.4
+- Update sqldelight to v2.2.1
+- Update dependency com.google.android.material:material to v1.14.0-alpha09
+- Update dependency androidx.compose.material3:material3 to v1.5.0-alpha14
+- Minimize memory usage by reducing in-memory cover cache size (@Lolle2000la)
+
+## [1.9.7.4]
+
+### Other
+- Prioritize extension classpath over app
+- Update kotlin monorepo to v2.3.10
+- Update dependency gradle to v8.14.4
 
 ## [1.9.7.3]
 

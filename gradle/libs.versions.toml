@@ -1,15 +1,15 @@
 [versions]
-aboutlibraries = "11.6.3"
+aboutlibraries = "13.1.0"
 chucker = "3.5.2"
 flexible-adapter = "c8013533"
 fast_adapter = "5.7.0"
-moko = "0.24.5"
+moko = "0.25.1"
 okhttp = "5.0.0-alpha.16"
 shizuku = "13.1.5"
 # FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
 #sqlite = "2.5.0-alpha04"
 sqlite = "2.5.1"
-sqldelight = "2.0.2"
+sqldelight = "2.2.1"
 junit = "5.11.3"
 kermit = "2.0.5"
 koin = "4.0.4"
@@ -21,8 +21,9 @@ aboutlibraries = { module = "com.mikepenz:aboutlibraries-compose-m3", version.re
 
 chucker-library-no-op = { module = "com.github.ChuckerTeam.Chucker:library-no-op", version.ref = "chucker" }
 chucker-library = { module = "com.github.ChuckerTeam.Chucker:library", version.ref = "chucker" }
-coil3-bom = { module = "io.coil-kt.coil3:coil-bom", version = "3.2.0" }
+coil3-bom = { module = "io.coil-kt.coil3:coil-bom", version = "3.4.0" }
 coil3 = { module = "io.coil-kt.coil3:coil" }
+coil3-compose = { module = "io.coil-kt.coil3:coil-compose" }
 coil3-svg = { module = "io.coil-kt.coil3:coil-svg" }
 coil3-gif = { module = "io.coil-kt.coil3:coil-gif" }
 coil3-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
@@ -56,11 +57,11 @@ leakcanary-plumber = { module = "com.squareup.leakcanary:plumber-android", versi
 
 libarchive = { module = "me.zhanghai.android.libarchive:library", version = "1.1.5" }
 
-material = { module = "com.google.android.material:material", version = "1.12.0" }
+material = { module = "com.google.android.material:material", version = "1.14.0-alpha09" }
 markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version = "v3.1.0" }
 java-nat-sort = { module = "com.github.gpanther:java-nat-sort", version = "natural-comparator-1.1" }
-jsoup = { module = "org.jsoup:jsoup", version = "1.20.1" }
+jsoup = { module = "org.jsoup:jsoup", version = "1.21.2" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version = "1.2.1" }
@@ -106,6 +107,7 @@ voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", vers
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+aboutlibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutlibraries" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.3" }
 google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
 gradle-versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
@@ -116,7 +118,7 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 [bundles]
 db = [ "sqldelight-coroutines" ]
 db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
-coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
+coil = [ "coil3", "coil3-compose", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 logging = [ "kermit" ]
 # FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
 #sqlite = [ "sqlite", "sqlite-ktx" ]

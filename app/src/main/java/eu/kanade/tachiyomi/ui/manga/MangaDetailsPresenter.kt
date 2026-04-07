@@ -222,8 +222,8 @@ class MangaDetailsPresenter(
             .onEach { onUpdateManga() }
             .launchIn(presenterScope)
 
-        val fetchMangaNeeded = !manga.initialized || manga.isLocal()
-        val fetchChaptersNeeded = runBlocking { getChaptersNow() }.isEmpty() || manga.isLocal()
+        val fetchMangaNeeded = !manga.initialized
+        val fetchChaptersNeeded = runBlocking { getChaptersNow() }.isEmpty()
 
         presenterScope.launch {
             isLoading = true
@@ -500,7 +500,8 @@ class MangaDetailsPresenter(
     /** Refresh Manga Info and Chapter List (not tracking) */
     fun refreshAll() {
         val isLocal by lazy { manga.isLocal() }
-        if (view?.isNotOnline(!isLocal) == true && !isLocal) return
+        if (view?.isNotOnline() == true && !isLocal) return
+
         presenterScope.launch {
             isLoading = true
             val tasks = listOf(
