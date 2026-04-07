@@ -38,7 +38,8 @@ class DiscordLoginActivity : AppCompatActivity() {
                     webView.stopLoading()
                     webView.evaluateJavascript(
                         """
-                            (()=>{const i=document.createElement('iframe');document.body.append(i);const t=JSON.parse(i.contentWindow.localStorage.token);i.remove();return t})()
+                        (()=>{const i=document.createElement('iframe');document.body.append(i);
+                        const t=JSON.parse(i.contentWindow.localStorage.token);i.remove();return t})()
                         """.trimIndent(),
                     ) {
                         login(it.trim('"'))
@@ -53,9 +54,8 @@ class DiscordLoginActivity : AppCompatActivity() {
         connectionsPreferences.connectionsToken(connectionsManager.discord).set(token)
         connectionsPreferences.setConnectionsCredentials(connectionsManager.discord, "Discord", "Logged In")
         toast(MR.strings.login_success)
-    }
+        Log.d("discord_login_tachiyomisy", "Logged in with token: $token")
         applicationInfo.dataDir.let { File("$it/app_webview/").deleteRecursively() }
-        setResult(RESULT_OK)
         finish()
     }
 }
