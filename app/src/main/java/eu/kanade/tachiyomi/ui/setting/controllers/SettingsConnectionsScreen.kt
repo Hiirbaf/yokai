@@ -51,7 +51,7 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        val router = LocalRouter.currentOrThrow()
+        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
         val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
 
@@ -257,6 +257,7 @@ internal fun ConnectionsLogoutDialog(
 }
 
 private data class LoginConnectionsDialog(
+    var dialog by remember { mutableStateOf<LoginConnectionsDialog?>(null) }
     val service: ConnectionsService,
     @StringRes val uNameStringRes: Int,
 )
