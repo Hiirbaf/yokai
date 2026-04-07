@@ -34,6 +34,8 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import tachiyomi.core.common.util.lang.launchIO
+import tachiyomi.presentation.core.i18n.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
@@ -51,9 +53,8 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
-        val router = LocalRouter.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
-        val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
         dialog?.run {
@@ -75,10 +76,10 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Preference.PreferenceItem.ConnectionsPreference(
                         title = stringResource(connectionsManager.discord.nameRes()),
                         service = connectionsManager.discord,
-                        login = { context.openDiscordLoginActivity() },
-                        openSettings = {
-                            router.pushController(SettingsDiscordController().withFadeTransaction())
+                        login = {
+                            context.openDiscordLoginActivity()
                         },
+                        openSettings = { navigator.push(SettingsDiscordScreen) },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_info)),
@@ -215,10 +216,10 @@ object SettingsConnectionsScreen : ComposableSettings {
 @Composable
 internal fun ConnectionsLogoutDialog(
     service: ConnectionsService,
-    router: Router,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
+    val navigator = LocalNavigator.currentOrThrow
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -242,7 +243,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router.popCurrentController()
+                        navigator.pop()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
