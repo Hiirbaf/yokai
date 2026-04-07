@@ -27,7 +27,6 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.runBlocking
 import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
-import com.bluelinelabs.conductor.Router
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import uy.kohesive.injekt.Injekt
@@ -35,13 +34,6 @@ import uy.kohesive.injekt.api.get
 import yokai.presentation.settings.ComposableSettings
 
 object SettingsDiscordScreen : ComposableSettings {
-
-    private lateinit var router: Router
-
-    fun withRouter(router: Router): SettingsDiscordScreen {
-        this.router = router
-        return this
-    }
 
     @ReadOnlyComposable
     @Composable
@@ -76,7 +68,6 @@ object SettingsDiscordScreen : ComposableSettings {
         is LogoutConnectionsDialog -> {
             ConnectionsLogoutDialog(
                 service = service,
-                router = SettingsDiscordScreen.router,
                 onDismissRequest = {
                     dialog = null
                     enableDRPCPref.set(false)
