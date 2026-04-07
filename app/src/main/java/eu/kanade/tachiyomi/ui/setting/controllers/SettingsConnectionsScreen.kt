@@ -71,7 +71,7 @@ object SettingsConnectionsScreen : ComposableSettings {
         val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
-        var dialog by remember { mutableStateOf<Any?>(null) }
+        var dialog by remember { mutableStateOf<LoginConnectionsDialog?>(null) }
         dialog?.run {
             when (this) {
                 is LoginConnectionsDialog -> {
