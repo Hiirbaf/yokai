@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Outlined
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -142,9 +141,9 @@ object SettingsConnectionsScreen : ComposableSettings {
                             IconButton(onClick = { hidePassword = !hidePassword }) {
                                 Icon(
                                     imageVector = if (hidePassword) {
-                                        Visibility
+                                        Icons.Filled.Visibility
                                     } else {
-                                        VisibilityOff
+                                        Icons.Filled.VisibilityOff
                                     },
                                     contentDescription = null,
                                 )
