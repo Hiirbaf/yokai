@@ -7,27 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -50,14 +35,16 @@ import eu.kanade.tachiyomi.util.system.openDiscordLoginActivity
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
 import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
-import androidx.compose.ui.res.stringResource as stringResourceInt
+
+private sealed class ConnectionsDialog {
+    data class Login(val service: ConnectionsService, @StringRes val uNameStringRes: Int) : ConnectionsDialog()
+    data class Logout(val service: ConnectionsService) : ConnectionsDialog()
+}
 
 object SettingsConnectionsScreen : ComposableSettings {
 
@@ -71,16 +58,19 @@ object SettingsConnectionsScreen : ComposableSettings {
         val navigator = LocalNavigator.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
-        var dialog by remember { mutableStateOf<LoginConnectionsDialog?>(null) }
+        // Estado del diálogo
+        var dialog by remember { mutableStateOf<ConnectionsDialog?>(null) }
         dialog?.run {
             when (this) {
-                is LoginConnectionsDialog -> {
-                    ConnectionsLoginDialog(
-                        service = service,
-                        uNameStringRes = uNameStringRes,
-                        onDismissRequest = { dialog = null },
-                    )
-                }
+                is ConnectionsDialog.Login -> ConnectionsLoginDialog(
+                    service = service,
+                    uNameStringRes = uNameStringRes,
+                    onDismissRequest = { dialog = null }
+                )
+                is ConnectionsDialog.Logout -> ConnectionsLogoutDialog(
+                    service = service,
+                    onDismissRequest = { dialog = null }
+                )
             }
         }
 
@@ -91,9 +81,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Preference.PreferenceItem.ConnectionsPreference(
                         title = stringResource(connectionsManager.discord.nameRes()),
                         service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
+                        login = { dialog = ConnectionsDialog.Login(connectionsManager.discord, MR.strings.username) },
                         openSettings = { navigator.push(SettingsDiscordScreen) },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
@@ -116,23 +104,18 @@ object SettingsConnectionsScreen : ComposableSettings {
         var password by remember { mutableStateOf(TextFieldValue(service.getPassword())) }
         var processing by remember { mutableStateOf(false) }
         var inputError by remember { mutableStateOf(false) }
+        var hidePassword by remember { mutableStateOf(true) }
 
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(
-                            MR.strings.login_title,
-                            stringResource(service.nameRes()),
-                        ),
-                        modifier = Modifier.weight(1f),
+                        text = stringResource(MR.strings.login_title, stringResource(service.nameRes())),
+                        modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = onDismissRequest) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = stringResource(MR.strings.action_close),
-                        )
+                        Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(MR.strings.action_close))
                     }
                 }
             },
@@ -142,13 +125,11 @@ object SettingsConnectionsScreen : ComposableSettings {
                         modifier = Modifier.fillMaxWidth(),
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(text = stringResourceInt(uNameStringRes)) },
+                        label = { Text(text = stringResource(uNameStringRes)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         singleLine = true,
                         isError = inputError && username.text.isEmpty(),
                     )
-
-                    var hidePassword by remember { mutableStateOf(true) }
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = password,
@@ -157,23 +138,15 @@ object SettingsConnectionsScreen : ComposableSettings {
                         trailingIcon = {
                             IconButton(onClick = { hidePassword = !hidePassword }) {
                                 Icon(
-                                    imageVector = if (hidePassword) {
-                                        Icons.Filled.Visibility
-                                    } else {
-                                        Icons.Filled.VisibilityOff
-                                    },
-                                    contentDescription = null,
+                                    imageVector = if (hidePassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = null
                                 )
                             }
                         },
-                        visualTransformation = if (hidePassword) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        },
+                        visualTransformation = if (hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done,
+                            imeAction = ImeAction.Done
                         ),
                         singleLine = true,
                         isError = inputError && password.text.isEmpty(),
@@ -192,21 +165,16 @@ object SettingsConnectionsScreen : ComposableSettings {
                         scope.launchIO {
                             inputError = false
                             processing = true
-                            val result = checkLogin(
-                                context = context,
-                                service = service,
-                                username = username.text,
-                                password = password.text,
-                            )
+                            val result = checkLogin(context, service, username.text, password.text)
                             if (result) onDismissRequest()
                             processing = false
                         }
-                    },
+                    }
                 ) {
                     val id = if (processing) MR.strings.loading else MR.strings.login
                     Text(text = stringResource(id))
                 }
-            },
+            }
         )
     }
 
@@ -214,7 +182,7 @@ object SettingsConnectionsScreen : ComposableSettings {
         context: Context,
         service: ConnectionsService,
         username: String,
-        password: String,
+        password: String
     ): Boolean {
         return try {
             service.login(username, password)
@@ -231,7 +199,7 @@ object SettingsConnectionsScreen : ComposableSettings {
 @Composable
 internal fun ConnectionsLogoutDialog(
     service: ConnectionsService,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
     val navigator = LocalNavigator.currentOrThrow
@@ -241,15 +209,12 @@ internal fun ConnectionsLogoutDialog(
             Text(
                 text = stringResource(MR.strings.logout_title, stringResource(service.nameRes())),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
         },
         confirmButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onDismissRequest,
-                ) {
+                OutlinedButton(modifier = Modifier.weight(1f), onClick = onDismissRequest) {
                     Text(text = stringResource(MR.strings.action_cancel))
                 }
                 Button(
@@ -262,21 +227,12 @@ internal fun ConnectionsLogoutDialog(
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                    ),
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
                 ) {
                     Text(text = stringResource(MR.strings.logout))
                 }
             }
-        },
+        }
     )
 }
-
-private data class LoginConnectionsDialog(
-    val service: ConnectionsService,
-    @StringRes val uNameStringRes: Int,
-)
-
-internal data class LogoutConnectionsDialog(
-    val service: ConnectionsService,
-)
