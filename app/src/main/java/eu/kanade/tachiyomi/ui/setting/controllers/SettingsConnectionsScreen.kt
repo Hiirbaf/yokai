@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Outlined
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
@@ -14,16 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.util.compose.LocalRouter
@@ -33,23 +29,13 @@ import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
 import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
-import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
 object SettingsConnectionsScreen : ComposableSettings {
-
-    private lateinit var router: Router
-
-    fun withRouter(router: Router): SettingsConnectionsScreen {
-        this.router = router
-        return this
-    }
 
     @ReadOnlyComposable
     @Composable
@@ -58,6 +44,7 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
+        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
@@ -80,9 +67,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Preference.PreferenceItem.ConnectionsPreference(
                         title = stringResource(connectionsManager.discord.nameRes()),
                         service = connectionsManager.discord,
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
+                        login = { context.openDiscordLoginActivity() },
                         openSettings = {
                             router.pushController(SettingsDiscordController().withFadeTransaction())
                         },
@@ -149,9 +134,9 @@ object SettingsConnectionsScreen : ComposableSettings {
                             IconButton(onClick = { hidePassword = !hidePassword }) {
                                 Icon(
                                     imageVector = if (hidePassword) {
-                                        Icons.Filled.Visibility
+                                        Visibility
                                     } else {
-                                        Icons.Filled.VisibilityOff
+                                        VisibilityOff
                                     },
                                     contentDescription = null,
                                 )
@@ -249,7 +234,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router.popCurrentController() // Usar Router en vez de navigator.pop()
+                        router.popCurrentController()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
