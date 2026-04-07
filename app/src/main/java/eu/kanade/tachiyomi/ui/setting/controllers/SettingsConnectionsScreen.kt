@@ -51,7 +51,9 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
+        val router = LocalRouter.currentOrThrow
         val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+        val connectionsPreferences = remember { Injekt.get<ConnectionsPreferences>() }
 
         var dialog by remember { mutableStateOf<Any?>(null) }
         dialog?.run {
@@ -73,9 +75,7 @@ object SettingsConnectionsScreen : ComposableSettings {
                     Preference.PreferenceItem.ConnectionsPreference(
                         service = connectionsManager.discord,
                         title = stringResource(connectionsManager.discord.nameRes()),
-                        login = {
-                            context.openDiscordLoginActivity()
-                        },
+                        login = { context.openDiscordLoginActivity() },
                         openSettings = {
                             router.pushController(SettingsDiscordController().withFadeTransaction())
                         },
@@ -242,7 +242,7 @@ internal fun ConnectionsLogoutDialog(
                         service.logout()
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
-                        router.popCurrentController() // Usar Router en vez de navigator.pop()
+                        router.popCurrentController()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
