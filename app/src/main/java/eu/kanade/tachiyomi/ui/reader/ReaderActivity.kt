@@ -79,6 +79,8 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.toggle
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
+import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
+import eu.kanade.tachiyomi.data.connections.discord.ReaderData
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.orientationType
 import eu.kanade.tachiyomi.data.database.models.readingModeType
@@ -171,6 +173,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
+import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.domain.ui.settings.ReaderPreferences
 import yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import yokai.i18n.MR
@@ -253,6 +256,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
 
     private val readerPreferences: ReaderPreferences by injectLazy()
     private val basePreferences: BasePreferences by injectLazy()
+    private val connectionsPreferences: ConnectionsPreferences by injectLazy()
 
     companion object {
 
@@ -493,6 +497,9 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         bottomSheet = null
         snackbar?.dismiss()
         snackbar = null
+        lifecycleScope.launchIO {
+            DiscordRPCService.setScreen(this@ReaderActivity, DiscordRPCService.lastUsedScreen)
+        }
     }
 
     /**
@@ -1375,6 +1382,26 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         val chapter = viewerChapters.currChapter.chapter
         binding.toolbar.subtitle =
             chapter.preferredChapterName(this, viewModel.manga!!, preferences)
+
+        // Discord RPC
+        val manga = viewModel.manga ?: return
+        lifecycleScope.launchIO {
+            DiscordRPCService.setReaderActivity(
+                context = this@ReaderActivity,
+                readerData = ReaderData(
+                    incognitoMode = connectionsPreferences.discordRPCIncognito().get() ||
+                        preferences.incognitoMode().get(),
+                    mangaId = manga.id,
+                    mangaTitle = manga.title,
+                    chapterNumber = Pair(
+                        chapter.chapter_number,
+                        viewerChapters.currChapter.pages?.size ?: 0,
+                    ),
+                    chapterTitle = chapter.preferredChapterName(this@ReaderActivity, manga, preferences),
+                    thumbnailUrl = manga.thumbnail_url,
+                ),
+            )
+        }
 
         listOfNotNull(getTitleTextView(), getSubtitleTextView()).forEach { textView ->
             textView.ellipsize = TextUtils.TruncateAt.MARQUEE
