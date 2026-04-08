@@ -1,11 +1,7 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.content.Context
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -16,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -37,19 +32,19 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
 import uy.kohesive.injekt.Injekt
 import yokai.i18n.MR
-import yokai.domain.connections.service.ConnectionsPreferences
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
 
+// sealed class para manejar diálogos
 private sealed class ConnectionsDialog {
-    data class Login(val service: ConnectionsService, @StringRes val uNameStringRes: Int) : ConnectionsDialog()
+    data class Login(val service: ConnectionsService, val uNameStringRes: StringResource) : ConnectionsDialog()
     data class Logout(val service: ConnectionsService) : ConnectionsDialog()
 }
 
 object SettingsConnectionsScreen : ComposableSettings {
 
-    @ReadOnlyComposable
     @Composable
+    @ReadOnlyComposable
     override fun getTitleRes() = MR.strings.pref_category_connections
 
     @Composable
@@ -74,14 +69,17 @@ object SettingsConnectionsScreen : ComposableSettings {
             }
         }
 
+        // Obtenemos Discord desde ConnectionsManager
+        val discordService = connectionsManager.getService("discord")
+
         return listOf(
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.special_services),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(connectionsManager.discord.nameRes()),
-                        service = connectionsManager.discord,
-                        login = { dialog = ConnectionsDialog.Login(connectionsManager.discord, MR.strings.username) },
+                        title = stringResource(discordService.nameRes()),
+                        service = discordService,
+                        login = { dialog = ConnectionsDialog.Login(discordService, MR.strings.username) },
                         openSettings = { navigator.push(SettingsDiscordScreen) },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
@@ -94,8 +92,8 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     private fun ConnectionsLoginDialog(
         service: ConnectionsService,
-        @StringRes uNameStringRes: Int,
-        onDismissRequest: () -> Unit,
+        uNameStringRes: StringResource,
+        onDismissRequest: () -> Unit
     ) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
