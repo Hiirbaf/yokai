@@ -38,7 +38,7 @@ import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
 import androidx.compose.ui.res.stringResource as stringResourceInt
 
-object SettingsConnectionsScreen : ComposableSettings {
+object SettingsConnectionsScreen : ComposableSettings() {
 
     @ReadOnlyComposable
     @Composable
