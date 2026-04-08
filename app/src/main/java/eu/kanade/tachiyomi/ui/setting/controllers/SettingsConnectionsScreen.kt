@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
@@ -35,9 +35,8 @@ import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.settings.ComposableSettings
 
-// sealed class para manejar diálogos
 private sealed class ConnectionsDialog {
-    data class Login(val service: ConnectionsService, val uNameStringRes: StringResource) : ConnectionsDialog()
+    data class Login(val service: ConnectionsService, @StringRes val uNameStringRes: Int) : ConnectionsDialog()
     data class Logout(val service: ConnectionsService) : ConnectionsDialog()
 }
 
@@ -55,31 +54,30 @@ object SettingsConnectionsScreen : ComposableSettings {
 
         // Estado del diálogo
         var dialog by remember { mutableStateOf<ConnectionsDialog?>(null) }
-        dialog?.run {
-            when (this) {
+
+        // Dibuja el diálogo si está activo
+        dialog?.let { currentDialog ->
+            when (currentDialog) {
                 is ConnectionsDialog.Login -> ConnectionsLoginDialog(
-                    service = service,
-                    uNameStringRes = uNameStringRes,
+                    service = currentDialog.service,
+                    uNameStringRes = currentDialog.uNameStringRes,
                     onDismissRequest = { dialog = null }
                 )
                 is ConnectionsDialog.Logout -> ConnectionsLogoutDialog(
-                    service = service,
+                    service = currentDialog.service,
                     onDismissRequest = { dialog = null }
                 )
             }
         }
-
-        // Obtenemos Discord desde ConnectionsManager
-        val discordService = connectionsManager.getService("discord")
 
         return listOf(
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.special_services),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.ConnectionsPreference(
-                        title = stringResource(discordService.nameRes()),
-                        service = discordService,
-                        login = { dialog = ConnectionsDialog.Login(discordService, MR.strings.username) },
+                        title = stringResource(connectionsManager.discord.nameRes()),
+                        service = connectionsManager.discord,
+                        login = { dialog = ConnectionsDialog.Login(connectionsManager.discord, MR.strings.username) },
                         openSettings = { navigator.push(SettingsDiscordScreen) },
                     ),
                     Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.connections_discord_info)),
@@ -92,8 +90,8 @@ object SettingsConnectionsScreen : ComposableSettings {
     @Composable
     private fun ConnectionsLoginDialog(
         service: ConnectionsService,
-        uNameStringRes: StringResource,
-        onDismissRequest: () -> Unit
+        @StringRes uNameStringRes: Int,
+        onDismissRequest: () -> Unit,
     ) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
