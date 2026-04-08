@@ -51,7 +51,7 @@ object SettingsConnectionsScreen : ComposableSettings {
     override fun getPreferences(): List<Preference> {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
-        val connectionsManager = remember { Injekt.get<ConnectionsManager>() }
+        val connectionsManager: ConnectionsManager = Injekt.get()
 
         // Estado del diálogo
         var dialog by remember { mutableStateOf<ConnectionsDialog?>(null) }
