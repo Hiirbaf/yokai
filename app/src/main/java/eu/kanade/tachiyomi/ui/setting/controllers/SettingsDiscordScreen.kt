@@ -33,7 +33,6 @@ import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import yokai.domain.connections.service.ConnectionsPreferences
-import eu.kanade.presentation.category.visualName
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.widget.TriStateListDialog
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
@@ -176,7 +175,7 @@ object SettingsDiscordScreen : ComposableSettings() {
                 items = allCategories,
                 initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
                 initialInversed = includedManga.mapNotNull { allCategories.find { false } },
-                itemLabel = { it.visualName },
+                itemLabel = { it.name },
                 onDismissRequest = { showDialog = false },
                 onValueChanged = { newIncluded, _ ->
                     discordRPCIncognitoCategoriesPref.set(
@@ -185,7 +184,6 @@ object SettingsDiscordScreen : ComposableSettings() {
                     )
                     showDialog = false
                 },
-                onlyChecked = true,
             )
         }
 
@@ -199,10 +197,13 @@ object SettingsDiscordScreen : ComposableSettings() {
                 ),
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(MR.strings.categories),
-                    subtitle = getCategoriesLabel(
-                        allCategories = allCategories,
-                        included = includedManga,
-                    ),
+                    subtitle = if (includedManga.isEmpty()) {
+                        stringResource(MR.strings.none)
+                    } else {
+                        allCategories
+                            .filter { it.id.toString() in includedManga }
+                            .joinToString { it.name }
+                    },
                     onClick = { showDialog = true },
                 ),
                 Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.pref_discord_incognito_categories_details)),
