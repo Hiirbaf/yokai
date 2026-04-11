@@ -39,7 +39,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil.compose.AsyncImage          // coil2, no coil3
+import coil3.compose.AsyncImage
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.connections.ConnectionsManager
 import eu.kanade.tachiyomi.data.connections.discord.DiscordAccount
@@ -99,7 +99,7 @@ private fun DiscordAccountsScreenContent() {
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(MR.strings.action_add),
+                    contentDescription = stringResource(MR.strings.add),
                 )
             }
         },
@@ -270,7 +270,7 @@ private fun DiscordAccountItem(
             IconButton(onClick = onRemove) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(MR.strings.action_delete),
+                    contentDescription = stringResource(MR.strings.delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
