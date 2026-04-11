@@ -49,7 +49,8 @@ import kotlinx.coroutines.launch
 import logcat.logcat
 import yokai.core.migration.scope
 import yokai.i18n.MR
-import tachiyomi.presentation.core.components.material.Scaffold
+import yokai.presentation.AppBarType
+import yokai.presentation.YokaiScaffold
 import dev.icerock.moko.resources.compose.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
