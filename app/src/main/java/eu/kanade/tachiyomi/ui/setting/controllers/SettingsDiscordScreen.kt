@@ -171,7 +171,7 @@ object SettingsDiscordScreen : ComposableSettings() {
         var showDialog by rememberSaveable { mutableStateOf(false) }
         if (showDialog) {
             TriStateListDialog(
-                title = stringResource(MR.strings.general_categories),
+                title = stringResource(MR.strings.categories),
                 message = stringResource(MR.strings.pref_discord_incognito_categories_details),
                 items = allCategories,
                 initialChecked = includedManga.mapNotNull { id -> allCategories.find { it.id.toString() == id } },
@@ -190,7 +190,7 @@ object SettingsDiscordScreen : ComposableSettings() {
         }
 
         return Preference.PreferenceGroup(
-            title = stringResource(MR.strings.general_categories),
+            title = stringResource(MR.strings.categories),
             preferenceItems = persistentListOf(
                 Preference.PreferenceItem.SwitchPreference(
                     preference = discordRPCIncognitoPref,
@@ -198,7 +198,7 @@ object SettingsDiscordScreen : ComposableSettings() {
                     subtitle = stringResource(MR.strings.pref_discord_incognito_summary),
                 ),
                 Preference.PreferenceItem.TextPreference(
-                    title = stringResource(MR.strings.general_categories),
+                    title = stringResource(MR.strings.categories),
                     subtitle = getCategoriesLabel(
                         allCategories = allCategories,
                         included = includedManga,
