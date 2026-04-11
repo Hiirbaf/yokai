@@ -1,11 +1,11 @@
 package eu.kanade.tachiyomi.data.connections.discord
 
 import android.graphics.Color
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-//import logcat.LogPriority
-//import tachiyomi.core.common.util.system.logcat
 import yokai.i18n.MR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -27,7 +27,7 @@ class Discord(id: Long) : ConnectionsService(id) {
         // Not Needed
     }
 
-   /* private val json = Injekt.get<Json>()
+    private val json = Injekt.get<Json>()
 
     fun getAccounts(): List<DiscordAccount> {
         val accountsJson = connectionsPreferences.discordAccounts().get()
@@ -44,7 +44,7 @@ class Discord(id: Long) : ConnectionsService(id) {
 
     fun addAccount(account: DiscordAccount) {
         val accounts = getAccounts().toMutableList()
-        logcat(LogPriority.DEBUG) { "Debug: Adding account: $account" }
+        Logger.d("Discord") { "Adding account: $account" }
 
         if (account.isActive) {
             accounts.replaceAll { it.copy(isActive = false) }
@@ -58,7 +58,7 @@ class Discord(id: Long) : ConnectionsService(id) {
             accounts.add(account)
         }
 
-        logcat(LogPriority.DEBUG) { "Debug: Updated accounts: $accounts" } // Debug log
+        Logger.d("Discord") { "Updated accounts: $accounts" }
         saveAccounts(accounts)
     }
 
@@ -72,17 +72,14 @@ class Discord(id: Long) : ConnectionsService(id) {
         val accounts = getAccounts().toMutableList()
         accounts.replaceAll { it.copy(isActive = it.id == accountId) }
         saveAccounts(accounts)
-        // Update active token and restart RPC
         accounts.find { it.id == accountId }?.let { account ->
             connectionsPreferences.connectionsToken(this).set(account.token)
-            // Trigger RPC restart
             connectionsPreferences.enableDiscordRPC().set(false)
             connectionsPreferences.enableDiscordRPC().set(true)
         }
     }
 
     fun restartRichPresence() {
-        // Trigger RPC restart by toggling the preference
         connectionsPreferences.enableDiscordRPC().set(false)
         connectionsPreferences.enableDiscordRPC().set(true)
     }
@@ -94,5 +91,5 @@ class Discord(id: Long) : ConnectionsService(id) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }*/
+    }
 }
