@@ -193,7 +193,7 @@ object SettingsDiscordScreen : ComposableSettings() {
             title = stringResource(MR.strings.categories),
             preferenceItems = persistentListOf(
                 Preference.PreferenceItem.SwitchPreference(
-                    preference = discordRPCIncognitoPref,
+                    pref = discordRPCIncognitoPref,
                     title = stringResource(MR.strings.pref_discord_incognito),
                     subtitle = stringResource(MR.strings.pref_discord_incognito_summary),
                 ),
