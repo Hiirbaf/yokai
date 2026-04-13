@@ -146,6 +146,7 @@ object PreferenceKeys {
     const val hopperLongPress = "hopper_long_press"
 
     const val onlySearchPinned = "only_search_pinned"
+    const val globalSearchHistory = "global_search_history"
 
     const val downloadNew = "download_new"
 

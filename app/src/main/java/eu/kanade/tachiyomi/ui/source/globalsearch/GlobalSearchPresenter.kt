@@ -10,13 +10,13 @@ import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
+import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withUIContext
-import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,6 +31,8 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.recents.interactor.GetRecents
 
 /**
  * Presenter of [GlobalSearchController]
@@ -50,6 +52,9 @@ open class GlobalSearchPresenter(
     private val getManga: GetManga by injectLazy()
     private val insertManga: InsertManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
+    private val getLibraryManga: GetLibraryManga by injectLazy()
+    private val getRecents: GetRecents by injectLazy()
+    private val downloadManager: DownloadManager by injectLazy()
 
     /**
      * Enabled sources.
@@ -57,8 +62,6 @@ open class GlobalSearchPresenter(
     val sources by lazy { getSourcesToQuery() }
 
     private var fetchSourcesJob: Job? = null
-
-    private var loadTime = hashMapOf<Long, Long>()
 
     var query = ""
 
@@ -74,10 +77,23 @@ open class GlobalSearchPresenter(
 
     private val semaphore = Semaphore(5)
 
+    private val showTopSearchAids = sourcesToUse == null && initialExtensionFilter == null
+
     override fun onCreate() {
         super.onCreate()
 
         extensionFilter = initialExtensionFilter
+
+        if (showTopSearchAids) {
+            presenterScope.launchIO {
+                val topGenres = getTopGenres()
+                val searchHistory = getSearchHistory()
+                withUIContext {
+                    view?.setGenreChips(topGenres)
+                    view?.setSearchHistory(searchHistory)
+                }
+            }
+        }
 
         if (items.isEmpty()) {
             // Perform a search with previous or initial state
@@ -157,40 +173,67 @@ open class GlobalSearchPresenter(
      * @param query query on which to search.
      */
     fun search(query: String) {
+        val normalizedQuery = normalizeQuery(query)
+
         // Return if there's nothing to do
-        if (this.query == query) return
+        if (this.query == normalizedQuery) return
 
         // Update query
-        this.query = query
+        this.query = normalizedQuery
+
+        if (showTopSearchAids) {
+            presenterScope.launchIO {
+                if (normalizedQuery.isNotBlank()) {
+                    saveSearchQuery(normalizedQuery)
+                }
+
+                withUIContext {
+                    view?.setSearchHistory(getSearchHistory())
+                }
+            }
+        }
+
+        if (normalizedQuery.isBlank()) {
+            fetchSourcesJob?.cancel()
+            items = emptyList()
+            presenterScope.launchUI { view?.setItems(items) }
+            return
+        }
 
         // Create image fetch subscription
         initializeFetchImageSubscription()
 
         // Create items with the initial state
-        val initialItems = sources.map { createCatalogueSearchItem(it, null) }
-        items = initialItems
-        presenterScope.launchUI { view?.setItems(items) }
+        val sourceItems = sources.map { createCatalogueSearchItem(it, null) }
+        items = sourceItems
+        presenterScope.launchUI { view?.setItems(sourceItems) }
         val pinnedSourceIds = preferences.pinnedCatalogues().get()
 
         fetchSourcesJob?.cancel()
         fetchSourcesJob = presenterScope.launch {
+            val staticSections = if (showTopSearchAids) {
+                getStaticSectionsForQuery(normalizedQuery)
+            } else {
+                emptyList()
+            }
+            items = staticSections + sourceItems
+            withUIContext { view?.setItems(items) }
+
             sources.map { source ->
                 launch mainLaunch@{
                     semaphore.withPermit {
+                        if (this@GlobalSearchPresenter.query != normalizedQuery) return@mainLaunch
                         if (this@GlobalSearchPresenter.items.find { it.source == source }?.results != null) {
                             return@mainLaunch
                         }
                         val mangas = try {
-                            source.getSearchManga(1, query, source.getFilterList())
+                            source.getSearchManga(1, normalizedQuery, source.getFilterList())
                         } catch (error: Exception) {
                             MangasPage(emptyList(), false)
                         }
                             .mangas.take(10)
                             .mapNotNull { networkToLocalManga(it, source.id) }
                         fetchImage(mangas, source)
-                        if (mangas.isNotEmpty() && !loadTime.containsKey(source.id)) {
-                            loadTime[source.id] = Date().time
-                        }
                         val result = createCatalogueSearchItem(
                             source,
                             mangas.map {
@@ -200,7 +243,9 @@ open class GlobalSearchPresenter(
                                 )
                             },
                         )
-                        items = items
+                        val currentStaticSections = items.filter { it.isStaticSection }
+                        val sortedSources = items
+                            .filterNot { it.isStaticSection }
                             .map { item -> if (item.source == result.source) result else item }
                             .sortedWith(
                                 compareBy(
@@ -208,14 +253,149 @@ open class GlobalSearchPresenter(
                                     { it.results.isNullOrEmpty() },
                                     // Same as initial sort, i.e. pinned first then alphabetically
                                     { it.source.id.toString() !in pinnedSourceIds },
-                                    { loadTime[it.source.id] ?: 0L },
                                     { "${it.source.name.lowercase(Locale.getDefault())} (${it.source.lang})" },
                                 ),
                             )
+                        items = currentStaticSections + sortedSources
                         withUIContext { view?.setItems(items) }
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun getStaticSectionsForQuery(query: String): List<GlobalSearchItem> {
+        val historyManga = getHistoryMangaForQuery(query)
+        val historyMangaIds = historyManga.mapNotNull { it.id }.toSet()
+        val localMatches = getLocalMatchesForQuery(query, historyMangaIds)
+
+        return buildList {
+            if (historyManga.isNotEmpty()) {
+                add(
+                    GlobalSearchItem(
+                        source = HISTORY_SECTION_SOURCE,
+                        results = historyManga.toGlobalSearchMangaItems(),
+                        openSourceOnClick = false,
+                        showLanguageSubtitle = false,
+                        isStaticSection = true,
+                    ),
+                )
+            }
+
+            if (localMatches.isNotEmpty()) {
+                add(
+                    GlobalSearchItem(
+                        source = LOCAL_MATCHES_SECTION_SOURCE,
+                        results = localMatches.toGlobalSearchMangaItems(),
+                        openSourceOnClick = false,
+                        showLanguageSubtitle = false,
+                        isStaticSection = true,
+                    ),
+                )
+            }
+        }
+    }
+
+    private suspend fun getHistoryMangaForQuery(query: String): List<Manga> {
+        val recents = getRecents.awaitAll(
+            includeRead = true,
+            filterScanlators = false,
+            isEndless = false,
+            isResuming = false,
+            search = query,
+            offset = 0L,
+        )
+
+        return recents
+            .sortedByDescending { it.history.last_read }
+            .map { it.manga }
+            .distinctBy { it.id }
+            .take(MAX_STATIC_SECTION_RESULTS)
+    }
+
+    private suspend fun getLocalMatchesForQuery(query: String, excludeIds: Set<Long>): List<Manga> {
+        data class LocalResult(
+            val manga: Manga,
+            val isDownloaded: Boolean,
+        )
+
+        val normalizedQuery = query.lowercase(Locale.getDefault())
+
+        return getLibraryManga.await()
+            .map { it.manga }
+            .filter { manga ->
+                val mangaId = manga.id
+                mangaId == null || mangaId !in excludeIds
+            }
+            .filter { it.title.lowercase(Locale.getDefault()).contains(normalizedQuery) }
+            .map { manga ->
+                LocalResult(
+                    manga = manga,
+                    isDownloaded = downloadManager.getDownloadCount(manga) > 0,
+                )
+            }
+            .filter { it.isDownloaded || it.manga.favorite }
+            .sortedWith(
+                compareByDescending<LocalResult> { it.isDownloaded }
+                    .thenByDescending { it.manga.favorite }
+                    .thenBy { it.manga.title.lowercase(Locale.getDefault()) },
+            )
+            .map { it.manga }
+            .take(MAX_STATIC_SECTION_RESULTS)
+    }
+
+    private suspend fun getTopGenres(): List<String> {
+        val genreMap = linkedMapOf<String, Int>()
+
+        getLibraryManga.await()
+            .asSequence()
+            .map { it.manga }
+            .flatMap { (it.genre ?: "").split(',').asSequence() }
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .forEach { genre ->
+                genreMap[genre] = (genreMap[genre] ?: 0) + 1
+            }
+
+        return genreMap.entries
+            .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key.lowercase(Locale.getDefault()) })
+            .map { it.key }
+            .take(MAX_TOP_GENRES)
+    }
+
+    private fun getSearchHistory(): List<String> {
+        return preferences.globalSearchHistory().get()
+            .split(SEARCH_HISTORY_SEPARATOR)
+            .map(::normalizeQuery)
+            .filter { it.isNotBlank() }
+            .distinct()
+            .take(MAX_SEARCH_HISTORY)
+    }
+
+    private fun saveSearchQuery(query: String) {
+        if (preferences.incognitoMode().get()) return
+
+        val normalized = normalizeQuery(query)
+        if (normalized.isBlank()) return
+
+        val updated = buildList {
+            add(normalized)
+            addAll(getSearchHistory().filterNot { it.equals(normalized, true) })
+        }.take(MAX_SEARCH_HISTORY)
+
+        preferences.globalSearchHistory().set(updated.joinToString(SEARCH_HISTORY_SEPARATOR))
+    }
+
+    private fun normalizeQuery(query: String): String {
+        return query.replace(SEARCH_HISTORY_SEPARATOR, " ").trim()
+    }
+
+    private fun List<Manga>.toGlobalSearchMangaItems(): List<GlobalSearchMangaItem> {
+        return map {
+            GlobalSearchMangaItem(
+                manga = it,
+                mangaFlow = getManga.subscribeByUrlAndSource(it.url, it.source),
+            )
         }
     }
 
@@ -299,5 +479,25 @@ open class GlobalSearchPresenter(
                 }
         }
         return localManga
+    }
+
+    private class StaticSectionSource(
+        override val id: Long,
+        override val name: String,
+    ) : CatalogueSource {
+        override val lang: String = ""
+        override val supportsLatest: Boolean = false
+
+        override fun getFilterList(): FilterList = FilterList()
+    }
+
+    private companion object {
+        const val MAX_SEARCH_HISTORY = 10
+        const val MAX_TOP_GENRES = 12
+        const val MAX_STATIC_SECTION_RESULTS = 12
+        const val SEARCH_HISTORY_SEPARATOR = "\n"
+
+        val HISTORY_SECTION_SOURCE = StaticSectionSource(-10_001L, "History")
+        val LOCAL_MATCHES_SECTION_SOURCE = StaticSectionSource(-10_002L, "Downloads / Favorites")
     }
 }

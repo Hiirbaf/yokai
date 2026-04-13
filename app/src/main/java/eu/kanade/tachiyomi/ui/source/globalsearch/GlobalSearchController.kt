@@ -7,8 +7,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.updatePaddingRelative
+import com.google.android.material.chip.Chip
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.snackbar.Snackbar
@@ -103,7 +105,9 @@ open class GlobalSearchController(
     override val presenter = GlobalSearchPresenter(initialQuery, extensionFilter)
 
     override fun onTitleClick(position: Int) {
-        val source = adapter?.getItem(position)?.source ?: return
+        val item = adapter?.getItem(position) ?: return
+        if (!item.openSourceOnClick) return
+        val source = item.source
         preferences.lastUsedCatalogueSource().set(source.id)
         router.pushController(BrowseSourceController(source, presenter.query).withFadeTransaction())
         lastPosition = position
@@ -244,7 +248,7 @@ open class GlobalSearchController(
         super.onViewCreated(view)
         adapter = GlobalSearchAdapter(this)
 
-        binding.recycler.updatePaddingRelative(
+        binding.root.updatePaddingRelative(
             top = (toolbarHeight ?: 0) +
                 (activityBinding?.root?.rootWindowInsetsCompat?.getInsets(systemBars())?.top ?: 0),
         )
@@ -265,6 +269,48 @@ open class GlobalSearchController(
                 safeStartActivity(intent)
             }
         }
+    }
+
+    fun setSearchHistory(history: List<String>) {
+        binding.historyChips.removeAllViews()
+
+        history.forEach { query ->
+            val chip = Chip(binding.historyChips.context).apply {
+                text = query
+                isCheckable = false
+                isCloseIconVisible = false
+                setOnClickListener { submitSearchFromChip(query) }
+            }
+            binding.historyChips.addView(chip)
+        }
+
+        binding.historyScroll.isVisible = history.isNotEmpty()
+        updateSearchAidsVisibility()
+    }
+
+    fun setGenreChips(genres: List<String>) {
+        binding.genreChips.removeAllViews()
+
+        genres.forEach { genre ->
+            val chip = Chip(binding.genreChips.context).apply {
+                text = genre
+                isCheckable = false
+                isCloseIconVisible = false
+                setOnClickListener { submitSearchFromChip(genre) }
+            }
+            binding.genreChips.addView(chip)
+        }
+
+        binding.genreScroll.isVisible = genres.isNotEmpty()
+        updateSearchAidsVisibility()
+    }
+
+    private fun submitSearchFromChip(query: String) {
+        activityBinding?.searchToolbar?.searchView?.setQuery(query, true)
+    }
+
+    private fun updateSearchAidsVisibility() {
+        binding.searchAidsContainer.isVisible = binding.historyScroll.isVisible || binding.genreScroll.isVisible
     }
 
     override fun onDestroyView(view: View) {

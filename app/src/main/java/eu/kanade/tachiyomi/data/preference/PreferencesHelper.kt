@@ -364,6 +364,8 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun onlySearchPinned() = preferenceStore.getBoolean(Keys.onlySearchPinned, false)
 
+    fun globalSearchHistory() = preferenceStore.getString(Keys.globalSearchHistory, "")
+
     fun hideInLibraryItems() = preferenceStore.getBoolean("browse_hide_in_library_items", false)
 
     // Tutorial preferences

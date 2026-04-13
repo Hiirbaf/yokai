@@ -33,13 +33,6 @@ class GlobalSearchHolder(view: View, val adapter: GlobalSearchAdapter) :
         binding.recycler.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(view.context, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
         binding.recycler.adapter = mangaAdapter
-
-        binding.titleMoreIcon.isVisible = adapter.controller !is SearchController && adapter.controller.extensionFilter == null
-        if (binding.titleMoreIcon.isVisible) {
-            binding.titleWrapper.setOnClickListener {
-                adapter.titleClickListener.onTitleClick(bindingAdapterPosition)
-            }
-        }
     }
 
     /**
@@ -53,10 +46,24 @@ class GlobalSearchHolder(view: View, val adapter: GlobalSearchAdapter) :
 
         val titlePrefix = if (item.highlighted) "▶" else ""
         val langSuffix = if (source.lang.isNotEmpty()) " (${source.lang})" else ""
+        val canOpenSource =
+            item.openSourceOnClick &&
+                adapter.controller !is SearchController &&
+                adapter.controller.extensionFilter == null
 
         // Set Title with country code if available.
         binding.title.text = titlePrefix + source.name + langSuffix
-        binding.subtitle.isVisible = source !is LocalSource
+        binding.titleMoreIcon.isVisible = canOpenSource
+        binding.titleWrapper.setOnClickListener(
+            if (canOpenSource) {
+                {
+                    adapter.titleClickListener.onTitleClick(bindingAdapterPosition)
+                }
+            } else {
+                null
+            },
+        )
+        binding.subtitle.isVisible = item.showLanguageSubtitle && source !is LocalSource && source.lang.isNotBlank()
         binding.subtitle.text = LocaleHelper.getLocalizedDisplayName(source.lang)
 
         when {

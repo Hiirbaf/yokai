@@ -25,6 +25,7 @@ import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -121,7 +122,6 @@ import eu.kanade.tachiyomi.util.view.isSettling
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.setMessage
-import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setStyle
 import eu.kanade.tachiyomi.util.view.setTitle
@@ -212,7 +212,6 @@ open class LibraryController(
     override var presenter = LibraryPresenter()
 
     private var observeLater: Boolean = false
-    var searchItem = SearchGlobalItem()
 
     var snack: Snackbar? = null
     var displaySheet: TabbedLibraryDisplaySheet? = null
@@ -1012,7 +1011,7 @@ open class LibraryController(
                 override fun getSpanSize(position: Int): Int {
                     if (libraryLayout == LibraryItem.LAYOUT_LIST) return managerSpanCount
                     val item = this@LibraryController.mAdapter?.getItem(position)
-                    return if (item is LibraryHeaderItem || item is SearchGlobalItem || item is LibraryPlaceholderItem) {
+                    return if (item is LibraryHeaderItem || item is LibraryPlaceholderItem) {
                         managerSpanCount
                     } else {
                         1
@@ -1449,14 +1448,6 @@ open class LibraryController(
         this.query = query ?: ""
         showAllCategoriesView?.isGone = isShowAllCategoriesSet || presenter.groupType != BY_DEFAULT || this.query.isBlank()
         showAllCategoriesView?.isSelected = presenter.forceShowAllCategories
-        if (this.query.isNotBlank()) {
-            searchItem.string = this.query
-            if (adapter.scrollableHeaders.isEmpty() && !isSubClass) {
-                adapter.addScrollableHeader(searchItem)
-            }
-        } else if (this.query.isBlank() && adapter.scrollableHeaders.isNotEmpty()) {
-            adapter.removeAllScrollableHeaders()
-        }
         adapter.setFilter(query)
         if (presenter.currentLibraryItems.isEmpty()) return true
         viewScope.launchUI {
@@ -1937,12 +1928,25 @@ open class LibraryController(
             searchItem?.collapseActionView()
         }
 
-        setOnQueryTextChangeListener(activityBinding?.searchToolbar?.searchView) {
-            if (!it.isNullOrEmpty() && binding.recyclerCover.isClickable) {
-                showCategories(false)
-            }
-            search(it)
-        }
+        val searchView = activityBinding?.searchToolbar?.searchView
+        searchView?.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (router.backstack.lastOrNull()?.controller != this@LibraryController) return false
+                    if (!newText.isNullOrEmpty() && binding.recyclerCover.isClickable) {
+                        showCategories(false)
+                    }
+                    return search(newText)
+                }
+
+                override fun onQueryTextSubmit(submittedQuery: String?): Boolean {
+                    val submitted = submittedQuery?.trim().orEmpty()
+                    if (submitted.isBlank()) return search(submittedQuery)
+                    globalSearch(submitted)
+                    return true
+                }
+            },
+        )
     }
 
     override fun onActionViewExpand(item: MenuItem?) {
