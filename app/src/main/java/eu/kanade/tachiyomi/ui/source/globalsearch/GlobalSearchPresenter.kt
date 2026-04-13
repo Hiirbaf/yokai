@@ -360,7 +360,6 @@ open class GlobalSearchPresenter(
         return genreMap.entries
             .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key.lowercase(Locale.getDefault()) })
             .map { it.key }
-            .take(MAX_TOP_GENRES)
     }
 
     private fun getSearchHistory(): List<String> {
@@ -369,7 +368,6 @@ open class GlobalSearchPresenter(
             .map(::normalizeQuery)
             .filter { it.isNotBlank() }
             .distinct()
-            .take(MAX_SEARCH_HISTORY)
     }
 
     private fun saveSearchQuery(query: String) {
@@ -381,7 +379,7 @@ open class GlobalSearchPresenter(
         val updated = buildList {
             add(normalized)
             addAll(getSearchHistory().filterNot { it.equals(normalized, true) })
-        }.take(MAX_SEARCH_HISTORY)
+        }
 
         preferences.globalSearchHistory().set(updated.joinToString(SEARCH_HISTORY_SEPARATOR))
     }
@@ -492,8 +490,6 @@ open class GlobalSearchPresenter(
     }
 
     private companion object {
-        const val MAX_SEARCH_HISTORY = 10
-        const val MAX_TOP_GENRES = 12
         const val MAX_STATIC_SECTION_RESULTS = 12
         const val SEARCH_HISTORY_SEPARATOR = "\n"
 

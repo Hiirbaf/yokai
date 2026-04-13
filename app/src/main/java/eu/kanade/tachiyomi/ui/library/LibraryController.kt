@@ -1932,10 +1932,14 @@ open class LibraryController(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (router.backstack.lastOrNull()?.controller != this@LibraryController) return false
-                    if (!newText.isNullOrEmpty() && binding.recyclerCover.isClickable) {
+                    if (newText.isNullOrBlank()) {
+                        return search(newText)
+                    }
+                    if (binding.recyclerCover.isClickable) {
                         showCategories(false)
                     }
-                    return search(newText)
+                    globalSearch(newText.trim())
+                    return true
                 }
 
                 override fun onQueryTextSubmit(submittedQuery: String?): Boolean {
