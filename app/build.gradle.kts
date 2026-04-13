@@ -47,7 +47,39 @@ val buildTime: String by lazy {
 
 val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 
+val releaseKeystoreFilePath = providers.gradleProperty("KEYSTORE_FILE").orNull?.trim()
+val releaseKeystorePassword = providers.gradleProperty("KEYSTORE_PASSWORD").orNull?.trim()
+val releaseKeyAlias = providers.gradleProperty("KEY_ALIAS").orNull?.trim()
+val releaseKeyPassword = providers.gradleProperty("KEY_PASSWORD").orNull?.trim()
+
+val hasAnySigningProperty =
+    listOf(releaseKeystoreFilePath, releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword)
+        .any { !it.isNullOrBlank() }
+val hasCompleteSigningProperties =
+    listOf(releaseKeystoreFilePath, releaseKeystorePassword, releaseKeyAlias, releaseKeyPassword)
+        .all { !it.isNullOrBlank() }
+
+if (hasAnySigningProperty) {
+    check(hasCompleteSigningProperties) {
+        "Release signing properties are incomplete. Provide KEYSTORE_FILE, KEYSTORE_PASSWORD, KEY_ALIAS and KEY_PASSWORD."
+    }
+    check(file(releaseKeystoreFilePath!!).exists()) {
+        "KEYSTORE_FILE was provided but the file does not exist: $releaseKeystoreFilePath"
+    }
+}
+
 android {
+    signingConfigs {
+        if (hasCompleteSigningProperties) {
+            create("release") {
+                storeFile = file(releaseKeystoreFilePath!!)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
         versionCode = 158
@@ -91,6 +123,9 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
+            if (hasCompleteSigningProperties) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         create("beta") {
             initWith(getByName("release"))
