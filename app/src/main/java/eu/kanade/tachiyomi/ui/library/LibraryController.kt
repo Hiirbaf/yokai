@@ -1928,7 +1928,6 @@ open class LibraryController(
             searchItem?.collapseActionView()
         }
 
-        val searchView = activityBinding?.searchToolbar?.searchView
         searchView?.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {

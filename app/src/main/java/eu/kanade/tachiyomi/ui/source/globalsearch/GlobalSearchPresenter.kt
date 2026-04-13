@@ -393,7 +393,7 @@ open class GlobalSearchPresenter(
     private fun List<Manga>.toGlobalSearchMangaItems(): List<GlobalSearchMangaItem> {
         return map {
             GlobalSearchMangaItem(
-                manga = it,
+                initialManga = it,
                 mangaFlow = getManga.subscribeByUrlAndSource(it.url, it.source),
             )
         }
