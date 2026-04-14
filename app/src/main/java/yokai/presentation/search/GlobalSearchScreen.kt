@@ -95,9 +95,11 @@ fun GlobalSearchScreen(
                 if (debouncedQuery.isNotEmpty()) {
                      Text("Search Results for $debouncedQuery", modifier = Modifier.padding(16.dp))
                 }
+            }
+        }
     }
 }
 
-object GlobalSearchScreen {
+object GlobalSearchScreenConstants {
     const val INITIAL_QUERY = "initial_query"
 }

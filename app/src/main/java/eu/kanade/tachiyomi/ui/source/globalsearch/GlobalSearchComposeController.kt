@@ -10,14 +10,18 @@ import eu.kanade.tachiyomi.ui.base.controller.BaseController
 import yokai.presentation.theme.YokaiTheme
 import yokai.presentation.search.GlobalSearchScreen
 
+import yokai.presentation.search.GlobalSearchScreenConstants
+
 class GlobalSearchComposeController(bundle: Bundle? = null) : BaseController(bundle) {
 
+    override val shouldHideLegacyAppBar = true
+
     constructor(initialQuery: String) : this(Bundle().apply {
-        putString(GlobalSearchScreen.INITIAL_QUERY, initialQuery)
+        putString(GlobalSearchScreenConstants.INITIAL_QUERY, initialQuery)
     })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-        val initialQuery = args.getString(GlobalSearchScreen.INITIAL_QUERY) ?: ""
+        val initialQuery = args.getString(GlobalSearchScreenConstants.INITIAL_QUERY) ?: ""
         return ComposeView(inflater.context).apply {
             setContent {
                 YokaiTheme {
