@@ -680,10 +680,9 @@ class BrowseController :
         // Change hint to show global search.
         activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(MR.strings.global_search)
 
-        // Create menu click listener which opens the global search view immediately.
-        val searchItem = activityBinding?.searchToolbar?.searchItem ?: menu.findItem(R.id.action_search)
-        searchItem?.setOnMenuItemClickListener {
-            performGlobalSearch("")
+        // Create query listener which opens the global search view.
+        setOnQueryTextChangeListener(searchView, true) {
+            if (!it.isNullOrBlank()) performGlobalSearch(it)
             true
         }
     }
