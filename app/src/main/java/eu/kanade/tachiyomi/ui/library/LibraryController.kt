@@ -1928,11 +1928,27 @@ open class LibraryController(
             searchItem?.collapseActionView()
         }
 
-        // Stop inline typing; immediately open the GlobalSearchController
-        searchItem?.setOnMenuItemClickListener {
-            globalSearch("")
-            true
-        }
+        searchView?.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (router.backstack.lastOrNull()?.controller != this@LibraryController) return false
+                    if (newText.isNullOrBlank()) {
+                        return search(newText)
+                    }
+                    if (binding.recyclerCover.isClickable) {
+                        showCategories(false)
+                    }
+                    return search(newText)
+                }
+
+                override fun onQueryTextSubmit(submittedQuery: String?): Boolean {
+                    val submitted = submittedQuery?.trim().orEmpty()
+                    if (submitted.isBlank()) return search(submittedQuery)
+                    globalSearch(submitted)
+                    return true
+                }
+            },
+        )
     }
 
     override fun onActionViewExpand(item: MenuItem?) {
@@ -2188,3 +2204,4 @@ open class LibraryController(
         }
     }
 }
+
