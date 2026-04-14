@@ -1602,7 +1602,7 @@ open class LibraryController(
     }
 
     override fun globalSearch(query: String) {
-        router.pushController(GlobalSearchController(query).withFadeTransaction())
+        router.pushController(eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchComposeController(query).withFadeTransaction())
     }
 
     override fun onActionStateChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
@@ -1896,6 +1896,11 @@ open class LibraryController(
         val searchItem = activityBinding?.searchToolbar?.searchItem
         val searchView = activityBinding?.searchToolbar?.searchView
         activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(MR.strings.library_search_hint), query.isEmpty())
+        
+        searchItem?.setOnMenuItemClickListener {
+            router.pushController(eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchComposeController("").withFadeTransaction())
+            true
+        }
 
         showAllCategoriesView = showAllCategoriesView ?: (searchView as? MiniSearchView)?.addSearchModifierIcon { context ->
             ImageView(context).apply {
