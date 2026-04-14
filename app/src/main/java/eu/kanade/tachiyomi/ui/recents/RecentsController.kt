@@ -55,6 +55,7 @@ import eu.kanade.tachiyomi.ui.main.RootSearchInterface
 import eu.kanade.tachiyomi.ui.main.TabbedInterface
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
+import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.ui.recents.options.TabbedRecentsOptionsSheet
 import eu.kanade.tachiyomi.ui.source.browse.ProgressItem
 import eu.kanade.tachiyomi.util.chapter.updateTrackChapterMarkedAsRead
@@ -902,12 +903,8 @@ class RecentsController(bundle: Bundle? = null) :
             searchView?.setQuery(query, true)
             searchView?.clearFocus()
         }
-        setOnQueryTextChangeListener(activityBinding?.searchToolbar?.searchView) {
-            if (query != it) {
-                query = it ?: return@setOnQueryTextChangeListener false
-                resetProgressItem()
-                refresh()
-            }
+        searchItem?.setOnMenuItemClickListener {
+            router.pushController(GlobalSearchController("").withFadeTransaction())
             true
         }
     }
@@ -1039,3 +1036,4 @@ class RecentsController(bundle: Bundle? = null) :
         adapter.setEndlessScrollListener(this, progressItem!!)
     }
 }
+
