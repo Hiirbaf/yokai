@@ -94,7 +94,7 @@ class DiscordRPCService : Service() {
 
     private fun notification(context: Context) {
         val toggleIcon = if (isPaused) R.drawable.ic_play_arrow_24dp else R.drawable.ic_pause_24dp
-        val toggleText = if (isPaused) getString(R.string.action_resume) else getString(R.string.action_pause)
+        val toggleText = if (isPaused) getString(R.string.resume) else getString(R.string.pause)
         val builder = context.notificationBuilder(Notifications.CHANNEL_DISCORD_RPC) {
             setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
             setSmallIcon(R.drawable.ic_discord_24dp)
@@ -223,7 +223,7 @@ class DiscordRPCService : Service() {
             if (rpc == null || isPaused || readerData.thumbnailUrl == null || readerData.mangaId == null) return
 
             val categoryIds = Injekt.get<GetCategories>()
-                .await(readerData.mangaId)
+                .awaitByMangaId(readerData.mangaId)
                 .map { it.id.toString() }
                 .run { ifEmpty { plus(UNCATEGORIZED_ID.toString()) } }
 
