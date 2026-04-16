@@ -241,16 +241,6 @@ class MangaDetailsController :
     override fun createBinding(inflater: LayoutInflater) =
         MangaDetailsControllerBinding.inflate(inflater)
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        viewScope.launch {
-            DiscordRPCService.setScreen(activity ?: return@launch, DiscordScreen.LIBRARY, ReaderData(
-                mangaId = successState.manga.id,
-                // chapterTitle = successState.manga.title,
-            ))
-        }
-    }
-
     //region UI Methods
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
@@ -750,6 +740,8 @@ class MangaDetailsController :
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+
+        // --- Código del segundo bloque ---
         if (!returningFromReader) return
         returningFromReader = false
         runBlocking {
@@ -761,6 +753,18 @@ class MangaDetailsController :
             addMangaHeader()
             updateFab()
             binding.recycler.itemAnimator = itemAnimator
+        }
+
+        // --- Código del primer bloque ---
+        viewScope.launch {
+            DiscordRPCService.setScreen(
+                activity ?: return@launch,
+                DiscordScreen.LIBRARY,
+                ReaderData(
+                    mangaId = manga.id,
+                    // chapterTitle = successState.manga.title,
+               )
+            )
         }
     }
 
