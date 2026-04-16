@@ -761,8 +761,8 @@ class MangaDetailsController :
                 activity ?: return@launch,
                 DiscordScreen.LIBRARY,
                 ReaderData(
-                    mangaId = manga.id,
-                    // chapterTitle = successState.manga.title,
+                    mangaId = manga?.id,
+                    chapterTitle = manga?.title,
                )
             )
         }
