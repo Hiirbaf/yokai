@@ -88,7 +88,7 @@ internal class ExtensionApi {
         return this
             .filter {
                 val libVersion = it.extractLibVersion()
-                libVersion >= ExtensionLoader.LIB_VERSION_MIN && libVersion <= ExtensionLoader.LIB_VERSION_MAX
+                libVersion in ExtensionLoader.SUPPORTED_LIB_VERSIONS
             }
             .map {
                 Extension.Available(
