@@ -1,10 +1,10 @@
 <div align="center">
 
-<a href="https://github.com/null2264/yokai">
-    <img src="./.github/readme-images/app-icon.webp" alt="Yokai logo" height="200px" width="200px" />
+<a href="https://github.com/thiago8rocha/Rokku">
+    <img src="./.github/readme-images/app-icon.webp" alt="Rokku logo" height="200px" width="200px" />
 </a>
 
-# Yōkai
+# Rokku (岩)
 
 </div>
 
@@ -12,34 +12,37 @@
 
 A free and open source manga reader
 
-[![Discord: Mihon](https://img.shields.io/discord/1195734228319617024.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/mihon)
-[![Mirror: GitLab](https://img.shields.io/badge/mirror-GitLab-orange.svg?labelColor=27303D)](https://gitlab.com/null2264/yokai)
-[![Mirror: git.aap](https://img.shields.io/badge/mirror-git.aap-red.svg?labelColor=27303D)](https://git.aap.my.id/null2264/yokai)
+[![CI](https://github.com/thiago8rocha/Rokku/actions/workflows/build_push.yml/badge.svg?labelColor=27303D)](https://github.com/thiago8rocha/Rokku/actions/workflows/build_push.yml)
+[![License: Apache-2.0](https://img.shields.io/github/license/thiago8rocha/Rokku?labelColor=27303D&color=0877d2)](/LICENSE)
 
-[![CI](https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg?labelColor=27303D)](https://github.com/null2264/yokai/actions/workflows/build_push.yml)
-[![License: Apache-2.0](https://img.shields.io/github/license/null2264/yokai?labelColor=27303D&color=0877d2)](/LICENSE)
-[![Translation status](https://img.shields.io/weblate/progress/yokai?labelColor=27303D&color=946300)](https://hosted.weblate.org/engage/yokai/)
-
-<img src="./.github/readme-images/screens.gif" alt="Yokai screenshots" />
+<img src="./.github/readme-images/screens.gif" alt="Rokku screenshots" />
 
 ## Download
 
-[![Yokai Stable](https://img.shields.io/github/v/release/null2264/yokai?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&filter=v*)](https://github.com/null2264/yokai/releases)
-[![Yokai Nightly](https://img.shields.io/github/v/release/null2264/yokai-nightly?maxAge=3600&label=Nightly&labelColor=2c2c47&color=1c1c39&filter=r*)](https://github.com/null2264/yokai-nightly/releases)
+[![Rokku Stable](https://img.shields.io/github/v/release/thiago8rocha/Rokku?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&filter=v*)](https://github.com/thiago8rocha/Rokku/releases)
 
 *Requires Android 6.0 or higher.*
 
 ## About Fork
 
-This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.
+Rokku is a personal fork of [Yokai](https://github.com/null2264/yokai), which is itself a fork of [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K), maintained after both projects were marked as unsupported/discontinued. The name Rokku (ロック) is a reference to my surname (Rocha), and its kanji, 岩 (Iwa), means "rock" — a nod to both the meaning and the sound of the name.
+
+This fork exists to keep using the same UI I got used to over the years, updating dependencies and adapting to upstream (Mihon) API/extension changes as needed to keep it functional. The current focus is maintenance rather than new features, but that's not a hard rule — if something interesting comes up down the line, it may be added.
 
 Updates are sporadic, sometime fast, sometime slow.
 
-As of the time of writing, this fork is currently focusing on migrating to a much more modern infrastructure, some features may be added, but most changes are happening behind the scene.
-
 ## Features
 
+*The sections below reflect the history of this codebase across its previous forks. They're kept here for context and credit, not as a claim of original work on my part.*
+
 <div align="left">
+
+<details open="">
+    <summary><h3>From Rokku</h3></summary>
+
+* No original changes yet — this fork currently focuses on maintenance (dependency updates, keeping up with upstream extension/API changes). Anything added here will be documented as it happens.
+
+</details>
 
 <details open="">
     <summary><h3>From Yōkai</h3></summary>
@@ -101,11 +104,13 @@ As of the time of writing, this fork is currently focusing on migrating to a muc
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+Keep in mind this is maintained in personal time, so responses and updates may be sporadic — see the note above.
+
 <div align="left">
 
 <details><summary>Issues</summary>
 
-**Before reporting a new issue, take a look at the [FAQ](https://mihon.app/docs/faq/general), the [changelog](https://github.com/null2264/yokai/releases) and the already opened [issues](https://github.com/null2264/yokai/issues).**
+**Before reporting a new issue, take a look at the [FAQ](https://mihon.app/docs/faq/general), the [changelog](https://github.com/thiago8rocha/Rokku/releases) and the already opened [issues](https://github.com/thiago8rocha/Rokku/issues).**
 
 </details>
 
@@ -136,7 +141,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ### Credits
 
-Thank you to all the people who have contributed!
+Thank you to everyone who contributed to the projects this fork builds on: [Yōkai](https://github.com/null2264/yokai), [Mihon](https://github.com/mihonapp/mihon) (formerly Tachiyomi), and [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K). This project wouldn't exist without that work.
 
 <a href="https://github.com/null2264/yokai/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=null2264/yokai" alt="Yokai app contributors" title="Yokai app contributors" width="600"/>
@@ -151,6 +156,7 @@ The developer(s) of this application does not have any affiliation with the cont
 <pre>
 Copyright © 2015 Javier Tomás
 Copyright © 2024 null2264
+Copyright © 2026 Thiago Rocha
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
