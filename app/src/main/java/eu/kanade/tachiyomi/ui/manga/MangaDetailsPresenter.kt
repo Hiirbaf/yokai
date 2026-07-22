@@ -433,7 +433,12 @@ class MangaDetailsPresenter(
     private suspend fun fetchMangaFromSource() {
         try {
             withIOContext {
-                val networkManga = source.getMangaDetails(manga.copy())
+                val networkManga = source.getMangaUpdate(
+                    manga.copy(),
+                    chapters = emptyList(),
+                    fetchDetails = true,
+                    fetchChapters = false,
+                ).manga
                 manga.prepareCoverUpdate(coverCache, networkManga, false)
                 manga.copyFrom(networkManga)
                 manga.initialized = true
@@ -465,7 +470,12 @@ class MangaDetailsPresenter(
     private suspend fun fetchChaptersFromSource(manualFetch: Boolean = true) {
         try {
             withIOContext {
-                val chapters = source.getChapterList(manga.copy())
+                val chapters = source.getMangaUpdate(
+                    manga.copy(),
+                    chapters = emptyList(),
+                    fetchDetails = false,
+                    fetchChapters = true,
+                ).chapters
                 val (added, removed) = withIOContext { syncChaptersWithSource(chapters, manga, source) }
                 if (added.isNotEmpty()) {
                     if (manga.shouldDownloadNewChapters(preferences) && manualFetch) {
