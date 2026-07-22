@@ -117,7 +117,7 @@ android {
         buildConfig = true
 
         // Disable some unused things
-        aidl = false
+        aidl = true
         renderScript = false
         shaders = false
     }
