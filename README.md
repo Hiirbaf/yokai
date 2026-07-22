@@ -4,7 +4,7 @@
     <img src="./.github/readme-images/app-icon.webp" alt="Rokku logo" height="200px" width="200px" />
 </a>
 
-# Rokku (岩)
+# Rokku
 
 </div>
 
@@ -25,11 +25,7 @@ A free and open source manga reader
 
 ## About Fork
 
-Rokku is a personal fork of [Yokai](https://github.com/null2264/yokai), which is itself a fork of [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K), maintained after both projects were marked as unsupported/discontinued. The name Rokku (ロック) is a reference to my surname (Rocha), and its kanji, 岩 (Iwa), means "rock" — a nod to both the meaning and the sound of the name.
-
-This fork exists to keep using the same UI I got used to over the years, updating dependencies and adapting to upstream (Mihon) API/extension changes as needed to keep it functional. The current focus is maintenance rather than new features, but that's not a hard rule — if something interesting comes up down the line, it may be added.
-
-Updates are sporadic, sometime fast, sometime slow.
+Rokku is a fork of [Yokai](https://github.com/null2264/yokai), which is itself a fork of [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K) and [Mihon](https://github.com/mihonapp/mihon) (formerly Tachiyomi).
 
 ## Features
 
@@ -142,10 +138,6 @@ Keep in mind this is maintained in personal time, so responses and updates may b
 ### Credits
 
 Thank you to everyone who contributed to the projects this fork builds on: [Yōkai](https://github.com/null2264/yokai), [Mihon](https://github.com/mihonapp/mihon) (formerly Tachiyomi), and [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K). This project wouldn't exist without that work.
-
-<a href="https://github.com/null2264/yokai/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=null2264/yokai" alt="Yokai app contributors" title="Yokai app contributors" width="600"/>
-</a>
 
 ### Disclaimer
 
