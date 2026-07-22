@@ -1,9 +1,12 @@
 package eu.kanade.tachiyomi.data.download
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import eu.kanade.tachiyomi.R
@@ -57,6 +60,7 @@ internal class DownloadNotifier(private val context: Context) {
      * @param id the id of the notification.
      */
     private fun NotificationCompat.Builder.show(id: Int = Notifications.ID_DOWNLOAD_CHAPTER) {
+        if (!context.hasNotificationPermission()) return
         context.notificationManager.notify(id, build())
     }
 
@@ -251,10 +255,16 @@ internal class DownloadNotifier(private val context: Context) {
         }
             .build()
 
+        if (!context.hasNotificationPermission()) return
         context.notificationManager.notify(
             Notifications.ID_DOWNLOAD_SIZE_WARNING,
             notification,
         )
+    }
+
+    private fun Context.hasNotificationPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
     }
 
     /**
