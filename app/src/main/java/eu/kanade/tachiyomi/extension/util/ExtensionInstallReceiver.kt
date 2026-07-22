@@ -34,7 +34,7 @@ internal class ExtensionInstallReceiver(private val listener: Listener) :
      * Registers this broadcast receiver
      */
     fun register(context: Context) {
-        ContextCompat.registerReceiver(context, this, filter, ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(context, this, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     /**
