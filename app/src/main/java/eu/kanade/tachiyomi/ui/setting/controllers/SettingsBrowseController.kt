@@ -33,7 +33,6 @@ import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
-import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
@@ -61,7 +60,7 @@ class SettingsBrowseController : SettingsLegacyController() {
         preferenceCategory {
             titleRes = MR.strings.extensions
             preference {
-                title = context.getString(MR.strings.source_repos).addBetaTag(context)
+                title = context.getString(MR.strings.source_repos)
                 onClick { router.pushController(ExtensionRepoController().withFadeTransaction()) }
             }
             switchPreference {
