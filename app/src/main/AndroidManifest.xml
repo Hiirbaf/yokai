@@ -336,7 +336,7 @@
         <!-- Loading global exception handler before crashlytics (order: 100) -->
         <provider
             android:name="eu.kanade.tachiyomi.AppProvider"
-            android:authorities="${applicationId}.yokai"
+            android:authorities="${applicationId}.rokku"
             android:exported="false"
             android:initOrder="101" />
 
