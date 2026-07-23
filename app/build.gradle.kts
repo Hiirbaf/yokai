@@ -18,7 +18,9 @@ fun runCommand(command: String): String {
 }
 
 @Suppress("PropertyName")
-val _versionName = "1.10.0"
+// Overridden by CI via -PappVersionName=X.Y.Z when cutting an actual release/beta;
+// this fallback is only what local/nightly builds without that property use.
+val _versionName = (project.findProperty("appVersionName") as String?) ?: "1.0.1"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
