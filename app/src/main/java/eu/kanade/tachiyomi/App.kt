@@ -36,8 +36,6 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.core.preference.Preference
@@ -73,7 +71,6 @@ import org.koin.core.context.startKoin
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.core.CrashlyticsLogWriter
 import yokai.core.RollingUniFileLogWriter
 import yokai.core.di.appModule
 import yokai.core.di.domainModule
@@ -123,16 +120,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             .onEach { enabled ->
                 // FlexibleAdapter.enableLogs(if (enabled) Level.VERBOSE else Level.SUPPRESS)
                 Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsDirectory(), enabled))
-            }
-            .launchIn(scope)
-
-        basePreferences.crashReport().changes()
-            .onEach {
-                try {
-                    Firebase.crashlytics.setCrashlyticsCollectionEnabled(it)
-                } catch (e: Exception) {
-                    // Probably already enabled/disabled
-                }
             }
             .launchIn(scope)
 
@@ -332,9 +319,7 @@ fun buildLogWritersToAdd(logPath: UniFile?): List<LogWriter> {
 fun buildLogWritersToAdd(
     logPath: UniFile?,
     isVerbose: Boolean,
-) = buildList {
-    if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
-
+) = buildList<LogWriter> {
  //   if (logPath != null && !BuildConfig.DEBUG) add(RollingUniFileLogWriter(logPath = logPath, isVerbose = isVerbose))
 }
 
