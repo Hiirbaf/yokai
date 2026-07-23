@@ -10,6 +10,22 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.1.5]
+
+### Fixes
+- Fix a data-loss bug where toggling "Download with ID" could cause already-downloaded chapters to be misidentified as orphaned and deleted during download cleanup
+- Fix a slight shake/readjustment while scrolling down in the webtoon (continuous scroll) reader, caused by pages reflowing right as they finish decoding into view
+- Fix remaining links/identifiers still pointing at the original Yokai maintainer: the About screen's GitHub link, the debug build's "view source" link, and the User-Agent sent to tracker services (Anilist, Bangumi, Kavita, Kitsu, MangaUpdates, Shikimori)
+- Manga details FAB now shrinks/extends on scroll, and the chapter list no longer sits behind it (contributed by [@Hiirbaf](https://github.com/Hiirbaf))
+
+### Changes
+- Removed the BETA tag from "Use staggered grid", "Download with ID", and "Scan external storages for entries" after testing and, where needed, fixing the underlying issues that justified the tag
+
+### Other
+- CI: release/beta builds now fail early with a clear error if `CHANGELOG.md` has no matching version section, instead of silently publishing with an empty body
+- CI: PR builds now boot the release APK on an emulator and fail if it crashes on launch, to catch R8-shrinking issues (like the one fixed in 1.1.4) before they reach a release
+- Removed `.github/FUNDING.yml`, which pointed GitHub's Sponsor button at the original Yokai maintainer's accounts
+
 ## [1.1.4]
 
 ### Fixes
