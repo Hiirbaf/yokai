@@ -78,11 +78,6 @@ object SettingsAdvancedScreen : ComposableSettings() {
         val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
 
         return buildList {
-            add(Preference.PreferenceItem.SwitchPreference(
-                pref = basePreferences.crashReport(),
-                title = stringResource(MR.strings.send_crash_report),
-                subtitle = stringResource(MR.strings.helps_fix_bugs),
-            ))
             add(getDumpCrashLog())
             add(Preference.PreferenceItem.SwitchPreference(
                 pref = networkPreferences.verboseLogging(),

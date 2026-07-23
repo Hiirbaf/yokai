@@ -33,8 +33,6 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
 
     fun hasShownOnboarding() = preferenceStore.getBoolean(Preference.appStateKey("onboarding_complete"), false)
 
-    fun crashReport() = preferenceStore.getBoolean("pref_crash_report", true)
-
     fun longTapBrowseNavBehaviour() = preferenceStore.getEnum("pref_browser_long_tap", LongTapBrowse.DEFAULT)
 
     enum class LongTapBrowse(val titleResId: StringResource) {
