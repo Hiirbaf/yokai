@@ -80,12 +80,26 @@ jobs:
         run: |
           # extended SemVer (major.minor.patch.hotfix)
           VERSION_FORMAT='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(-[0-9A-Za-z\.-]+)?(\+[0-9A-Za-z\.-]+)?$|^Unreleased$'
+
+          # A release/beta build (INPUT_VERSION set) needs its own `## [x.y.z]` section in
+          # CHANGELOG.md - otherwise this falls back to Unreleased and the GitHub release
+          # ends up with an empty/wrong body. Nightly builds (no INPUT_VERSION) don't have
+          # a versioned section, so they intentionally use Unreleased.
+          if [ -n "${{ env.INPUT_VERSION }}" ]; then
+            if ! parse-changelog CHANGELOG.md "${{ env.INPUT_VERSION }}" --version-format "$VERSION_FORMAT" > /tmp/changelog_section 2> /dev/null; then
+              echo "::error::CHANGELOG.md has no '## [${{ env.INPUT_VERSION }}]' section. Add one before building this release/beta." >&2
+              exit 1
+            fi
+          else
+            parse-changelog CHANGELOG.md Unreleased --version-format "$VERSION_FORMAT" > /tmp/changelog_section 2> /dev/null || echo "No documented changes so far..." > /tmp/changelog_section
+          fi
+
           {
             echo "CHANGELOG<<END_OF_FILE"
-            parse-changelog CHANGELOG.md ${{ env.INPUT_VERSION == '' && 'Unreleased' || env.INPUT_VERSION }} --version-format $VERSION_FORMAT || parse-changelog CHANGELOG.md Unreleased --version-format $VERSION_FORMAT || echo "No documented changes so far..."
+            cat /tmp/changelog_section
             echo ""
             echo "END_OF_FILE"
-          } >> "$GITHUB_OUTPUT" 2> /dev/null
+          } >> "$GITHUB_OUTPUT"
 
       # PROD
       - name: Prepare release build
