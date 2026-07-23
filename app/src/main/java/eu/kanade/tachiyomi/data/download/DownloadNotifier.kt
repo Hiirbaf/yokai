@@ -25,7 +25,6 @@ import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.util.regex.*
-import android.R as AR
 
 /**
  * DownloadNotifier is used to show notifications when downloading one or multiple chapters.
@@ -85,7 +84,7 @@ internal class DownloadNotifier(private val context: Context) {
         with(notification) {
             // Check if first call.
             if (!isDownloading) {
-                setSmallIcon(AR.drawable.stat_sys_download)
+                setSmallIcon(R.drawable.ic_file_download_24dp)
                 setAutoCancel(false)
                 clearActions()
                 setOngoing(true)
@@ -132,7 +131,7 @@ internal class DownloadNotifier(private val context: Context) {
         with(notification) {
             // Check if first call.
             if (!isDownloading) {
-                setSmallIcon(AR.drawable.stat_sys_download)
+                setSmallIcon(R.drawable.ic_file_download_24dp)
                 setAutoCancel(false)
                 clearActions()
                 setOngoing(true)
@@ -292,7 +291,7 @@ internal class DownloadNotifier(private val context: Context) {
                     error ?: context.getString(MR.strings.could_not_download_unexpected_error),
                 ),
             )
-            setSmallIcon(AR.drawable.stat_sys_warning)
+            setSmallIcon(R.drawable.ic_warning_white_24dp)
             setCategory(NotificationCompat.CATEGORY_ERROR)
             setOngoing(false)
             clearActions()
