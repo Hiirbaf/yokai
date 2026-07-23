@@ -28,6 +28,8 @@ A free and open source manga reader
 
 Rokku is a fork of [Yokai](https://github.com/null2264/yokai), which is itself a fork of [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K) and [Mihon](https://github.com/mihonapp/mihon) (formerly Tachiyomi).
 
+This fork was created for personal use, mainly to bring Yokai back up to date with the current Keiyoushi extension ecosystem after it was declared obsolete. It started as a maintenance-only effort, but has since grown to include small fixes and improvements beyond that, including contributions from other people. Updates are sporadic, and the legacy View-based UI/architecture inherited from Yokai/J2K is intentionally kept as-is — this isn't a redesign.
+
 ## Features
 
 *The sections below reflect the history of this codebase across its previous forks. They're kept here for context and credit, not as a claim of original work on my part.*
@@ -37,14 +39,16 @@ Rokku is a fork of [Yokai](https://github.com/null2264/yokai), which is itself a
 <details open="">
     <summary><h3>From Rokku</h3></summary>
 
-This fork focuses on maintenance: dependency updates and keeping up with upstream extension/API changes, not new features.
+This fork focuses on maintenance: dependency updates and keeping up with upstream extension/API changes. It's not meant to add new features, though small quality-of-life fixes (including community contributions) do land from time to time.
 
 * Fixed Keiyoushi extension repository/protocol compatibility (extension lib version support, the `Source` interface, and support for the newer protobuf-based extension index), which had been broken since before the fork.
 * Updated OkHttp and other core dependencies (Kotlin, Compose, AndroidX, coroutines/serialization) to versions closer to current Mihon.
 * Fixed the Shikimori tracker (moved to their current domain).
 * Downloads now resume interrupted pages instead of restarting them, and download notifications respect the Android 13+ notification permission.
 * Rewrote the Shizuku-based extension installer to use the actual PackageInstaller session APIs instead of shelling out to `pm`, and hardened the extension install broadcast receiver.
+* Fixed extensions crashing (`AbstractMethodError`/native aborts) on modern devices due to a `minSdk` too low for current extension bytecode and R8 stripping natively-referenced decoder classes; now matches Mihon's `minSdk` (26), which drops support for Android 6.0/7.0/7.1.
 * Completed pt-BR translations.
+* Manga details FAB now shrinks/extends on scroll, and the chapter list no longer sits behind it (contributed by [@Hiirbaf](https://github.com/Hiirbaf)).
 
 </details>
 
