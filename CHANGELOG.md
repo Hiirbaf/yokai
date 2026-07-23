@@ -13,7 +13,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ## [1.1.1]
 
 ### Fixes
-- Fix extensions that reference `okhttp3.brotli.Brotli` directly (e.g. WeebCentral, MangaDotNet) crashing with `NoClassDefFoundError` since 1.1.0
+- Fix extensions that reference `okhttp3.brotli.Brotli` or `okhttp3.zstd.Zstd` directly (e.g. WeebCentral, MangaDotNet) crashing with `NoClassDefFoundError` since 1.1.0
 
 ### Other
 - CI: make the manual release/beta build actually set the app's version (previously it only renamed the GitHub tag/release, the installed app kept showing an unrelated version number)
