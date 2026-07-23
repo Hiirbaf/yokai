@@ -63,8 +63,79 @@ jobs:
           name: arm64-v8a-${{ github.sha }}
           path: app/build/outputs/apk/standard/release/app-standard-arm64-v8a-release-unsigned.apk
 
+      # x86_64 build, used by the smoke-test job below so it can run natively on the CI
+      # emulator without needing ARM translation.
+      - name: Upload x86_64 APK to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-${{ github.sha }}
+          path: app/build/outputs/apk/standard/release/app-standard-x86_64-release-unsigned.apk
+
       - name: Upload R8 mapping
         uses: actions/upload-artifact@v4
         with:
           name: mapping-${{ github.sha }}
           path: app/build/outputs/mapping/standardRelease
+
+  # Compiling the release build isn't enough on its own: R8 shrinking issues (e.g. stripping
+  # classes only reachable through JNI, as happened with the brotli/zstd decoders) only show up
+  # as runtime crashes, not build failures. This actually launches the release APK and checks it
+  # doesn't crash on startup.
+  smoke-test:
+    name: Smoke-test release build
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Download release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: x86_64-${{ github.sha }}
+          path: apk
+
+      - name: Setup Android SDK
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;35.0.0"
+
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Sign APK with an ephemeral debug key
+        run: |
+          set -e
+          apk="$(find apk -name '*.apk' | head -n1)"
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey \
+            -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=CI,O=CI,C=US"
+          "${ANDROID_SDK_ROOT}/build-tools/35.0.0/apksigner" sign \
+            --ks debug.keystore --ks-pass pass:android --key-pass pass:android \
+            --out app-smoke-test.apk "$apk"
+
+      - name: Launch app and check for crashes
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb install app-smoke-test.apk
+            adb logcat -c
+            adb shell am start -n app.rokku/eu.kanade.tachiyomi.ui.main.MainActivity
+            sleep 20
+
+            if ! adb shell pidof app.rokku > /dev/null; then
+              echo "::error::App process is not running 20s after launch - it likely crashed on startup."
+              adb logcat -d | tail -n 200
+              exit 1
+            fi
+
+            if adb logcat -d | grep -qE "FATAL EXCEPTION|Fatal signal|thread\.cc.*runtime aborting"; then
+              echo "::error::Found a fatal crash in logcat after launch."
+              adb logcat -d | grep -E "FATAL EXCEPTION|Fatal signal|thread\.cc.*runtime aborting" -A 30
+              exit 1
+            fi
