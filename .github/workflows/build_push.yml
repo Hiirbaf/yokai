@@ -85,6 +85,7 @@ jobs:
         run: |
           set -x
           echo "VERSION_TAG=v${{github.event.inputs.version}}" >> $GITHUB_ENV
+          echo "APP_VERSION_NAME=${{github.event.inputs.version}}" >> $GITHUB_ENV
           echo "BUILD_TYPE=StandardRelease" >> $GITHUB_ENV
 
       # BETA
@@ -101,6 +102,7 @@ jobs:
           fi
 
           echo "VERSION_TAG=v${{github.event.inputs.version}}-b${BETA_COUNT}" >> $GITHUB_ENV
+          echo "APP_VERSION_NAME=${{github.event.inputs.version}}" >> $GITHUB_ENV
           echo "BUILD_TYPE=StandardBeta" >> $GITHUB_ENV
 
       # NIGHTLY
@@ -115,7 +117,12 @@ jobs:
 
       - name: Build the app
         if: startsWith(env.BUILD_TYPE, 'Standard')
-        run: ./gradlew assemble${{ env.BUILD_TYPE }}
+        run: |
+          if [ -n "${{ env.APP_VERSION_NAME }}" ]; then
+            ./gradlew assemble${{ env.BUILD_TYPE }} -PappVersionName=${{ env.APP_VERSION_NAME }}
+          else
+            ./gradlew assemble${{ env.BUILD_TYPE }}
+          fi
 
       - name: Run unit tests
         if: startsWith(env.BUILD_TYPE, 'Standard')
