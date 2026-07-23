@@ -66,6 +66,14 @@ jobs:
         shell: bash
         run: echo "NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
+      - name: Normalize version input
+        shell: bash
+        run: |
+          # Guard against accidental leading/trailing/internal whitespace from the
+          # workflow_dispatch form (a stray space here previously broke the Gradle
+          # invocation entirely).
+          echo "INPUT_VERSION=$(echo '${{ github.event.inputs.version }}' | tr -d '[:space:]')" >> $GITHUB_ENV
+
       - name: Get changelog
         id: changelog
         shell: bash
@@ -74,40 +82,40 @@ jobs:
           VERSION_FORMAT='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(-[0-9A-Za-z\.-]+)?(\+[0-9A-Za-z\.-]+)?$|^Unreleased$'
           {
             echo "CHANGELOG<<END_OF_FILE"
-            parse-changelog CHANGELOG.md ${{ github.event.inputs.version == '' && 'Unreleased' || github.event.inputs.version }} --version-format $VERSION_FORMAT || parse-changelog CHANGELOG.md Unreleased --version-format $VERSION_FORMAT || echo "No documented changes so far..."
+            parse-changelog CHANGELOG.md ${{ env.INPUT_VERSION == '' && 'Unreleased' || env.INPUT_VERSION }} --version-format $VERSION_FORMAT || parse-changelog CHANGELOG.md Unreleased --version-format $VERSION_FORMAT || echo "No documented changes so far..."
             echo ""
             echo "END_OF_FILE"
           } >> "$GITHUB_OUTPUT" 2> /dev/null
 
       # PROD
       - name: Prepare release build
-        if: github.event.inputs.version != '' && github.event.inputs.beta != 'true'
+        if: env.INPUT_VERSION != '' && github.event.inputs.beta != 'true'
         run: |
           set -x
-          echo "VERSION_TAG=v${{github.event.inputs.version}}" >> $GITHUB_ENV
-          echo "APP_VERSION_NAME=${{github.event.inputs.version}}" >> $GITHUB_ENV
+          echo "VERSION_TAG=v${{ env.INPUT_VERSION }}" >> $GITHUB_ENV
+          echo "APP_VERSION_NAME=${{ env.INPUT_VERSION }}" >> $GITHUB_ENV
           echo "BUILD_TYPE=StandardRelease" >> $GITHUB_ENV
 
       # BETA
       - name: Prepare beta build
-        if: github.event.inputs.version != '' && github.event.inputs.beta == 'true'
+        if: env.INPUT_VERSION != '' && github.event.inputs.beta == 'true'
         run: |
           set -x
 
-          BETA_COUNT=$(git tag -l --sort=refname "v${{github.event.inputs.version}}-b*" | tail -n1 | sed "s/^\S*-b//g")
+          BETA_COUNT=$(git tag -l --sort=refname "v${{ env.INPUT_VERSION }}-b*" | tail -n1 | sed "s/^\S*-b//g")
           if [ -z "$BETA_COUNT" ]; then
             BETA_COUNT="1"
           else
             BETA_COUNT=$((BETA_COUNT+1))
           fi
 
-          echo "VERSION_TAG=v${{github.event.inputs.version}}-b${BETA_COUNT}" >> $GITHUB_ENV
-          echo "APP_VERSION_NAME=${{github.event.inputs.version}}" >> $GITHUB_ENV
+          echo "VERSION_TAG=v${{ env.INPUT_VERSION }}-b${BETA_COUNT}" >> $GITHUB_ENV
+          echo "APP_VERSION_NAME=${{ env.INPUT_VERSION }}" >> $GITHUB_ENV
           echo "BUILD_TYPE=StandardBeta" >> $GITHUB_ENV
 
       # NIGHTLY
       - name: Prepare nightly build
-        if: steps.branch_name.outputs.NAME == 'master' && github.event.inputs.version == ''
+        if: steps.branch_name.outputs.NAME == 'master' && env.INPUT_VERSION == ''
         run: |
           set -x
           echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV
@@ -119,9 +127,9 @@ jobs:
         if: startsWith(env.BUILD_TYPE, 'Standard')
         run: |
           if [ -n "${{ env.APP_VERSION_NAME }}" ]; then
-            ./gradlew assemble${{ env.BUILD_TYPE }} -PappVersionName=${{ env.APP_VERSION_NAME }}
+            ./gradlew "assemble${{ env.BUILD_TYPE }}" "-PappVersionName=${{ env.APP_VERSION_NAME }}"
           else
-            ./gradlew assemble${{ env.BUILD_TYPE }}
+            ./gradlew "assemble${{ env.BUILD_TYPE }}"
           fi
 
       - name: Run unit tests
