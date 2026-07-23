@@ -1,13 +1,18 @@
 name: 🌟 Feature request
-description: Suggest a feature to improve Yōkai
+description: Suggest a feature to improve Rokku
 labels: [enhancement]
 body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Rokku is a maintenance-focused fork: dependency updates and keeping up with upstream extension/API changes, not new features. Feature requests are welcome but may be declined or take a while, since this is maintained in personal time.
 
   - type: textarea
     id: feature-description
     attributes:
       label: Describe your suggested feature
-      description: How can Yōkai be improved?
+      description: How can Rokku be improved?
       placeholder: |
         Example:
           "It should work like this..."
@@ -31,11 +36,9 @@ body:
           required: true
         - label: I have written a short but informative title.
           required: true
-        - label: If this is an request for a feature in the original Tachiyomi, I am opening because multiple versions of Yōkai have been released without this feature.
-          required: true
         - label: If this is an issue with an extension, or a request for an extension, I should be contacting the extensions repository's maintainer/support for help.
           required: true
-        - label: I have updated the app to version **[1.9.7.5](https://github.com/null2264/yokai/releases/latest)**.
+        - label: I have updated the app to version **[the latest release](https://github.com/thiago8rocha/Rokku/releases/latest)**.
           required: true
         - label: I have checked through the app settings for my feature.
           required: true
@@ -55,4 +58,4 @@ body:
         Add a :+1: [reaction] to [issues you find important].
 
         [reaction]: https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/
-        [issues you find important]: https://github.com/null2264/yokai/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc
+        [issues you find important]: https://github.com/thiago8rocha/Rokku/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc
