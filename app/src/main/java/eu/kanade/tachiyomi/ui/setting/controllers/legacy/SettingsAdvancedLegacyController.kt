@@ -448,7 +448,7 @@ class SettingsAdvancedLegacyController : SettingsLegacyController() {
 
             switchPreference {
                 bindTo(sourcePreferences.externalLocalSource())
-                title = context.getString(MR.strings.pref_external_local_source).addBetaTag(context)
+                title = context.getString(MR.strings.pref_external_local_source)
             }
         }
 
