@@ -7,6 +7,14 @@ on:
     branches:
       - master
       - backport/**
+    paths:
+      - '**'
+      - '!**.md'
+      - '!.github/ISSUE_TEMPLATE/**'
+      - '!i18n/src/commonMain/moko-resources/**/strings.xml'
+      - '!i18n/src/commonMain/moko-resources/**/plurals.xml'
+      - 'i18n/src/commonMain/moko-resources/base/strings.xml'
+      - 'i18n/src/commonMain/moko-resources/base/plurals.xml'
   workflow_dispatch:
     inputs:
       version:
