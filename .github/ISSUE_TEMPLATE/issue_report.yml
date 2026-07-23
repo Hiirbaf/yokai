@@ -1,5 +1,5 @@
 name: 🐞 Issue report
-description: Report an issue or bug in Yōkai
+description: Report an issue or bug in Rokku
 labels: [bug]
 body:
 
@@ -48,12 +48,12 @@ body:
         You can paste the crash logs in pure text or upload it as an attachment.
 
   - type: input
-    id: tachiyomi-version
+    id: rokku-version
     attributes:
-      label: Yōkai version
-      description: You can find your Yōkai version in **More → About**.
+      label: Rokku version
+      description: You can find your Rokku version in **More → About**.
       placeholder: |
-        Example: "1.8.0" or "1.8.0-b5000 (Nightly)" or "Nightly r5000"
+        Example: "1.1.4" or "Nightly r6420"
     validations:
       required: true
 
@@ -96,11 +96,9 @@ body:
           required: true
         - label: If this is an issue with an extension, or a request for an extension, I should be contacting the extensions repository's maintainer/support for help ([Browse → Extensions → Find the extension → Settings → Tap the `[<>]` icon](https://cdn.aap.my.id/extension-repo-link.png), it *should* redirect you to the maintainer).
           required: true
-        - label: I am reporting an issue exclusive to this fork. I have also checked that is not an issue on the [main version of Mihon](https://github.com/mihonapp/mihon).
-          required: true
         - label: I have tried the [troubleshooting guide](https://mihon.app/docs/guides/troubleshooting/).
           required: true
-        - label: I have updated the app to version **[1.9.7.5](https://github.com/null2264/yokai/releases/latest)**.
+        - label: I have updated the app to version **[the latest release](https://github.com/thiago8rocha/Rokku/releases/latest)**.
           required: true
         - label: I have updated all installed extensions.
           required: true
@@ -120,4 +118,4 @@ body:
         Add a :+1: [reaction] to [issues you find important].
 
         [reaction]: https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/
-        [issues you find important]: https://github.com/null2264/yokai/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc
+        [issues you find important]: https://github.com/thiago8rocha/Rokku/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc
