@@ -158,6 +158,15 @@ jobs:
 
           echo "STAGE=${stage}" >> $GITHUB_OUTPUT
 
+      - name: Create and push tag
+        if: env.VERSION_TAG != ''
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ env.VERSION_TAG }}"
+          git push origin "${{ env.VERSION_TAG }}"
+
       - name: Sign APK
         uses: null2264/actions/android-signer@363cb9cf3d66bd9c72ed6860142c6b2c121d7e94
         if: env.VERSION_TAG != ''
