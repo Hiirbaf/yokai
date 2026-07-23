@@ -10,6 +10,21 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.1.4]
+
+### Fixes
+- Fix extensions that decompress zstd/brotli-encoded responses crashing the app outright (native abort, no error/log shown) in release/nightly builds; R8 was stripping the native decoder classes since they're only reachable via JNI
+
+## [1.1.3]
+
+### Other
+- Raise `minSdk` to 26 (matching Mihon) to fix `AbstractMethodError` crashes in extensions (e.g. MangaDotNet) compiled assuming native Java 8 default-interface-method dispatch, which Android doesn't support below API 24; this drops support for Android 6.0/7.0/7.1
+
+## [1.1.2]
+
+### Fixes
+- Fix extensions that decompress zstd-encoded responses crashing with `NoClassDefFoundError: okhttp3.zstd.Zstd` (the fix in 1.1.1 restored the brotli dependency but missed zstd)
+
 ## [1.1.1]
 
 ### Fixes
