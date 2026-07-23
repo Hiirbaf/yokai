@@ -10,6 +10,50 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.1.1]
+
+### Fixes
+- Fix extensions that reference `okhttp3.brotli.Brotli` directly (e.g. WeebCentral, MangaDotNet) crashing with `NoClassDefFoundError` since 1.1.0
+
+### Other
+- CI: make the manual release/beta build actually set the app's version (previously it only renamed the GitHub tag/release, the installed app kept showing an unrelated version number)
+- CI: normalize and quote the version input so a stray space no longer breaks the whole build
+- CI: push the version tag before creating the GitHub release, avoiding a race that could leave the release "untagged"
+- CI: grant `GITHUB_TOKEN` write permissions for releases and test check runs (newer repos default to read-only)
+
+## [1.1.0]
+
+### Fixes
+- Fix in-app update checker pointing at the original Yokai's GitHub repo instead of this fork's (was permanently showing a fake "update available")
+- Fix Shikimori tracker using a decommissioned domain (`shikimori.one` → `shikimori.io`)
+- Fix downloader always restarting interrupted page downloads from scratch instead of resuming them
+- Fix download notifications not respecting the Android 13+ notification permission
+- Fix Shizuku extension installer relying on a private API and shelling out to `pm`, a source of silent install failures; now uses the proper (if hidden) `PackageInstaller` session APIs
+- Fix extension install broadcast receiver being unnecessarily exported
+
+### Changes
+- Own `applicationId` (`app.rokku`) instead of reusing the original Yokai's, so this fork can be installed alongside it without conflicting
+- Removed Firebase Crashlytics/Analytics (was still pointing at the original Yokai maintainer's project)
+- Replaced the Yokai notification icon with a Rokku one
+- "Source repos" setting no longer marked as beta
+
+### Known issues (fixed in 1.1.1)
+- Some extensions that reference `okhttp3.brotli.Brotli` directly crash on load
+
+## [1.0.0]
+
+First release under the Rokku name. Everything below was inherited as broken from Yokai/pre-fork and fixed here; see the README for full fork history and credits.
+
+### Fixes
+- Fix Keiyoushi extension compatibility: extension lib version window was capped below what current extensions ship as, rejecting all of them
+- Fix `Source`/`CatalogueSource` interface to match the current extension API (`tachiyomix 1.6`), including the combined `getMangaUpdate` call
+- Fix "add extension repository" only accepting a URL ending in `/index.min.json`, rejecting the `repo.json`/`index.pb` URLs Keiyoushi now points users to
+- Add support for the newer protobuf/JSON "ExtensionStore" repository index format, with the legacy `index.min.json` array kept as a fallback
+
+### Other
+- Updated OkHttp, Kotlin, Compose, AndroidX, coroutines/serialization, and other core dependencies
+- Completed pt-BR translations
+
 ## [1.9.7.5]
 
 ### Fixes
