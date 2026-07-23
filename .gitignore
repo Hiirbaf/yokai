@@ -11,3 +11,7 @@
 .kotlin/
 kls_database.db
 weblate.conf
+
+# Signing keystores must never be committed
+*.jks
+*.keystore
