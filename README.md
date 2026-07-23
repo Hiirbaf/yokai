@@ -22,7 +22,7 @@ A free and open source manga reader
 [![Rokku Stable](https://img.shields.io/github/v/release/thiago8rocha/Rokku?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&filter=v*)](https://github.com/thiago8rocha/Rokku/releases)
 [![Rokku Nightly](https://img.shields.io/github/v/release/thiago8rocha/Rokku?maxAge=3600&label=Nightly&labelColor=2c2c47&color=1c1c39&filter=r*&include_prereleases)](https://github.com/thiago8rocha/Rokku/releases)
 
-*Requires Android 6.0 or higher.*
+*Requires Android 8.0 or higher.*
 
 ## About Fork
 
