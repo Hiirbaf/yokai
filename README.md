@@ -36,7 +36,14 @@ Rokku is a fork of [Yokai](https://github.com/null2264/yokai), which is itself a
 <details open="">
     <summary><h3>From Rokku</h3></summary>
 
-* No original changes yet — this fork currently focuses on maintenance (dependency updates, keeping up with upstream extension/API changes). Anything added here will be documented as it happens.
+This fork focuses on maintenance: dependency updates and keeping up with upstream extension/API changes, not new features.
+
+* Fixed Keiyoushi extension repository/protocol compatibility (extension lib version support, the `Source` interface, and support for the newer protobuf-based extension index), which had been broken since before the fork.
+* Updated OkHttp and other core dependencies (Kotlin, Compose, AndroidX, coroutines/serialization) to versions closer to current Mihon.
+* Fixed the Shikimori tracker (moved to their current domain).
+* Downloads now resume interrupted pages instead of restarting them, and download notifications respect the Android 13+ notification permission.
+* Rewrote the Shizuku-based extension installer to use the actual PackageInstaller session APIs instead of shelling out to `pm`, and hardened the extension install broadcast receiver.
+* Completed pt-BR translations.
 
 </details>
 
@@ -60,7 +67,7 @@ Rokku is a fork of [Yokai](https://github.com/null2264/yokai), which is itself a
   [AniList](https://anilist.co/),
   [Kitsu](https://kitsu.app/explore/anime),
   [Manga Updates](https://www.mangaupdates.com/),
-  [Shikimori](https://shikimori.one),
+  [Shikimori](https://shikimori.io),
   and [Bangumi](https://bgm.tv/) support.
 * Categories to organize your library.
 * Light and dark themes.
