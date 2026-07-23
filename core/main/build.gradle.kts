@@ -41,6 +41,9 @@ kotlin {
                 api(libs.okhttp)
                 api(libs.okhttp.logging.interceptor)
                 api(libs.okhttp.dnsoverhttps)
+                // Not used directly by the app; kept on the classpath because some extensions'
+                // generated code references okhttp3.brotli.Brotli directly.
+                api(libs.okhttp.brotli)
 
                 api(androidx.preference)
 
