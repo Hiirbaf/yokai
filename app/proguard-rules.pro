@@ -66,7 +66,7 @@
 -keep class okhttp3.brotli.** { *; }
 -keep class org.brotli.dec.** { *; }
 -keep class okhttp3.zstd.** { *; }
--keep class com.squareup.zstd.** { *; }
+-keep,allowoptimization class com.squareup.zstd.** { public protected *; }
 ##---------------End: proguard configuration for okhttp  ----------
 
 ##---------------Begin: proguard configuration for kotlinx.serialization  ----------
