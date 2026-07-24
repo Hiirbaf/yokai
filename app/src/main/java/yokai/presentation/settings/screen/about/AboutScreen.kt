@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -212,16 +211,6 @@ class AboutScreen : Screen() {
                                     .padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.Center,
                         ) {
-                            LinkIcon(
-                                label = "Website",
-                                icon = Icons.Outlined.Public,
-                                url = "https://mihon.app",
-                            )
-                            LinkIcon(
-                                label = "Discord",
-                                icon = CustomIcons.Discord,
-                                url = "https://discord.gg/mihon",
-                            )
                             LinkIcon(
                                 label = "GitHub",
                                 icon = CustomIcons.GitHub,
