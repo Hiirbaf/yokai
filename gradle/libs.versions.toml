@@ -1,7 +1,7 @@
 [versions]
 aboutlibraries = "13.1.0"
 chucker = "3.5.2"
-flexible-adapter = "c8013533"
+flexible-adapter = "3268efe4"
 fast_adapter = "5.7.0"
 moko = "0.25.1"
 okhttp = "5.0.0-alpha.16"
